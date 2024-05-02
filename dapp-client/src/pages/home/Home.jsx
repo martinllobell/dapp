@@ -1,34 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import styles from "./styles.module.scss"
+import { CardMatch } from '../../components/CardMatch';
+
+const match1 = {
+  id: '0x2012391123123',
+  image: 'https://nmdfc.org/uploads/gallery/video/badgepng-cd449eedf7ca2d60e1875cf42dec68e3.png',
+  team1: {
+    name: 'Manchester United',
+    logo: 'https://www.logo.wine/a/logo/Manchester_United_F.C./Manchester_United_F.C.-Logo.wine.svg'
+  },
+  team2: {
+    name: 'Manchester City',
+    logo: 'https://download.logo.wine/logo/Manchester_City_F.C./Manchester_City_F.C.-Logo.wine.png'
+  },
+  odds: {
+    odd1: 1.52,
+    oddX: 2.40,
+    odd2: 3.20
+  }
+}
 
 export default function Home() {
-  const [matches, setMatches] = useState([]);
-
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/matchess');
-        setMatches(response.data.matches);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
   return (
-    <div className={darkMode ? styles.homeDark : styles.home}>
-      <h1>Partidos en Vivo</h1>
-      {matches.map(match => (
-        <div key={match.id}>
-          <h2>{match.homeTeam.name} vs {match.awayTeam.name}</h2>
-          <p>{match.status}</p>
-          {/* Agrega más información del partido según tus necesidades */}
-        </div>
-      ))}
+    <div className='w-full flex flex-col items-center justify-center'>
+      <h1 className='font-bold my-3'>Partidos en Vivo</h1>
+      <div className='grid grid-cols-2 md:grid-cols-3 gap-4'>
+        <CardMatch matchData={match1} />
+        <CardMatch matchData={match1} />
+        <CardMatch matchData={match1} />
+        <CardMatch matchData={match1} />
+        <CardMatch matchData={match1} />
+        <CardMatch matchData={match1} />
+      </div>
     </div>
   );
-};
+}
