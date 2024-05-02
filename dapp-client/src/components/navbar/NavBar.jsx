@@ -1,29 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import SunIcon from "../../assets/SunIcon.svg"
+import MoonIcon from "../../assets/MoonIcon.svg"
+import SupportIcon from "../../assets/SupportIcon.svg"
+import EnglishIcon from "../../assets/EnglishIcon.svg"
+import NotificationIcon from "../../assets/NotificationIcon.svg"
+import SpanishIcon from "../../assets/SpanishIcon.svg"
+import Logo from "../../assets/logeIcon.svg"
 
-const Navbar = ({ toggleDarkMode, darkMode }) => { // Utiliza destructuración de props
+const Navbar = ({ toggleDarkMode, darkMode }) => {
+  const [language, setLanguage] = useState('es');
+
+  const toggleLanguage = () => {
+    setLanguage((prevLanguage) => (prevLanguage === 'es' ? 'en' : 'es'));
+  };
+
   return (
-    <nav className={`bg-white dark:bg-slate-800 rounded-lg px-6 py-8 ring-1 ring-slate-900/5 shadow-xl ${darkMode ? 'dark' : ''}`}>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center">
-          <h3 className="text-slate-900 dark:text-white mt-5 text-base font-medium tracking-tight ml-3">D-App</h3>
-        </div>
-        <div className="flex items-center gap-4">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Buscar..."
-              className="bg-gray-100 dark:bg-slate-900 text-gray-800 dark:text-white rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div className="flex items-center gap-4">
-            <Link to="/login" className="text-slate-900 dark:text-white font-medium">Iniciar Sesión</Link>
-            <Link to="/wallet" className="text-slate-900 dark:text-white font-medium">Conectar Wallet</Link>
-            <button onClick={toggleDarkMode} className="text-slate-900 dark:text-white font-medium px-3 py-1 rounded bg-indigo-500 hover:bg-indigo-600">
-              {darkMode ? 'Modo Claro' : 'Modo Oscuro'}
-            </button>
-          </div>
-        </div>
+    <nav className={`flex justify-between items-center p-6 transition-colors duration-500 ${darkMode ? 'dark' : ''}`}>
+      <img src={Logo} alt="Logo" className={`h-10 w-auto transition-colors duration-500 ${darkMode ? 'text-white' : 'text-black'}`} />
+      <div className="flex items-center gap-4">
+        <button onClick={toggleLanguage} className="text-slate-900 dark:text-white font-medium px-3 py-1 rounded-lg bg-indigo-500 hover:bg-indigo-600 transition-all duration-500 ease-in-out">
+          <img src={language === 'es' ? SpanishIcon : EnglishIcon} alt="Cambio de Idioma" className={`transition-colors duration-500 ${darkMode ? 'text-white' : 'text-black'}`} />
+        </button>
+        <Link to="/customer-support" className="text-slate-900 dark:text-white font-medium transition-all duration-500 ease-in-out">
+          <img src={SupportIcon} alt="Soporte al Cliente" className={`transition-colors duration-500 ${darkMode ? 'text-white' : 'text-black'}`} />
+        </Link>
+        <Link to="/notifications" className="text-slate-900 dark:text-white font-medium transition-all duration-500 ease-in-out">
+          <img src={NotificationIcon} alt="Notificaciones" className={`transition-colors duration-500 ${darkMode ? 'text-white' : 'text-black'}`} />
+        </Link>
+        <button onClick={toggleDarkMode} className="text-slate-900 dark:text-white font-medium px-3 py-1 rounded-lg bg-indigo-500 hover:bg-indigo-600 transition-all duration-500 ease-in-out">
+          {darkMode ? <img src={MoonIcon} alt="Modo Oscuro" className="text-white" /> : <img src={SunIcon} alt="Modo Claro" className="text-black" />}
+        </button>
       </div>
     </nav>
   );
