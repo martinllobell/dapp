@@ -28,9 +28,15 @@ const Navbar = ({ toggleDarkMode, darkMode }) => {
         <Link to="/notifications" className="text-slate-900 dark:text-white font-medium transition-all duration-500 ease-in-out">
           <img src={NotificationIcon} alt="Notificaciones" className={`transition-colors duration-500 ${darkMode ? 'text-white' : 'text-black'}`} />
         </Link>
-        <button onClick={toggleDarkMode} className="text-slate-900 dark:text-white font-medium px-3 py-1 rounded-lg bg-indigo-500 hover:bg-indigo-600 transition-all duration-500 ease-in-out">
+        <label class="relative inline-flex cursor-pointer items-center">
+          <input onChange={toggleDarkMode} id="switch-2" type="checkbox" class="peer sr-only" />
+          <label for="switch-2" class="hidden"></label>
+          <div class="peer h-4 w-11 rounded-full border bg-slate-200 after:absolute after:-top-1 after:left-0 after:h-6 after:w-6 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-300 peer-checked:after:translate-x-full peer-focus:ring-blue-300"></div>
+        </label>
+        
+        {/* <button onClick={toggleDarkMode} className="text-slate-900 dark:text-white font-medium px-3 py-1 rounded-lg bg-indigo-500 hover:bg-indigo-600 transition-all duration-500 ease-in-out">
           {darkMode ? <img src={MoonIcon} alt="Modo Oscuro" className="text-white" /> : <img src={SunIcon} alt="Modo Claro" className="text-black" />}
-        </button>
+        </button> */}
       </div>
     </nav>
   );
