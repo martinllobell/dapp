@@ -50,7 +50,7 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData }: CardMatchProps) => 
                         <h2 className={'text-sm text-xs font-medium w-20 text-center'}>{matchData.team2.name}</h2>
                     </div>
                 </div>
-                <hr className={`border-t ${darkMode ? 'border-white/20' : 'border-slate-900'}`} />
+                <hr className={`border-t ${darkMode ? 'border-white/20' : 'border-black/20'}`} />
                 <div className={`flex justify-around -mt-3 cursor-pointer text-center w-full ${darkMode? 'text-yellow-500' : 'text-violet-600'}`}>
                     <div className={`text-sm font-semibold w-full py-2 flex flex-row justify-center gap-1 ${darkMode ? 'hover:bg-white/20' : 'hover:bg-gray-500/40'}`}>
                         <p className={`font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>1</p>
