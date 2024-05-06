@@ -1,4 +1,5 @@
 import { CardMatch } from '../../components/CardMatch';
+import MyCarousel from '../../components/carrousel/Carousel';
 import Footer from '../../components/footer/footer';
 
 const match1 = {
@@ -22,6 +23,7 @@ const match1 = {
 export default function Home() {
   return (
     <div className='w-full flex flex-col items-center justify-center'>
+      <MyCarousel/>
       <h1 className='font-bold my-3'>Partidos en Vivo</h1>
       <div className='grid grid-cols-2 md:grid-cols-3 gap-4'>
         <CardMatch matchData={match1} />
