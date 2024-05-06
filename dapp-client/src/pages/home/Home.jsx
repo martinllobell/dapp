@@ -1,4 +1,5 @@
 import { CardMatch } from '../../components/CardMatch';
+import Footer from '../../components/footer/footer';
 
 const match1 = {
   id: '0x2012391123123',
@@ -30,6 +31,7 @@ export default function Home() {
         <CardMatch matchData={match1} />
         <CardMatch matchData={match1} />
       </div>
+      <Footer />
     </div>
   );
 }

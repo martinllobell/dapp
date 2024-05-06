@@ -1,16 +1,23 @@
 import { useState, useEffect, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import SupportIcon from "../../assets/icons/support.svg"
+import SupportIconDark from "../../assets/icons/supportDark.svg"
 import EnglishIcon from "../../assets/icons/en.svg"
 import NotificationIcon from "../../assets/icons/notification.svg"
+import NotificationIconDark from "../../assets/icons/notificationDark.svg"
 import SpanishIcon from "../../assets/icons/es.svg"
 import Logo from "../../assets/icons/loge.svg"
 import WalletConnet from '../userAccess/walletConnet';
+import moon from "../../assets/icons/moon.svg"
+import sun from "../../assets/icons/sun.svg"
 
 
 
 const Navbar = ({ toggleDarkMode, darkMode }) => {
   const [language, setLanguage] = useState('es');
+  useEffect(() => {
+    console.log(darkMode);
+  }, [darkMode])
 
   const toggleLanguage = () => {
     setLanguage((prevLanguage) => (prevLanguage === 'es' ? 'en' : 'es'));
@@ -20,22 +27,31 @@ const Navbar = ({ toggleDarkMode, darkMode }) => {
     <nav className={`flex justify-between items-center p-6 transition-colors duration-500 ${darkMode ? 'dark' : ''}`}>
       <img src={Logo} alt="Logo" className={`h-10 w-auto transition-colors duration-500 ${darkMode ? 'text-white' : 'text-black'}`} />
       <div className="flex items-center gap-4">
-        <WalletConnet />
-        <label className="relative inline-flex cursor-pointer items-center">
-          <input onChange={toggleDarkMode} id="switch-2" type="checkbox" className="peer sr-only" />
-          <label htmlFor="switch-2" className="hidden"></label>
-          <div className="peer h-4 w-11 rounded-full border bg-slate-200 after:absolute after:-top-1 after:left-0 after:h-6 after:w-6 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-300 peer-checked:after:translate-x-full peer-focus:ring-blue-300"></div>
-        </label>
-        <button onClick={toggleLanguage} className="text-slate-900 px-3 py-3 rounded-lg  bg-indigo-500 hover:bg-indigo-300 hover:bg-transparent">
-          <img src={language === 'es' ? SpanishIcon : EnglishIcon} alt="Cambio de Idioma" />
+        <WalletConnet darkMode={darkMode} />
+
+        <button onClick={toggleLanguage} className={`${!darkMode ? "backdrop-blur-xl bg-white/10 drop-shadow-xl text-white" : "hover:bg-indigo-300 backdrop-blur-xl bg-indigo-100 drop-shadow-xl "}` + " shadow-sm shadow-black/10 text-slate-900 px-2 py-2 rounded-lg hover:bg-indigo-300 transition ease-in-out hover:scale-105 duration-150 hover:text-black"}>
+          <img src={language === 'es' ? SpanishIcon : EnglishIcon} alt="Cambio de Idioma" className='' />
         </button>
-        <Link to="/notifications" className="text-slate-900 px-3 py-3 rounded-lg bg-indigo-500 hover:bg-indigo-300">
-          <img src={NotificationIcon} alt="Notificaciones" />
+        <Link to="/notifications" className={`${!darkMode ? "backdrop-blur-xl bg-white/10 drop-shadow-xl text-white" : "hover:bg-indigo-300 backdrop-blur-xl bg-indigo-100 drop-shadow-xl "}` + " shadow-sm shadow-black/10 text-slate-900 px-2 py-2 rounded-lg hover:bg-indigo-300 transition ease-in-out hover:scale-105 duration-150 hover:text-black"}>
+
+          {
+            !darkMode ? <img src={NotificationIcon} alt="Notificaciones" className='w-5' /> : <img src={NotificationIconDark} alt="Notificaciones" className='w-5' />
+          }
         </Link>
-        <div style={{ position: 'fixed', bottom: "5rem", right: "0rem", width: "3rem", height: "3rem", }} className="text-slate-900 px-3 py-3 rounded-lg bg-indigo-500 hover:bg-indigo-100">
-          <img src={SupportIcon} alt="Soporte al Cliente" />
+        <button onClick={toggleDarkMode} className={`${!darkMode ? "backdrop-blur-xl bg-white/10 drop-shadow-xl text-white" : "hover:bg-indigo-300 backdrop-blur-xl bg-indigo-100 drop-shadow-xl "}` + " shadow-sm shadow-black/10 text-slate-900 px-2 py-2 rounded-lg hover:bg-indigo-300 transition ease-in-out hover:scale-105 duration-150 hover:text-black"}>
+          {
+            !darkMode ? <img src={sun} alt='Toggle Dark Mode' /> : <img src={moon} alt='Toggle Dark Mode' />
+          }
+        </button>
+
+        <div style={{ position: 'fixed', bottom: "5rem", right: "1rem", width: "3rem", height: "3rem", }} className={`${!darkMode ? "backdrop-blur-xl bg-white/10 drop-shadow-xl text-white" : "hover:bg-indigo-300 backdrop-blur-xl bg-indigo-100 drop-shadow-xl "}` + " shadow-sm shadow-black/10 text-slate-900 px-3 py-3 rounded-lg hover:bg-indigo-300 transition ease-in-out hover:scale-105 duration-150 hover:text-black"}>
+
+          {
+            !darkMode ? <img src={SupportIcon} alt="Soporte al Cliente" /> : <img src={SupportIconDark} alt="Soporte al Cliente" />
+          }
         </div>
       </div>
+
     </nav>
   );
 };
