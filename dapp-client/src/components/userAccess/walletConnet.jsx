@@ -97,7 +97,7 @@ export default function WalletConnect({ darkMode }) {
                         leaveFrom="transform opacity-100 scale-100"
                         leaveTo="transform opacity-0 scale-95"
                     >
-                        <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none backdrop-blur-xl bg-white/10 drop-shadow-xl">
+                        <Menu.Items className="absolute right-0 z-40 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none backdrop-blur-xl bg-white/10 drop-shadow-xl">
                             <Menu.Item>
                                 {({ active }) => (
                                     <a
@@ -143,9 +143,17 @@ export default function WalletConnect({ darkMode }) {
                     </Transition>
                 </Menu>
             ) : (
-                <button onClick={connectWallet} className={`${!darkMode ? "backdrop-blur-xl bg-white/10 drop-shadow-xl text-white" : "hover:bg-indigo-300 backdrop-blur-xl bg-indigo-100 drop-shadow-xl "}` + " shadow-sm shadow-black/10 text-slate-900 px-3 py-2.5 rounded-lg hover:bg-indigo-100 transition ease-in-out hover:scale-105 duration-150 hover:text-black"}>
-                    Connect Wallet
+
+                <button onClick={connectWallet} className={`${!darkMode ? "backdrop-blur-xl bg-white/10 drop-shadow-xl text-white flex items-center justify-center " : "hover:bg-indigo-300 backdrop-blur-xl bg-indigo-100 drop-shadow-xl "}` + "flex items-center justify-center text-nowrap font-semibold text-sm  shadow-sm shadow-black/10 w-[10rem] h-[2.3rem] rounded-lg hover:bg-indigo-100 transition ease-in-out hover:scale-105 duration-100 hover:text-black"}>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5 mr-2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 12h12M12 6v12" />
+                        <circle cx="12" cy="12" r="10" stroke-width="1.5" />
+                    </svg>
+
+
+                    Connect wallet
                 </button>
+
             )}
         </>
 

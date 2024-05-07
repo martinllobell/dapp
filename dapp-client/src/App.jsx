@@ -20,7 +20,7 @@ const App = () => {
     <Router>
       <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
       <Routes>
-        <Route path="/home" element={<Home />} />
+        <Route path="/" element={<Home />} />
       </Routes>
     </Router>
   );

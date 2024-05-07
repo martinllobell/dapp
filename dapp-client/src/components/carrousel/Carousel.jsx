@@ -43,19 +43,24 @@ export default function MyCarousel() {
   }, []); // El segundo argumento de useEffect asegura que esto solo se ejecute una vez
 
   return (
-    <div id="default-carousel" className="relative w-4/5 md:w-2/3" data-carousel="slide">
+    <div id="default-carousel" className="relative w-4/5 md:w-2/3 mb-[3rem]" data-carousel="slide">
       {
         isDesktop ?
           <div id='carousel_wrapper' className="relative overflow-hidden rounded-lg md:h-64">
             {/* Primer par de imágenes */}
-            <div className="hidden duration-700 ease-in-out" data-carousel-item>
-              <img src={nba} className="bg-top absolute block w-2/4 h-full object-cover transition-transform transform scale-95 duration-300 hover:scale-100 rounded-lg" alt="NBA" />
-              <img src={champions} className="bg-top absolute block w-2/4 h-full object-cover transition-transform transform scale-95 duration-300 hover:scale-100 rounded-lg right-0" alt="Champions" />
+            <div className=" duration-300 ease-in-out" data-carousel-item>
+              <img src={nba} className="ml-[7%] bg-top absolute block w-2/5 h-full object-cover transition-transform transform scale-95 duration-300 hover:scale-100 rounded-lg" alt="NBA" />
+              <img src={champions} className="mr-[7%] bg-top absolute block w-2/5 h-full object-cover transition-transform transform scale-95 duration-300 hover:scale-100 rounded-lg right-0" alt="Champions" />
             </div>
             {/* Segundo par de imágenes */}
-            <div className="hidden duration-700 ease-in-out" data-carousel-item>
-              <img src={lol} className="bg-top absolute block w-2/4 h-full object-cover transition-transform transform scale-95 duration-300 hover:scale-100 rounded-lg" alt="LOL" />
-              <img src={cs2} className="bg-top absolute block w-2/4 h-full object-cover transition-transform transform scale-95 duration-300 hover:scale-100 rounded-lg right-0" alt="CS2" />
+            <div className=" duration-300 ease-in-out" data-carousel-item>
+              <div className="img"></div>
+              <img src={lol} className="ml-[7%] bg-top absolute block w-2/5 h-full object-cover transition-transform transform scale-95 duration-300 hover:scale-100 rounded-lg" alt="LOL" />
+              <img src={cs2} className="mr-[7%] bg-top absolute block w-2/5 h-full object-cover transition-transform transform scale-95 duration-300 hover:scale-100 rounded-lg right-0" alt="CS2" />
+            </div>
+            <div className="duration-300 ease-in-out" data-carousel-item>
+              <img src={lol} className="ml-[7%] bg-top absolute block w-2/5 h-full object-cover transition-transform transform scale-95 duration-300 hover:scale-100 rounded-lg" alt="LOL" />
+              <img src={cs2} className="mr-[7%] bg-top absolute block w-2/5 h-full object-cover transition-transform transform scale-95 duration-300 hover:scale-100 rounded-lg right-0" alt="CS2" />
             </div>
           </div>
           :
@@ -81,10 +86,12 @@ export default function MyCarousel() {
       {/* Slider indicators */}
       {
         isDesktop ?
-          <div className="absolute z-20 flex -translate-x-1/2 bottom- left-1/2 space-x-3 rtl:space-x-reverse">
+          <div className="absolute z-20 flex -translate-x-1/2 -bottom-4 left-1/2 space-x-3 rtl:space-x-reverse -bottom-8">
             <button type="button" className="!bg-white/60 w-3 h-2 rounded-sm" aria-current="true" aria-label="Slide 1" data-carousel-slide-to="0"></button>
             <button type="button" className="!bg-white/60 w-3 h-2 rounded-sm" aria-current="false" aria-label="Slide 2" data-carousel-slide-to="1"></button>
-          </div> : <div className="absolute z-20 flex -translate-x-1/2  left-1/2 space-x-3 rtl:space-x-reverse">
+            <button type="button" className="!bg-white/60 w-3 h-2 rounded-sm" aria-current="false" aria-label="Slide 2" data-carousel-slide-to="2"></button>
+            
+          </div> : <div className="absolute z-20 flex -translate-x-1/2  left-1/2 space-x-3 rtl:space-x-reverse -bottom-6">
             <button type="button" className="!bg-white/60 w-5 h-1.5 rounded-sm" aria-current="true" aria-label="Slide 1" data-carousel-slide-to="0"></button>
             <button type="button" className="!bg-white/60 w-5 h-1.5 rounded-sm" aria-current="false" aria-label="Slide 2" data-carousel-slide-to="1"></button>
             <button type="button" className="!bg-white/60 w-5 h-1.5 rounded-sm" aria-current="false" aria-label="Slide 3" data-carousel-slide-to="2"></button>
