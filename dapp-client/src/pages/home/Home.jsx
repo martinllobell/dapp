@@ -1,6 +1,6 @@
 import { CardMatch } from '../../components/CardMatch';
 import MyCarousel from '../../components/carrousel/Carousel';
-import Footer from '../../components/footer/footer';
+import Footer from '../../components/footer/Footer';
 
 const match1 = {
   id: '0x2012391123123',
