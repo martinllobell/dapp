@@ -16,9 +16,6 @@ import sun from "../../assets/icons/sun.svg"
 
 const Navbar = ({ toggleDarkMode, darkMode }) => {
   const [language, setLanguage] = useState('es');
-  useEffect(() => {
-    console.log(darkMode);
-  }, [darkMode])
 
   const toggleLanguage = () => {
     setLanguage((prevLanguage) => (prevLanguage === 'es' ? 'en' : 'es'));
