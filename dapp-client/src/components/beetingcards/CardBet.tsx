@@ -23,8 +23,7 @@ interface CardMatchProps {
     darkMode: boolean;
 }
 
-export const CardMatch: FC<CardMatchProps> = ({ matchData }: CardMatchProps) => {
-    const darkMode = localStorage.getItem("darkMode") === 'true' ? true : false;
+export const CardMatch: FC<CardMatchProps> = ({ matchData }: CardMatchProps, darkMode ) => {
     return (
         <div className='relative w-full md:min-w-60'>
             <div
