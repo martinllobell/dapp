@@ -82,7 +82,7 @@ export default function WelcomePlay() {
         <div className='relative flex flex-col justify-center my-6  md:mx-10 gap-16'>
             <div className='mx-6 flex flex-col gap-4'>
                 <h1 className='text-4xl font-normal'>Start to play</h1>
-                <span className='md:text-lg'>Choose what you want to play among the following products developed by Dapp. Explore and join Web3 sports betting and fast crypto games! </span>
+                <span className='md:text-lg  mx-auto text-center leading-relaxed '>Choose what you want to play among the following products developed by Dapp. Explore and join Web3 sports betting and fast crypto games! </span>
             </div>
             <div className='grid grid-cols-2 grid-rows-2 md:grid-rows-1 md:grid-cols-3 w-full px-8 md:gap-12 gap-6'>
                 {
@@ -110,11 +110,11 @@ export default function WelcomePlay() {
                 </div>
                 <div className='col-span-7 relative md:gap-3 flex items-center w-full justify-end flex-row opacity-50 relative -right-5 md:right-0'>
                     <div className='flex-row gap-3 lg:flex hidden'>
-                        {cryptos.map(({img, name}) =>
-                        <div className='flex flex-row gap-2 items-center'>
-                            <img src={img} className='max-w-6'></img>
-                            <h2 className='font-semibold text-xl'>{name}</h2>
-                        </div>
+                        {cryptos.map(({ img, name }) =>
+                            <div className='flex flex-row gap-2 items-center'>
+                                <img src={img} className='max-w-6'></img>
+                                <h2 className='font-semibold text-xl'>{name}</h2>
+                            </div>
                         )}
                     </div>
                     <div className='min-w-10 min-h-10 transform rotate-90 relative end-4'>

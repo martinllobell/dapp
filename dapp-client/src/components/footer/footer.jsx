@@ -1,70 +1,41 @@
-import logo from "../../assets/icons/loge.svg";
+import logo from "../../assets/logo.svg";
 
-const Footer = () => {
+export default function Footer({ darkMode }) {
     return (
-        <footer class="flex justify-between items-center px-10">
-            <div class="relative mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8 lg:pt-24">
-                <div class="absolute end-4 top-4 sm:end-6 sm:top-6 lg:end-8 lg:top-8">
-                    <a
-                        class="inline-block rounded-full backdrop-blur-xl bg-white/10 drop-shadow-xl p-2 text-white"
-                        href="#MainContent"
-                    >
-                        <span class="sr-only">Back to top</span>
-
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="h-5 w-5"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                        >
-                            <path
-                                fill-rule="evenodd"
-                                d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
-                                clip-rule="evenodd"
-                            />
-                        </svg>
-                    </a>
-                </div>
-
+        <footer class="flex mt-5 justify-center flex-col items-center px-10">
+            <img src={logo} alt="Logo" className={`w-[3rem] mt-5 transition-transform transform scale-95 rounded-full transition-colors`} />
+            <p class="mx-auto text-center leading-relaxed text-gray-400">
+                The best betting site in the P2P market.
+            </p>
+            <div class="relative mx-auto max-w-screen-xl  sm:px-6 lg:px-2 lg:pt-8">
                 <div class="lg:flex lg:items-end lg:justify-between">
-                    <div>
-                        <div class="flex justify-center text-teal-600 lg:justify-start">
-                            <img src={logo} alt="Logo" />
-                        </div>
-
-                        <p class="mx-auto mt-6 max-w-md text-center leading-relaxed text-gray-400 lg:text-left">
-                            The best betting site in the P2P market.
-                        </p>
-                    </div>
-
                     <ul
-                        class="mt-12 flex flex-wrap justify-center gap-6 md:gap-8 lg:mt-0 lg:justify-end lg:gap-12"
+                        className={"flex flex-wrap justify-center gap-6 md:gap-8 lg:mt-0 lg:gap-12"}
                     >
                         <li>
-                            <a class="text-gray-900 transition hover:text-gray-700/75" href="#"> About us </a>
+                            <a className={darkMode ? "text-gray-900 transition hover:text-blue-400/75 " : "text-white-900 transition hover:text-cyan-500"} href="#"> About us </a>
                         </li>
 
                         <li>
-                            <a class="text-gray-900 transition hover:text-gray-700/75" href="#"> Contact Us </a>
+                            <a className={darkMode ? "text-gray-900 transition hover:text-blue-400/75 " : "text-white-900 transition hover:text-cyan-500"} href="#"> Contact Us </a>
                         </li>
 
                         <li>
-                            <a class="text-gray-900 transition hover:text-gray-700/75" href="#"> Cookies </a>
+                            <a className={darkMode ? "text-gray-900 transition hover:text-blue-400/75 " : "text-white-900 transition hover:text-cyan-500"} href="#"> Cookies </a>
                         </li>
 
                         <li>
-                            <a class="text-gray-900 transition hover:text-gray-700/75" href="#"> Help </a>
+                            <a className={darkMode ? "text-gray-900 transition hover:text-blue-400/75 " : "text-white-900 transition hover:text-cyan-500"} href="#"> Help </a>
                         </li>
                     </ul>
                 </div>
 
-                <p class="mt-12 text-center text-sm text-gray-500 lg:text-right">
-                    © 2024 ...Name Company... | All rights reserved.
+                <p class="mt-8 mb-5 flex justify-center items-center text-center text-sm text-gray-500 ">
+                    <p className="mr-2">© 2024 DBetting </p>| <p className="ml-2">All rights reserved.</p>
                 </p>
             </div>
         </footer>
     );
 };
 
-export default Footer;
 

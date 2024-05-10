@@ -43,7 +43,7 @@ export default function MyCarousel() {
   }, []); // El segundo argumento de useEffect asegura que esto solo se ejecute una vez
 
   return (
-    <div id="default-carousel" className="relative w-4/5 md:w-2/3 mb-[3rem]" data-carousel="slide">
+    <div id="default-carousel" className="relative w-full  mb-[3rem]" data-carousel="slide">
       {
         isDesktop ?
           <div id='carousel_wrapper' className="relative overflow-hidden rounded-lg md:h-64">
