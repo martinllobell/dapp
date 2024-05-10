@@ -45,7 +45,7 @@ const Navbar = ({ toggleDarkMode, darkMode }) => {
           }
         </button>
 
-        <div style={{ position: 'fixed', bottom: "5rem", right: "1rem", width: "3rem", height: "3rem", }} className={`${!darkMode ? "backdrop-blur-xl bg-white/10 drop-shadow-xl text-white" : "hover:bg-indigo-300 backdrop-blur-xl bg-indigo-100 drop-shadow-xl "}` + " shadow-sm shadow-black/10 text-slate-900 px-3 py-3 rounded-lg hover:bg-indigo-300 transition ease-in-out hover:scale-105 duration-150 hover:text-black"}>
+        <div style={{ position: 'fixed', bottom: "5rem", right: "1rem", width: "3rem", height: "3rem", }} className={`${!darkMode ? "backdrop-blur-xl bg-white/10 drop-shadow-xl text-white" : "hover:bg-indigo-300 backdrop-blur-xl bg-indigo-100 drop-shadow-xl "}` + " shadow-sm shadow-black/10 text-slate-900 px-3 py-3 rounded-lg hover:bg-indigo-300 transition ease-in-out hover:scale-105 duration-150 hover:text-black z-10 cursor-pointer"}>
 
           {
             !darkMode ? <img src={SupportIcon} alt="Soporte al Cliente" /> : <img src={SupportIconDark} alt="Soporte al Cliente" />
