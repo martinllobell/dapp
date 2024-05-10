@@ -26,3 +26,17 @@ body {
     border-radius: 10px;
     background: #6d6d6d;
 }
+
+/* En tu archivo de estilos CSS */
+@keyframes slide {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(0%);
+    }
+  }
+
+  .animate-slide {
+    animation: slide 10s linear infinite; /* Puedes ajustar la duración según necesites */
+  }

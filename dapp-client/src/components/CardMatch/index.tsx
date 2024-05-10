@@ -29,7 +29,7 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData }: CardMatchProps) => 
         <div className='relative w-full md:min-w-60'>
             <div
                 className={`flex h-full flex-col gap-3 rounded-md shadow-md
-                pt-2 bg-gradient-to-b 
+                pt-2 bg-gradient-to-b
                 ${!darkMode ? 'from-black/10 to-black/10 hover:bg-indigo-500/10'
                         : 'from-white/10 to-black/20 hover:bg-indigo-500/10'}
                     shadow-black/50 transition ease-in-out duration-150`}>
