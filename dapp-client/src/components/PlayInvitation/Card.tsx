@@ -9,19 +9,19 @@ export default function InvitationCard({ card }: InvitationCardProp) {
     const { bgImage, description, leadImage, title } = card
     const [hover, setHover] = useState<boolean>(false)
     return (
-        <div className='w-full flex rounded-lg border border-black my-2 h-40 relative transition duration-300 hover:-translate-y-1 hover:bg-gradient-to-b from-white/0 to-black/100 cursor-pointer '
+        <div className='w-full flex rounded-lg border border-black/20 my-2 h-40 relative transition duration-300 hover:-translate-y-1 cursor-pointer '
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
         >
             <div
                 className={`absolute flex justify-center overflow-hidden shadow-xl rounded-lg items-center h-40 w-full cursor-pointer transition-opacity duration-300 ${hover ? 'opacity-100' : 'opacity-80'}`}
             >
-                <img src={bgImage} className='absolute inset-0 w-full h-full object-cover rounded-lg' />
-                <div className={`absolute inset-0 ${hover ? 'bg-black/0' : 'bg-black/10'}`}></div>
+                <img src={bgImage} className='absolute border border-black w-full h-full object-cover rounded-lg' />
             </div>
             <div className='absolute w-full h-full flex justify-center items-center -top-[31px] '>
                 <img src={leadImage} className='absolute max-h-56 min-h-56 object-cover'></img>
             </div>
+                <div className={`absolute transform rounded-lg w-full h-full -bottom-1 duration-300 bg-gradient-to-b ${hover ? 'from-white/0 to-black/100' : 'bg-black/10'}`}></div>
             <div className='grid grid-cols-6 grid-rows-2 justify-center overflow-hidden items-center h-full'>
                 <div className='flex flex-col items-end justify-end col-span-5 row-span-2'>
                     <div className={`flex flex-col h-full justify-end items-start w-full p-4 relative -bottom-14 transition duration-300 ${hover ? 'md:-translate-y-12' : ''}`}>

@@ -99,17 +99,17 @@ export default function WelcomePlay() {
                 }
             </div>
             <div className='grid grid-cols-12 w-full -mt-12 px-8'>
-                <div className='col-span-5 gap-3 flex items-center flex-row opacity-50 relative -left-5 md:left-0'>
+                <div className='col-span-5 gap-3 flex min-w-full items-center flex-row opacity-50 relative -left-5 md:left-0'>
                     <h1 className='text-3xl md:text-5xl font-bold'>100</h1>
                     <p className='w-8'>Crypto networks</p>
-                    <div className='min-w-10 min-h-10 transform rotate-90'>
+                    <div className='min-w-8 min-h-10 mx-2 transform rotate-90'>
                         <hr className='border-b border-black dark:border-white'></hr>
                     </div>
                     <p className='text-3xl md:text-5xl font-bold'>500</p>
-                    <h1 className='w-8'>Crypto wallets</h1>
+                    <h1 className='min-w-8'>Crypto wallets</h1>
                 </div>
                 <div className='col-span-7 relative md:gap-3 flex items-center w-full justify-end flex-row opacity-50 relative -right-5 md:right-0'>
-                    <div className='flex-row gap-3 lg:flex hidden'>
+                    <div className='flex-row justify-end min-w-full gap-3 lg:flex hidden'>
                         {cryptos.map(({ img, name }) =>
                             <div className='flex flex-row gap-2 items-center'>
                                 <img src={img} className='max-w-6'></img>
@@ -117,10 +117,10 @@ export default function WelcomePlay() {
                             </div>
                         )}
                     </div>
-                    <div className='min-w-10 min-h-10 transform rotate-90 relative end-4'>
+                    <div className='min-w-8 min-h-10 mx-4 md:-ml-5 transform rotate-90 '>
                         <hr className='border-b border-black dark:border-white'></hr>
                     </div>
-                    <h1 className='text-xl font-semibold cursor-pointer whitespace-nowrap'>See all</h1>
+                    <h1 className='text-sm md:text-xl font-semibold cursor-pointer whitespace-nowrap'>See all</h1>
                 </div>
             </div>
             <div className='flex -mt-10 lg:hidden'>
