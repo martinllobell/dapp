@@ -1,4 +1,27 @@
-#carousel_wrapper {
- 
-
-}
+.carousel-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .carousel-item img {
+    filter: blur(5px);
+    transition: filter 0.3s ease-in-out;
+  }
+  
+  .carousel-item.active img {
+    filter: blur(5px);
+  }
+  
+  .carousel-item.active .content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    transition: all 0.3s ease-in-out;
+  }
+  
