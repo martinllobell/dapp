@@ -40,4 +40,3 @@ const Web3ModalProvider = ({ children }) => {
 };
 
 export default Web3ModalProvider;
-
