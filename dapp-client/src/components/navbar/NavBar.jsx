@@ -19,7 +19,7 @@ const Navbar = ({ toggleDarkMode, darkMode }) => {
   };
 
   return (
-    <nav className={`fixed w-full z-40 h-[5rem] flex justify-between items-center p-6 transition-colors duration-500 ${darkMode ? 'dark' : ''}`} style={{ backdropFilter: "blur(10px)" }}>
+    <nav className={`fixed w-full z-40 h-[5rem] flex justify-between items-center p-6 transition-colors duration-500 ${darkMode ? 'dark' : ''}`} style={{ backdropFilter: "blur(2px)" }}>
       <Link to="/" >
         <img src={logo} alt="Logo" className={`duration-200 transition-transform transform scale-95 hover:scale-105 rounded-full ${darkMode ? 'text-white' : 'text-black'}`} />
       </Link>
