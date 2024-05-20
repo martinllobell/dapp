@@ -20,15 +20,30 @@ const LeagueEvents = ({ league, events }) => {
     }, [league]);
 
     const fetchAllTeamLogos = async (league) => {
-        try {
-            const response = await axios.get(`/api/sportsdata/v4/soccer/scores/json/CompetitionDetails/${league.CompetitionId}?key=8f188c8fe9a64e7ea20b66115210ae44`);
-            const logos = {};
-            response.data.Teams.forEach(team => {
-                logos[team.Name] = team.WikipediaLogoUrl || defaultLogoUrl;
-            });
-            setTeamLogos(logos);
-        } catch (error) {
-            console.error('Error fetching team logos:', error);
+        if (league.Sport === 'futbol') {
+            try {
+                const response = await axios.get(`/api/sportsdata/v4/soccer/scores/json/CompetitionDetails/${league.CompetitionId}?key=8f188c8fe9a64e7ea20b66115210ae44`);
+                const logos = {};
+                response.data.Teams.forEach(team => {
+                    logos[team.Name] = team.WikipediaLogoUrl || defaultLogoUrl;
+                });
+                setTeamLogos(logos);
+            } catch (error) {
+                console.error('Error fetching team logos:', error);
+            }
+        } else if (league.Sport === 'nba') {
+            try {
+                const response = await axios.get('/api/sportsdata/v3/nba/scores/json/teams', {
+                    headers: { 'Ocp-Apim-Subscription-Key': '06b9feb762534274946d286934ff0235' }
+                });
+                const logos = {};
+                response.data.forEach(team => {
+                    logos[team.Name] = team.WikipediaLogoUrl || defaultLogoUrl;
+                });
+                setTeamLogos(logos);
+            } catch (error) {
+                console.error('Error fetching team logos:', error);
+            }
         }
     };
 

@@ -45,11 +45,15 @@ const FilterHome = ({ darkMode }) => {
     const fetchAllLeagues = async () => {
         try {
             const responseFutbol = await axios.get('/api/sportsdata/v4/soccer/scores/json/Competitions?key=8f188c8fe9a64e7ea20b66115210ae44');
+            const responseNBA = await axios.get('/api/sportsdata/v3/nba/scores/json/teams', {
+                headers: { 'Ocp-Apim-Subscription-Key': '06b9feb762534274946d286934ff0235' }
+            });
+
             setAllLeagues({
                 futbol: responseFutbol.data,
-                nba: [], // Adjust with the logic to fetch NBA leagues
-                lol: [], // Adjust with the logic to fetch LoL leagues
-                csgo: [], // Adjust with the logic to fetch CS:GO leagues
+                nba: responseNBA.data,
+                lol: [], // Ajustar con la lógica para obtener ligas de LoL
+                csgo: [] // Ajustar con la lógica para obtener ligas de CS:GO
             });
         } catch (error) {
             console.error('Error fetching leagues:', error);
@@ -119,10 +123,9 @@ const FilterHome = ({ darkMode }) => {
                     <>
                         <div className="flex flex-wrap gap-4">
                             {currentLeagues.map(league => (
-                                <div key={league.CompetitionId}
+                                <div key={league.CompetitionId || league.TeamID}
                                     className="flex w-[25%] items-center p-3 bg-indigo-200 dark:bg-gray-700 rounded-lg cursor-pointer transition-colors hover:bg-gray-200"
                                     onClick={() => setSelectedLeague(league)}>
-                                    {/* <img src={leagueIcons[league.Name] || 'default_icon_url'} alt={league.Name} className="w-8 h-8 mr-3" /> */}
                                     <span>{league.Name}</span>
                                 </div>
                             ))}

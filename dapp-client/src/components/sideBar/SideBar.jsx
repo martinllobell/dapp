@@ -40,7 +40,6 @@ const Sidebar = ({ setViewMore, setSelectedSport, darkMode }) => {
         setSelectedSport(sport);
         setViewMore(false); // Reset view more state
     };
-
     return (
         <div className={`w-64 h-screen fixed ${darkMode ? 'bg-gray-900' : 'bg-indigo-400/40'} backdrop-blur-xl drop-shadow-xl p-5`}>
             <div className="mt-[5rem] mb-4">
