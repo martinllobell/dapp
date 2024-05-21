@@ -2,9 +2,9 @@ import React from 'react'
 import Card from './Card'
 import CryptoCarousel from './CryptoCarousel'
 
-
 export interface Card {
     title: string
+    link: string
     description: string
     leadImage: string
     bgImage: string
@@ -13,18 +13,21 @@ export interface Card {
 const cards: Card[] = [
     {
         title: 'Sport',
+        link: '/sports',
         description: 'Betting has never been so simple and attractive. Click and try!',
         leadImage: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/62bf873b-e9df-40d4-828c-afc8da770e1d/dg3dkjf-3fdf4256-9240-4f0f-9069-560f5289f601.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzYyYmY4NzNiLWU5ZGYtNDBkNC04MjhjLWFmYzhkYTc3MGUxZFwvZGczZGtqZi0zZmRmNDI1Ni05MjQwLTRmMGYtOTA2OS01NjBmNTI4OWY2MDEucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.4IMTzEb-LHENJEDBRShZGgKC0GJK11ndaxjqxwQUq0k',
         bgImage: 'https://wallpapers.com/images/hd/best-football-background-vkr4qy2utkrsn5rj.jpg'
     },
     {
         title: 'Trending',
+        link: '/sports',
         description: 'Place bets on world tournaments and follow their results live!',
         leadImage: 'https://pbs.twimg.com/media/Fx-9ZCTaMAA6qa0.png',
         bgImage: 'https://esportbet.com/wp-content/uploads/2020/09/worlds.jpg'
     },
     {
         title: 'Games',
+        link: '/sports',
         description: 'Try your luck at last games and enjoy the experience!',
         leadImage: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/d099d316-98cf-4095-a2f9-32cca4219baa/da51u5h-c959469c-020b-435b-aded-a93a0df6b87c.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcL2QwOTlkMzE2LTk4Y2YtNDA5NS1hMmY5LTMyY2NhNDIxOWJhYVwvZGE1MXU1aC1jOTU5NDY5Yy0wMjBiLTQzNWItYWRlZC1hOTNhMGRmNmI4N2MucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.ZP8f1TvIq95yPlEUgoIZW-I2Lcq3cXkOa1BnW3roXNc',
         bgImage: 'https://images.contentstack.io/v3/assets/blt187521ff0727be24/bltcea170f820e544c5/60ee0e19a471a34acb2c1f66/ionia-01.jpg'
