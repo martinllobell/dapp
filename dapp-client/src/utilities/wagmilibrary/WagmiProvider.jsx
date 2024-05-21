@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react';
 import { WagmiConfig } from 'wagmi';
-import { arbitrum, mainnet } from 'viem/chains';
+import { mainnet, polygon, sepolia, arbitrum } from 'viem/chains';
 
 // 1. Get projectId at https://cloud.walletconnect.com
 const projectId = 'bee67f4ed32e5f2859712f8b5a037806';
@@ -14,7 +14,7 @@ const metadata = {
   icons: ['https://avatars.githubusercontent.com/u/37784886']
 };
 
-const chains = [mainnet, arbitrum];
+const chains = [mainnet, polygon, sepolia, arbitrum];
 const wagmiConfig = defaultWagmiConfig({
   chains,
   projectId,
@@ -40,4 +40,3 @@ const Web3ModalProvider = ({ children }) => {
 };
 
 export default Web3ModalProvider;
-
