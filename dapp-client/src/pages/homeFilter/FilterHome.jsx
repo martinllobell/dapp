@@ -73,9 +73,9 @@ const FilterHome = ({ darkMode }) => {
             try {
                 const season = new Date().getFullYear();
                 const response = await axios.get(`/api/sportsdata/v3/nba/scores/json/Games/${season}`, {
-                    headers: { 'Ocp-Apim-Subscription-Key': '06b9feb762534274946d286934ff0235' }
+                    headers: { 'Ocp-Apim-Subscription-Key': '01e1ae2db9b642229876fbd8527f4822' }
                 });
-                const events = response.data.filter(event => 
+                const events = response.data.filter(event =>
                     event.HomeTeamID === selectedLeague.TeamID || event.AwayTeamID === selectedLeague.TeamID
                 );
                 setLeagueEvents(events);
@@ -134,8 +134,8 @@ const FilterHome = ({ darkMode }) => {
                     <h2 className="text-2xl mb-5">{activeTab}</h2>
                 )}
                 {activeTab === 'Torneos' && !selectedLeague && (
-                    <div className=' w-full flex flex-col items-center'>
-                        <div className='w-[80%]'>
+                    <div className=' w-full flex flex-col  '>
+                        <div className='w-full '>
 
                             <div className={`${currentPage === 1 ? 'flex justify-end' : 'flex justify-between mb-5'} h-[3rem] `}>
                                 {currentPage > 1 && (
@@ -155,10 +155,10 @@ const FilterHome = ({ darkMode }) => {
                                     </button>
                                 )}
                             </div>
-                            <div className="flex flex-wrap w-full justify-center mt-5 gap-8">
+                            <div className="flex h-[20rem]  flex-wrap w-full justify-center mt-5 gap-8">
                                 {currentLeagues.map(league => (
                                     <div key={league.CompetitionId || league.TeamID}
-                                        className="flex w-[25%] items-center p-3 bg-indigo-200 dark:bg-gray-700 rounded-lg cursor-pointer transition-colors hover:bg-gray-200"
+                                        className="flex w-[23%] h-[4rem] items-center justify center p-3 bg-indigo-200 dark:bg-gray-700 rounded-lg cursor-pointer transition-colors hover:bg-gray-200"
                                         onClick={() => handleLeagueSelection(league)}>
                                         {league.WikipediaLogoUrl && (
                                             <img src={league.WikipediaLogoUrl} alt={league.Name || league.FullName} className="w-12 h-12 mr-3" />
