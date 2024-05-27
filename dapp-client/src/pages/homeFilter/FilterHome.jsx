@@ -75,7 +75,7 @@ const FilterHome = ({ darkMode }) => {
                 const response = await axios.get(`/api/sportsdata/v3/nba/scores/json/Games/${season}`, {
                     headers: { 'Ocp-Apim-Subscription-Key': '06b9feb762534274946d286934ff0235' }
                 });
-                const events = response.data.filter(event => 
+                const events = response.data.filter(event =>
                     event.HomeTeamID === selectedLeague.TeamID || event.AwayTeamID === selectedLeague.TeamID
                 );
                 setLeagueEvents(events);

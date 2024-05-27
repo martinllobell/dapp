@@ -1,42 +1,40 @@
 /* src/styles/main.scss */
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
-@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+@import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 
 body {
-    font-family: "Montserrat", sans-serif;
-    font-optical-sizing: auto;
-    font-style: normal;
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
 }
 
-/* Scrollbar Styling */
 ::-webkit-scrollbar {
-    width: 10px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-    background-color: #1d005341;
-    -webkit-border-radius: 10px;
-    border-radius: 10px;
+  background-color: #1d005341;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-    -webkit-border-radius: 10px;
-    border-radius: 10px;
-    background: #6d6d6d;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  background: #6d6d6d;
 }
 
-/* En tu archivo de estilos CSS */
 @keyframes slide {
-    0% {
-      transform: translateX(-142%);
-    }
-    100% {
-      transform: translateX(0%);
-    }
+  0% {
+    transform: translateX(-142%);
   }
+  100% {
+    transform: translateX(0%);
+  }
+}
 
-  .animate-slide {
-    animation: slide 10s linear infinite; /* Puedes ajustar la duración según necesites */
-  }
+.animate-slide {
+  animation: slide 10s linear infinite;
+}

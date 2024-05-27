@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/home/Home';
-import './index.scss';
 import Navbar from './components/navbar/NavBar';
 import NotFound from './pages/notFound/NotFound';
 import Footer from './components/footer/footer.jsx';

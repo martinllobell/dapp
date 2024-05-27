@@ -151,7 +151,7 @@ const WalletConnect = ({ darkMode }) => {
         <>
             {isConnected ? (
                 <div className="flex items-center">
-                    <div className={`${darkMode ? "backdrop-blur-xl bg-white/10 drop-shadow-xl text-white hover:bg-white/20" : "backdrop-blur-xl bg-black/10 drop-shadow-xl text-black hover:bg-black/20"} mr-3 shadow-sm shadow-black/10 px-5 py-2 rounded-lg transition ease-in-out duration-150`}>
+                    <div className={`${darkMode ? "backdrop-blur-xl bg-white/10 drop-shadow-xl text-white hover:bg-white/20" : "backdrop-blur-xl bg-black/10 drop-shadow-xl text-black  hover:bg-black/20"} mr-3 shadow-sm shadow-black/10 px-5 py-2 rounded-lg transition ease-in-out duration-150 font-semibold`}>
                         {signing ? <Loading /> : `${balance ? balance : "0.00"} ${getCryptoName(network)}`}
                     </div>
                     <Menu as="div" className="relative">
