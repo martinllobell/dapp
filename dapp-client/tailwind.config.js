@@ -38,8 +38,9 @@ export default {
   },
 
   plugins: [
-    require('tailwindcss'),
-    require('autoprefixer'),
-    require('tailwindcss-animated'),
+    'tailwindcss',
+    'autoprefixer',
+    'tailwindcss-animated'
   ],
 }
+
