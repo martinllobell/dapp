@@ -27,29 +27,105 @@ body {
     width: 10px;
     height: 2px;
     background: #8A2BE2;
+    width: 10px;
+}
+
+.modal-overlay {
+    background: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 300ms ease-in-out;
+}
+
+.modal-overlay.ReactModal__Overlay--after-open {
+    opacity: 1;
+}
+
+.modal-overlay.ReactModal__Overlay--before-close {
+    opacity: 0;
+}
+
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    max-width: 700px;
+    width: 100%;
+    position: relative;
+    transform: translateY(-20px);
+    transition: transform 300ms ease-in-out, opacity 300ms ease-in-out;
+    opacity: 0;
+}
+
+.modal-content-wide {
+    max-width: 800px;
+}
+
+.modal-content.ReactModal__Content--after-open {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.modal-content.ReactModal__Content--before-close {
+    transform: translateY(-20px);
+    opacity: 0;
+}
+
+.dark .modal-content {
+    background: #2d3748;
+    color: white;
+}
+
+input,
+select {
+    transition: border-color 0.3s ease;
+}
+
+input:focus,
+select:focus {
+    border-color: #4A90E2;
+    outline: none;
+}
+
+button {
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
 }
 
 /* En tu archivo de estilos CSS */
 @keyframes slide {
     0% {
-      transform: translateX(-142%);
+        transform: translateX(-142%);
     }
+
     100% {
-      transform: translateX(0%);
+        transform: translateX(0%);
     }
-  }
 
-  .animate-slide {
-    animation: slide 10s linear infinite; /* Puedes ajustar la duración según necesites */
-  }
 
-  @keyframes shake {
-    0%, 100% {
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
         transform: translateX(0);
     }
+
     25% {
         transform: translateX(-5px);
     }
+
     75% {
         transform: translateX(5px);
     }
@@ -72,7 +148,14 @@ body {
 }
 
 .formal-text {
-    letter-spacing: 0.05em; /* Espaciado entre letras */
-    line-height: 1.2;       /* Altura de línea para mejor legibilidad */
+    letter-spacing: 0.05em;
+    /* Espaciado entre letras */
+    line-height: 1.2;
+    /* Altura de línea para mejor legibilidad */
     font-family: 'Helvetica', sans-serif;
+}
+
+.animate-slide {
+    animation: slide 10s linear infinite;
+    /* Puedes ajustar la duración según necesites */
 }
