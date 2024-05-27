@@ -1,20 +1,23 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
+import { Bet, useTrayStore } from "../../store/useTrayStore";
+import { useStore } from "zustand";
 
 interface MatchData {
     id: string;
     image: string;
+    winCondition: string,
     team1: {
         logo: string;
         name: string;
+        odd: number;
     };
     team2: {
         logo: string;
         name: string;
+        odd: number;
     };
-    odds: {
-        odd1: number;
-        oddX: number;
-        odd2: number;
+    draw: {
+        odd: number;
     };
 }
 
@@ -23,7 +26,25 @@ interface CardMatchProps {
     darkMode: boolean;
 }
 
-export const CardMatch: FC<CardMatchProps> = ({ matchData }: CardMatchProps, darkMode ) => {
+export const CardMatch: FC<CardMatchProps> = ({ matchData }: CardMatchProps, darkMode) => {
+    const [selections, setSelections] = useState<string>('')
+    const { store, actualizeTray, removeTray } = useTrayStore();
+
+    const handleAddBet = (id: string, winCondition: string, team: string, gains: number) => {
+        const match = matchData.team1.name + ' v ' + matchData.team2.name
+        if (selections === team) {
+            removeTray(id)
+            setSelections('')
+        }
+        else {
+            const newBet: Bet = { id, winCondition, team, gains: Number(gains.toFixed(2)), match }
+            setSelections(team)
+            actualizeTray(newBet)
+        }
+    }
+
+    console.log(store);
+
     return (
         <div className='relative w-full md:min-w-60'>
             <div
@@ -50,21 +71,30 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData }: CardMatchProps, dar
                     </div>
                 </div>
                 <hr className={`border-t ${darkMode ? 'border-white/20' : 'border-black/20'}`} />
-                <div className={`flex justify-around -mt-3 cursor-pointer text-center w-full ${darkMode? 'text-yellow-500' : 'text-violet-600'}`}>
-                    <div className={`text-sm font-semibold w-full py-2 flex flex-row justify-center gap-1 ${darkMode ? 'hover:bg-white/20' : 'hover:bg-gray-500/40'}`}>
+                <div className={`flex justify-around -mt-3 cursor-pointer text-center w-full ${darkMode ? 'text-yellow-500' : 'text-violet-600'}`}>
+                    <div className={`text-sm font-semibold w-full py-2 flex flex-row justify-center gap-1
+                    ${darkMode ? 'hover:bg-white/20' : 'hover:bg-gray-500/40'}
+                    ${store.tray.find(({ id, team }) => id === matchData.id && team === matchData.team1.name) ? 'bg-gray-500/40' : ''}`}
+                        onClick={() => handleAddBet(matchData.id, matchData.winCondition, matchData.team1.name, matchData.team1.odd)}>
                         <p className={`font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>1</p>
-                        {matchData.odds.odd1.toFixed(2)}
+                        {matchData.team1.odd.toFixed(2)}
                     </div>
-                    <div className={`text-sm font-semibold w-full py-2 flex flex-row justify-center gap-1 ${darkMode ? 'hover:bg-white/20' : 'hover:bg-gray-500/40'}`}>
+                    <div className={`text-sm font-semibold w-full py-2 flex flex-row justify-center gap-1
+                    ${darkMode ? 'hover:bg-white/20' : 'hover:bg-gray-500/40'}
+                    ${store.tray.find(({ id, team }) => id === matchData.id && team === 'Draw') ? 'bg-gray-500/40' : ''}`}
+                        onClick={() => handleAddBet(matchData.id, matchData.winCondition, 'Draw', matchData.draw.odd)}>
                         <p className={`font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>X</p>
-                        {matchData.odds.oddX.toFixed(2)}
+                        {matchData.draw.odd.toFixed(2)}
                     </div>
-                    <div className={`text-sm font-semibold w-full py-2 flex flex-row justify-center gap-1 ${darkMode ? 'hover:bg-white/20' : 'hover:bg-gray-500/40'}`}>
+                    <div className={`text-sm font-semibold w-full py-2 flex flex-row justify-center gap-1
+                    ${darkMode ? 'hover:bg-white/20' : 'hover:bg-gray-500/40'}
+                    ${store.tray.find(({ id, team }) => id === matchData.id && team === matchData.team2.name) ? 'bg-gray-500/40' : ''}`}
+                        onClick={() => handleAddBet(matchData.id, matchData.winCondition, matchData.team2.name, matchData.team1.odd)}>
                         <p className={`font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>2</p>
-                        {matchData.odds.odd2.toFixed(2)}
+                        {matchData.team2.odd.toFixed(2)}
                     </div>
                 </div>
             </div>
         </div>
     );
-};
+}

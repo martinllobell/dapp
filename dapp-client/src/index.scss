@@ -12,11 +12,11 @@ body {
 
 /* Scrollbar Styling */
 ::-webkit-scrollbar {
-    width: 10px;
+    width: 7px;
 }
 
 ::-webkit-scrollbar-track {
-    background-color: #1d005341;
+    background-color: transparent;
     -webkit-border-radius: 10px;
     border-radius: 10px;
 }
@@ -24,7 +24,9 @@ body {
 ::-webkit-scrollbar-thumb {
     -webkit-border-radius: 10px;
     border-radius: 10px;
-    background: #6d6d6d;
+    width: 10px;
+    height: 2px;
+    background: #8A2BE2;
 }
 
 /* En tu archivo de estilos CSS */
@@ -40,3 +42,37 @@ body {
   .animate-slide {
     animation: slide 10s linear infinite; /* Puedes ajustar la duración según necesites */
   }
+
+  @keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-5px);
+    }
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+.animate-shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+.animate-twice {
+    animation-iteration-count: 2;
+}
+
+.animate-duration-500 {
+    animation-duration: 500ms;
+}
+
+.animate-ease-linear {
+    animation-timing-function: linear;
+}
+
+.formal-text {
+    letter-spacing: 0.05em; /* Espaciado entre letras */
+    line-height: 1.2;       /* Altura de línea para mejor legibilidad */
+    font-family: 'Helvetica', sans-serif;
+}

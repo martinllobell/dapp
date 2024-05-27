@@ -7,6 +7,7 @@ import NotFound from './pages/notFound/NotFound';
 import Footer from './components/footer/footer.jsx';
 import FilterHome from './pages/homeFilter/FilterHome.jsx';
 import LeagueEvents from './components/leagueEvents/LeagueEvents.jsx';
+import LeadPanel from './components/betpanel/leadPanel';
 
 const App = () => {
   const [darkMode, setDarkMode] = useState(() => {
@@ -34,6 +35,7 @@ const App = () => {
       
       <Router>
         <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+        <LeadPanel />
         <Routes>
           <Route path="/" element={<Home darkMode={darkMode} />} />
           <Route path="/home" element={<Home darkMode={darkMode} />} />

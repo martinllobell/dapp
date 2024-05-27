@@ -1,7 +1,8 @@
 import React from 'react'
 import Card from './Card'
 import CryptoCarousel from './CryptoCarousel'
-
+import lebron from '../../assets/images/lebron.png'
+import basketballBackground from '../../assets/images/basketballBackground.jpg'
 export interface Card {
     title: string
     link: string
@@ -18,12 +19,19 @@ const cards: Card[] = [
         leadImage: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/62bf873b-e9df-40d4-828c-afc8da770e1d/dg3dkjf-3fdf4256-9240-4f0f-9069-560f5289f601.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzYyYmY4NzNiLWU5ZGYtNDBkNC04MjhjLWFmYzhkYTc3MGUxZFwvZGczZGtqZi0zZmRmNDI1Ni05MjQwLTRmMGYtOTA2OS01NjBmNTI4OWY2MDEucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.4IMTzEb-LHENJEDBRShZGgKC0GJK11ndaxjqxwQUq0k',
         bgImage: 'https://wallpapers.com/images/hd/best-football-background-vkr4qy2utkrsn5rj.jpg'
     },
+    // {
+    //     title: 'Trending',
+    //     link: '/sports',
+    //     description: 'Place bets on world tournaments and follow their results live!',
+    //     leadImage: 'https://pbs.twimg.com/media/Fx-9ZCTaMAA6qa0.png',
+    //     bgImage: 'https://esportbet.com/wp-content/uploads/2020/09/worlds.jpg'
+    // },
     {
         title: 'Trending',
         link: '/sports',
         description: 'Place bets on world tournaments and follow their results live!',
-        leadImage: 'https://pbs.twimg.com/media/Fx-9ZCTaMAA6qa0.png',
-        bgImage: 'https://esportbet.com/wp-content/uploads/2020/09/worlds.jpg'
+        leadImage: lebron,
+        bgImage: basketballBackground
     },
     {
         title: 'Games',
@@ -102,7 +110,7 @@ export default function WelcomePlay() {
                 }
             </div>
             <div className='grid grid-cols-12 w-full -mt-12 px-8'>
-                <div className='col-span-5 gap-3 flex min-w-full items-center flex-row opacity-50 relative -left-5 md:left-0'>
+                <div className='col-span-5 gap-3 flex items-center flex-row opacity-50 relative -left-5 md:left-0'>
                     <h1 className='text-3xl md:text-5xl font-bold'>100</h1>
                     <p className='w-8'>Crypto networks</p>
                     <div className='min-w-8 min-h-10 mx-2 transform rotate-90'>
@@ -112,7 +120,7 @@ export default function WelcomePlay() {
                     <h1 className='min-w-8'>Crypto wallets</h1>
                 </div>
                 <div className='col-span-7 relative md:gap-3 flex items-center w-full justify-end flex-row opacity-50 relative -right-5 md:right-0'>
-                    <div className='flex-row justify-end min-w-full gap-3 lg:flex hidden'>
+                    <div className='flex-row justify-end gap-3 lg:flex hidden'>
                         {cryptos.map(({ img, name }) =>
                             <div className='flex flex-row gap-2 items-center'>
                                 <img src={img} className='max-w-6'></img>
@@ -126,7 +134,7 @@ export default function WelcomePlay() {
                     <h1 className='text-sm md:text-xl font-semibold cursor-pointer whitespace-nowrap'>See all</h1>
                 </div>
             </div>
-            <div className='flex -mt-10 lg:hidden'>
+            <div className='flex -mt-10 lg:hidden overflow-hidden'>
                 <CryptoCarousel data={cryptos} />
             </div>
         </div>

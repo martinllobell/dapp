@@ -7,7 +7,7 @@ interface CryptoCarousel {
 export default function CryptoCarousel({ data }: CryptoCarousel) {
   const repeatedData = Array.from({ length: 6 }, () => data).flat();
   return (
-    <div className='overflow-hidden w-full'>
+    <div className='w-80'>
       <div className="opacity-50 w-screen animate-slide">
         <div className="flex gap-3 flex">
           {

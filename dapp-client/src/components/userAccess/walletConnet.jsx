@@ -5,6 +5,7 @@ import { MD5 } from 'crypto-js';
 import { useAccount, useDisconnect } from 'wagmi';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import Loading from '../loading/Loading';
+import { useTrayStore } from '../../store/useTrayStore';
 
 const WalletConnect = ({ darkMode }) => {
     const [web3, setWeb3] = useState(null);
@@ -16,6 +17,7 @@ const WalletConnect = ({ darkMode }) => {
     const { open } = useWeb3Modal();
     const { address, isConnected } = useAccount();
     const { disconnect } = useDisconnect();
+    const { setMoney } = useTrayStore();
 
     const getProviderUrl = (network) => {
         switch (network) {
@@ -89,6 +91,7 @@ const WalletConnect = ({ darkMode }) => {
             const balance = await connectedWeb3.eth.getBalance(address);
             const etherBalance = connectedWeb3.utils.fromWei(balance, 'ether');
             setBalance(parseFloat(etherBalance).toFixed(4));
+            setMoney(parseFloat(etherBalance).toFixed(4) + ' ' + getCryptoName(network))
         } catch (error) {
             console.error("Error connecting wallet:", error);
             setSigning(false);

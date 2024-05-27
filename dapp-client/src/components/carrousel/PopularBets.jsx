@@ -24,17 +24,16 @@ export default function PopularBets(selectedMatches) {
   return (
     <div>
       <div className=" overflow-hidden text-white h-[16rem]">
-        <div className="relative h-[15rem] border-[1.5px] border-black/30 rounded-md shadow-md">
+        <div className="relative h-[15rem] border-[2.5px] border-black rounded-md shadow-md">
           <img
             src={match?.backgroundImage}
             className="absolute inset-0 w-full h-full object-cover filter contrast-[.8] blur-[2px]"
-            alt="Estadio"
-          />
+            alt="Estadio" />
           {match ? (
             <div className="absolute z-40 inset-0 flex items-center justify-between p-4">
-              <div className="flex flex-col items-center">
-                <div className="relative w-10 h-10 flex items-center justify-center bg-white rounded-full">
-                  <img
+            <div className="flex flex-col items-center">
+            <div className="relative w-10 h-10 flex items-center justify-center bg-white rounded-full">
+            <img
                     src={match.team1Icon}
                     alt={match.team1}
                     className="w-8 h-8 object-contain"
@@ -69,6 +68,8 @@ export default function PopularBets(selectedMatches) {
                   {match.team2}
                 </span>
               </div>
+              <span className="text-white text-sm bg-gray-800 px-2 absolute right-1/2 top-2 ">17 May</span>
+              <span className="text-white text-sm bg-gray-800 px-2 absolute left-1/2 top-2 ">16:00hs</span>
               <div
                 className={
                   match.tipsterVote === "equipo1"
@@ -78,7 +79,7 @@ export default function PopularBets(selectedMatches) {
               >
                 {generateAvatar()}
                 <span className="text-xs mt-1">
-                 BET
+                  BET
                 </span>
               </div>
               <div className="absolute bottom-2 left-0 right-0 flex justify-around items-center w-full px-4">
