@@ -1,33 +1,25 @@
-// We require the Hardhat Runtime Environment explicitly here. This is optional
-// but useful for running the script in a standalone fashion through `node <script>`.
-//
-// You can also run a script with `npx hardhat run <script>`. If you do that, Hardhat
-// will compile your contracts, add the Hardhat Runtime Environment's members to the
-// global scope, and execute the script.
-const hre = require("hardhat");
-
 async function main() {
-    const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-    const SIXTY_SECS = 60;
-    const unlockTime = currentTimestampInSeconds + SIXTY_SECS;
-
-    const lockedAmount = hre.ethers.utils.parseEther("0.0001");
-
-    const Lock = await hre.ethers.getContractFactory("Lock");
-    const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
-
-    console.log(`Unlock Time: ${unlockTime}`);
-
-    await lock.deployed();
-
-    console.log(
-        `Lock with 0.0001 ETH and unlock timestamp ${unlockTime} deployed to ${lock.address}`
+    const [deployer] = await ethers.getSigners();
+  
+    console.log("Deploying contracts with the account:", deployer.address);
+  
+    const P2PBetting = await ethers.getContractFactory("P2PBetting");
+    const p2pBetting = await P2PBetting.deploy(
+      /* Constructor arguments: fee, owner, subscriptionId */
+      2000, // Example fee
+      deployer.address, // Example owner
+      8293 // Example subscriptionId
     );
-}
-
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
-main().catch((error) => {
-    console.error(error);
-    process.exitCode = 1;
-});
+  
+    await p2pBetting.deployed();
+  
+    console.log("P2PBetting deployed to:", p2pBetting.address);
+  }
+  
+  main()
+    .then(() => process.exit(0))
+    .catch((error) => {
+      console.error(error);
+      process.exit(1);
+    });
+  
