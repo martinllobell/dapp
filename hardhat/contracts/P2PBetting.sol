@@ -1,18 +1,18 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.20;
+pragma solidity ^0.8.19;
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
-import "@chainlink/contracts/src/v0.8/automation/AutomationCompatible.sol";
-import {FunctionsClient} from "@chainlink/contracts/src/v0.8/functions/dev/v1_X/FunctionsClient.sol";
-import {FunctionsRequest} from "@chainlink/contracts/src/v0.8/functions/dev/v1_X/libraries/FunctionsRequest.sol";
-import "../lib/BokkyPooBahsDateTimeLibrary.sol";
+import "../lib/chainlink-brownie-contracts/contracts/src/v0.8/AutomationCompatible.sol";
+import {FunctionsClient} from "../lib/chainlink-brownie-contracts/contracts/src/v0.8/functions/dev/v1_0_0/FunctionsClient.sol";
+import {FunctionsRequest} from "../lib/chainlink-brownie-contracts/contracts/src/v0.8/functions/dev/v1_0_0/libraries/FunctionsRequest.sol";
+import "../lib/BokkyPooBahsDateTimeLibrary/contracts/BokkyPooBahsDateTimeLibrary.sol";
 
 //Alomejor hay que importar esta:
 // import {ConfirmedOwner} from "@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwner.sol";
 
-contract P2PBetting is Ownable, AutomationCompatibleInterface, FunctionsClient {
+contract P2PBetting is Ownable, FunctionsClient {
     using FunctionsRequest for FunctionsRequest.Request;
 
     /////////////////////////////////////////////
@@ -64,7 +64,7 @@ contract P2PBetting is Ownable, AutomationCompatibleInterface, FunctionsClient {
     ////////// CHAINNLINK VARIABLES /////////////
     /////////////////////////////////////////////
 
-     // DON ID for the Functions DON to which the requests are sent
+    // DON ID for the Functions DON to which the requests are sent
 
     bytes32 public s_lastRequestId;
     bytes public s_lastResponse;
@@ -74,55 +74,12 @@ contract P2PBetting is Ownable, AutomationCompatibleInterface, FunctionsClient {
     //Valores hardcodeados para Avalanche Fuji
 
     address router = 0xA9d587a00A31A52Ed70D6026794a8FC5E2F5dCb0;
-    uint64 subscriptionId = 8293 ;
-    bytes32 public donId = 0x66756e2d6176616c616e6368652d66756a692d31000000000000000000000000;
+    uint64 subscriptionId = 8293;
+    bytes32 public donId =
+        0x66756e2d6176616c616e6368652d66756a692d31000000000000000000000000;
 
-    string sourceGetResults = 
-        "const gameId = args[0];"
-        "const config = {"
-        "  url: `https://api.sportsdata.io/v3/nba/stats/json/BoxScore/${gameId}?key=06b9feb762534274946d286934ff0235`"
-        "};"
-        "const response = await Functions.makeHttpRequest(config);"
-        "const allMatches = response.data;"
-        "const match = allMatches.find(match => {"
-        "  if (match.GameEndDateTime != null && match.GameID === gameId) {"
-        "    return true;"
-        "  }"
-        "});"
-        "if (!match) {"
-        "  throw new Error('Did not end or nonexistent');"
-        "}"
-        "let encodedData = [];" 
-        "encodedData.push(encodeUint256(match.HomeTeamScore));"
-        "encodedData.push(encodeUint256(match.AwayTeamScore));"
-        "return Functions.encodeString(JSON.stringify(encodedData))"; 
-    string sourceGetMatchesToInsert =
-        "const date = args[0];"
-        "const config = {"
-        "  url: `https://api.sportsdata.io/v3/nba/scores/json/GamesByDate/${date}?key=06b9feb762534274946d286934ff0235`"
-        "};"
-        "const response = await Functions.makeHttpRequest(config);"
-        "const allMatches = response.data;"
-        ""//Hasta aquí bien
-        "let encodedData = [];" //Declarar una lista de Tuplas (Si es que hay tuplas en JS) que tendrá la forma-> [(MADRID,BARCELONA) , (PSG, MARSEILLE), ... ]
-        "allMatches.forEach(partido => {"
-            "let dateTimeObject = new Date(partido.DateTime);"
-            "let timestamp = dateTimeObject.getTime();"
-            "let timestampInSeconds = Math.floor(timestamp / 1000);"
-        "    // Codificar GameID como uint256 (32 bytes)"
-        "    encodedData.push(encodeUint256(partido.GameID));"
-        "    // Codificar DateTime como uint256 (32 bytes)"
-        "    encodedData.push(encodeUint256(timestampInSeconds));"
-        "    // Codificar HomeTeam como string (32 bytes)"
-        "    encodedData.push(encodeString(partido.HomeTeam));"
-        "    // Codificar AwayTeam como string (32 bytes)"
-        "    encodedData.push(encodeString(partido.AwayTeam));"
-        "});"
-        "return Functions.encodeString(JSON.stringify(encodedData))"; //Hay que devolver la lista aquí de alguna forma
-
-    /////////////////////////////////////////////
-    ////////// VARIABLES ////////////////////////
-    /////////////////////////////////////////////
+    string sourceGetResults = "0";
+    string sourceGetMatchesToInsert = "0";
 
     //Podría ser un array de estos, ya que puede haber EUR_ETH, ARG_ETH....
     AggregatorV3Interface internal USD_ETH_dataFeed;
@@ -178,8 +135,8 @@ contract P2PBetting is Ownable, AutomationCompatibleInterface, FunctionsClient {
     }
 
     /**
-     * 
-     * @param fee_ Percentage of money collected as fee: 
+     *
+     * @param fee_ Percentage of money collected as fee:
      * @param owner Person who will manage the contract
      * @param subscriptionId_ Number of the subscription ID for chainlink functions
      */
@@ -207,9 +164,8 @@ contract P2PBetting is Ownable, AutomationCompatibleInterface, FunctionsClient {
         emit P2PBetting__FeesCollected(feesCollectedNow);
     }
 
-
     /**
-     * 
+     *
      * @param matchId : ID of the match
      * @param maxNumberOfChallengers_ : Number of max challengers Tipster allows
      * @param odds_ : multiplier of the bet for challengers: 1500 if odds is 1.5
@@ -221,7 +177,7 @@ contract P2PBetting is Ownable, AutomationCompatibleInterface, FunctionsClient {
         uint256 matchId,
         uint256 maxNumberOfChallengers_,
         uint256 odds_,
-        uint256 maxEntryFee_ ,
+        uint256 maxEntryFee_,
         uint256[] memory betData_
     ) external payable {
         if (odds_ <= 1000) {
@@ -274,12 +230,12 @@ contract P2PBetting is Ownable, AutomationCompatibleInterface, FunctionsClient {
             maxEntryFee_,
             odds_,
             maxNumberOfChallengers_,
-            numberOfBetsDone-1
+            numberOfBetsDone - 1
         );
     }
 
     /**
-     * 
+     *
      * @param betId_ Id of the bet you want to join
      */
 
@@ -315,9 +271,8 @@ contract P2PBetting is Ownable, AutomationCompatibleInterface, FunctionsClient {
 
     //Ahora no tiene nada, solo está así para testear , cambiará en el futuro
 
-
     /**
-     * 
+     *
      * @param matchId MatchID of the match that will get all its bets ended
      */
 
@@ -328,57 +283,123 @@ contract P2PBetting is Ownable, AutomationCompatibleInterface, FunctionsClient {
         }
         uint256[] memory arrayBets = matchOfBets.betsOfMatch;
         for (uint i = 0; i < arrayBets.length; i++) {
-       
             Bet memory betToClose = s_Bets[arrayBets[i]];
-            
-            if (betToClose.betData.length >= 2 ) {
-                
+
+            if (betToClose.betData.length >= 2) {
                 if (betToClose.betData[0] == 0 && betToClose.betData[1] < 3) {
-                 
-                    if (betToClose.betData[1] == 0 && matchOfBets.pointsHome <= matchOfBets.pointsAway || betToClose.betData[1] == 1 && matchOfBets.pointsHome >= matchOfBets.pointsAway || betToClose.betData[1] == 2 && matchOfBets.pointsHome != matchOfBets.pointsAway ) {
+                    if (
+                        (betToClose.betData[1] == 0 &&
+                            matchOfBets.pointsHome <= matchOfBets.pointsAway) ||
+                        (betToClose.betData[1] == 1 &&
+                            matchOfBets.pointsHome >= matchOfBets.pointsAway) ||
+                        (betToClose.betData[1] == 2 &&
+                            matchOfBets.pointsHome != matchOfBets.pointsAway)
+                    ) {
                         betToClose.tipsterWon = true;
                     }
                     betToClose.ended = true;
                     s_Bets[arrayBets[i]] = betToClose;
-                    
-                } else if (betToClose.betData.length >= 4 && betToClose.betData[0] == 1 && betToClose.betData[1] < 5 && betToClose.betData[2] < 3) {
-                    if (betToClose.betData[1] == 0 && ((betToClose.betData[2] == 0 && matchOfBets.pointsHome <= betToClose.betData[3]) || (betToClose.betData[2] == 1 && matchOfBets.pointsHome >= betToClose.betData[3]) || (betToClose.betData[2] == 2 && matchOfBets.pointsHome != betToClose.betData[3])) ) {
+                } else if (
+                    betToClose.betData.length >= 4 &&
+                    betToClose.betData[0] == 1 &&
+                    betToClose.betData[1] < 5 &&
+                    betToClose.betData[2] < 3
+                ) {
+                    if (
+                        betToClose.betData[1] == 0 &&
+                        ((betToClose.betData[2] == 0 &&
+                            matchOfBets.pointsHome <= betToClose.betData[3]) ||
+                            (betToClose.betData[2] == 1 &&
+                                matchOfBets.pointsHome >=
+                                betToClose.betData[3]) ||
+                            (betToClose.betData[2] == 2 &&
+                                matchOfBets.pointsHome !=
+                                betToClose.betData[3]))
+                    ) {
                         betToClose.tipsterWon = true;
-                    }
-                    else if (betToClose.betData[1] == 1 && ((betToClose.betData[2] == 0 && matchOfBets.pointsAway <= betToClose.betData[3]) || (betToClose.betData[2] == 1 && matchOfBets.pointsAway >= betToClose.betData[3]) || (betToClose.betData[2] == 2 && matchOfBets.pointsAway != betToClose.betData[3]) )) {
+                    } else if (
+                        betToClose.betData[1] == 1 &&
+                        ((betToClose.betData[2] == 0 &&
+                            matchOfBets.pointsAway <= betToClose.betData[3]) ||
+                            (betToClose.betData[2] == 1 &&
+                                matchOfBets.pointsAway >=
+                                betToClose.betData[3]) ||
+                            (betToClose.betData[2] == 2 &&
+                                matchOfBets.pointsAway !=
+                                betToClose.betData[3]))
+                    ) {
                         betToClose.tipsterWon = true;
-                    }
-                    else if (betToClose.betData[1] == 2 && ((betToClose.betData[2] == 0 && matchOfBets.pointsAway + matchOfBets.pointsHome <= betToClose.betData[3]) || (betToClose.betData[2] == 1 && matchOfBets.pointsAway + matchOfBets.pointsHome >= betToClose.betData[3]) || (betToClose.betData[2] == 2 && matchOfBets.pointsAway + matchOfBets.pointsHome != betToClose.betData[3]) )) {
+                    } else if (
+                        betToClose.betData[1] == 2 &&
+                        ((betToClose.betData[2] == 0 &&
+                            matchOfBets.pointsAway + matchOfBets.pointsHome <=
+                            betToClose.betData[3]) ||
+                            (betToClose.betData[2] == 1 &&
+                                matchOfBets.pointsAway +
+                                    matchOfBets.pointsHome >=
+                                betToClose.betData[3]) ||
+                            (betToClose.betData[2] == 2 &&
+                                matchOfBets.pointsAway +
+                                    matchOfBets.pointsHome !=
+                                betToClose.betData[3]))
+                    ) {
                         betToClose.tipsterWon = true;
-                    }
-                    else if (betToClose.betData[1] == 3 ) {
+                    } else if (betToClose.betData[1] == 3) {
                         uint256 difference;
-                        if (int256(matchOfBets.pointsAway) - int256(matchOfBets.pointsHome) < 0) {
-                            difference = matchOfBets.pointsHome - matchOfBets.pointsAway;
-                        }else {
-                            difference =matchOfBets.pointsAway - matchOfBets.pointsHome ;
+                        if (
+                            int256(matchOfBets.pointsAway) -
+                                int256(matchOfBets.pointsHome) <
+                            0
+                        ) {
+                            difference =
+                                matchOfBets.pointsHome -
+                                matchOfBets.pointsAway;
+                        } else {
+                            difference =
+                                matchOfBets.pointsAway -
+                                matchOfBets.pointsHome;
                         }
-                        if ((betToClose.betData[2] == 0 && difference <= betToClose.betData[3]) || (betToClose.betData[2] == 1 && difference >= betToClose.betData[3]) || (betToClose.betData[2] == 2 && difference != betToClose.betData[3])) {
+                        if (
+                            (betToClose.betData[2] == 0 &&
+                                difference <= betToClose.betData[3]) ||
+                            (betToClose.betData[2] == 1 &&
+                                difference >= betToClose.betData[3]) ||
+                            (betToClose.betData[2] == 2 &&
+                                difference != betToClose.betData[3])
+                        ) {
                             betToClose.tipsterWon = true;
                         }
-                    }
-                    else if (betToClose.betData[1] == 4 && ((betToClose.betData[2] == 0 && (matchOfBets.pointsAway <= betToClose.betData[3] || matchOfBets.pointsHome <= betToClose.betData[3])) || (betToClose.betData[2] == 1 && (matchOfBets.pointsAway >= betToClose.betData[3] || matchOfBets.pointsHome >= betToClose.betData[3])) || (betToClose.betData[2] == 2 && (matchOfBets.pointsAway != betToClose.betData[3] || matchOfBets.pointsHome != betToClose.betData[3])) )) {
+                    } else if (
+                        betToClose.betData[1] == 4 &&
+                        ((betToClose.betData[2] == 0 &&
+                            (matchOfBets.pointsAway <= betToClose.betData[3] ||
+                                matchOfBets.pointsHome <=
+                                betToClose.betData[3])) ||
+                            (betToClose.betData[2] == 1 &&
+                                (matchOfBets.pointsAway >=
+                                    betToClose.betData[3] ||
+                                    matchOfBets.pointsHome >=
+                                    betToClose.betData[3])) ||
+                            (betToClose.betData[2] == 2 &&
+                                (matchOfBets.pointsAway !=
+                                    betToClose.betData[3] ||
+                                    matchOfBets.pointsHome !=
+                                    betToClose.betData[3])))
+                    ) {
                         betToClose.tipsterWon = true;
                     }
                     betToClose.ended = true;
                     s_Bets[arrayBets[i]] = betToClose;
                 }
-                
-
-            }
-            else  { // no se puede cerrar
-                    failedToClose.push(matchId);
+            } else {
+                // no se puede cerrar
+                failedToClose.push(matchId);
             }
         }
     }
 
     /**
-     * 
+     *
      * @param matchId MatchID of the match that will get all its bets ended
      */
 
@@ -387,7 +408,7 @@ contract P2PBetting is Ownable, AutomationCompatibleInterface, FunctionsClient {
     }
 
     /**
-     * 
+     *
      * @param betId Id of the bet you want to get the rewards from
      * @param numberOfChallenger Number of the position of your address in the challengers array
      */
@@ -441,7 +462,7 @@ contract P2PBetting is Ownable, AutomationCompatibleInterface, FunctionsClient {
     }
 
     /**
-     * 
+     *
      * @param betId_ Id of the bet that you want to get collateral from
      * DOes not have to be called by tipster necessarily, but the money will go to him if
      * challengers won but not all collateral was used because not all challengers bet the max possible.
@@ -462,94 +483,29 @@ contract P2PBetting is Ownable, AutomationCompatibleInterface, FunctionsClient {
         payable(betSelected.tipster).transfer(amountToTransferBack);
     }
 
-    
 
-    ///////////////////////////////////////////
-    ////// CHAINLINK FUNCTIONS ///////////////
-    ///////////////////////////////////////////
-
-    /** function sendRequest(
-        uint64 subscriptionId,
-        string[] calldata args
-    ) external onlyOwner returns (bytes32) {
-        FunctionsRequest.Request memory req;
-        req.initializeRequestForInlineJavaScript(source);
-        if (args.length > 0) {
-            req.setArgs(args);
-        }
-        s_lastRequestId = _sendRequest(
-            req.encodeCBOR(),
-            subscriptionId,
-            gasLimit,
-            donId
-        );
-        return s_lastRequestId;
-    } */
-
-    /**
-     * 
-     *const myData = {
-        base_experience: reqData.base_experience,
-        weight: reqData.weight/10, // The weight of this Pokemon in hectograms which is converted into kilograms by dividing by 10
-        height: reqData.height/10, // The height of this Pokemon in decimetres which is converted into metres by dividing by 10
-}
-     */
-
-
-    /**
-     * 
-     * @param timestamp_ Timestamp of the date you want to get the matches from
-     */
-
-    function getMatchesByDate(uint256 timestamp_) public returns (bytes32) {
-        uint256 auxTimestamp = timestampToGetMatches;
-        if ((block.timestamp - lastTimestamp) < intervalForAutomation) {
-            if (msg.sender != owner()) {
-                revert P2PBetting__CantCallIfNotOwner();
-            }
-            auxTimestamp = timestamp_;
-        }
-
-        FunctionsRequest.Request memory req;
-        (uint256 year, uint256 month, uint256 day) = BokkyPooBahsDateTimeLibrary.timestampToDate(auxTimestamp);
-        string memory date = string(abi.encodePacked(year, "-", month, "-", day));
-        
-        string[] memory args = new string[](1);
-        args[0] = date;
-        req.initializeRequestForInlineJavaScript(sourceGetMatchesToInsert);
-        if (args.length > 0) {
-            req.setArgs(args);
-        }
-        s_lastRequestId = _sendRequest(
-            req.encodeCBOR(),
-            subscriptionId,
-            gasLimit,
-            donId
-        );
-        return s_lastRequestId;
-    }
-
-
-
-    function endUsingMatchId(uint256 matchId_) public returns (bytes32) {
-        if (s_Matches[matchId_].timeOfGame == 0 && block.timestamp < s_Matches[matchId_].timeOfGame + 4 hours) {
-            revert P2PBetting__MatchDidNotEnd();
-        }
-        FunctionsRequest.Request memory req;
-        string[] memory args = new string[](1);
-        args[0] = uintToString(matchId_);
-        req.initializeRequestForInlineJavaScript(sourceGetResults);
-        if (args.length > 0) {
-            req.setArgs(args);
-        }
-        s_lastRequestId = _sendRequest(
-            req.encodeCBOR(),
-            subscriptionId,
-            gasLimit,
-            donId
-        );
-        return s_lastRequestId;
-    }
+    // function endUsingMatchId(uint256 matchId_) public returns (bytes32) {
+    //     if (
+    //         s_Matches[matchId_].timeOfGame == 0 &&
+    //         block.timestamp < s_Matches[matchId_].timeOfGame + 4 hours
+    //     ) {
+    //         revert P2PBetting__MatchDidNotEnd();
+    //     }
+    //     FunctionsRequest.Request memory req;
+    //     string[] memory args = new string[](1);
+    //     args[0] = uintToString(matchId_);
+    //     req.initializeRequestForInlineJavaScript(sourceGetResults);
+    //     if (args.length > 0) {
+    //         req.setArgs(args);
+    //     }
+    //     s_lastRequestId = _sendRequest(
+    //         req.encodeCBOR(),
+    //         subscriptionId,
+    //         gasLimit,
+    //         donId
+    //     );
+    //     return s_lastRequestId;
+    // }
 
     function uintToString(uint256 _value) public pure returns (string memory) {
         if (_value == 0) {
@@ -579,7 +535,7 @@ contract P2PBetting is Ownable, AutomationCompatibleInterface, FunctionsClient {
         s_lastError = err;
         uint256 offset = 0;
         uint256 GameID;
-        if (response.length < 128 && response.length !=0) {
+        if (response.length < 128 && response.length != 0) {
             assembly {
                 GameID := mload(add(response, add(offset, 0x20)))
             }
@@ -599,41 +555,39 @@ contract P2PBetting is Ownable, AutomationCompatibleInterface, FunctionsClient {
             auxMatch.ended = true;
             s_Matches[GameID] = auxMatch;
             _endBetsUsingMatchId(GameID);
-
-        }
-        else {
+        } else {
             while (offset < response.length) {
-            
-            assembly {
-                GameID := mload(add(response, add(offset, 0x20)))
-            }
+                assembly {
+                    GameID := mload(add(response, add(offset, 0x20)))
+                }
 
-            offset += 32;
-            uint256 gameTimestamp;
-            assembly {
-                gameTimestamp := mload(add(response, add(offset, 0x20)))
-            }
-            offset += 32;
-            string memory AwayTeam = _parseString(response, offset);
-            offset += 32;
-            string memory HomeTeam = _parseString(response, offset);
-            offset += 32;
+                offset += 32;
+                uint256 gameTimestamp;
+                assembly {
+                    gameTimestamp := mload(add(response, add(offset, 0x20)))
+                }
+                offset += 32;
+                string memory AwayTeam = _parseString(response, offset);
+                offset += 32;
+                string memory HomeTeam = _parseString(response, offset);
+                offset += 32;
 
-            Match memory newMatch;
-            newMatch.matchId = GameID;
-            newMatch.home = HomeTeam;
-            newMatch.away = AwayTeam;
-            newMatch.timeOfGame = gameTimestamp;
-            s_Matches[GameID] = newMatch;
-            numberOfMatchesDone++;
-            allMatches.push(GameID);
+                Match memory newMatch;
+                newMatch.matchId = GameID;
+                newMatch.home = HomeTeam;
+                newMatch.away = AwayTeam;
+                newMatch.timeOfGame = gameTimestamp;
+                s_Matches[GameID] = newMatch;
+                numberOfMatchesDone++;
+                allMatches.push(GameID);
             }
         }
-
-        
     }
 
-    function _parseString(bytes memory data, uint256 offset) private pure returns (string memory) {
+    function _parseString(
+        bytes memory data,
+        uint256 offset
+    ) private pure returns (string memory) {
         uint256 len;
         assembly {
             len := mload(add(data, add(offset, 0x20)))
@@ -647,34 +601,10 @@ contract P2PBetting is Ownable, AutomationCompatibleInterface, FunctionsClient {
         return string(strBytes);
     }
 
-    
-
     ///////////////////////////////////////////
     ////// CHAINLINK AUTOMATION ///////////////
     ///////////////////////////////////////////
 
-    function checkUpkeep(
-        bytes calldata
-    )
-        external
-        view
-        override
-        returns (bool upkeepNeeded, bytes memory /*performData **/)
-    {
-        //Checkea si se ha de ejecutar la función.
-        if ((block.timestamp - lastTimestamp) >= intervalForAutomation) {
-            upkeepNeeded = true;
-        }
-    }
-
-    function performUpkeep(bytes calldata /*performData **/) external {
-        if ((block.timestamp - lastTimestamp) >= intervalForAutomation) {
-            getMatchesByDate(timestampToGetMatches);
-            lastTimestamp = block.timestamp;
-            timestampToGetMatches += intervalForAutomation;
-            
-        }
-    }
 
     function endBetOwner(uint256 betId_, bool tipsterWon) external onlyOwner {
         s_Bets[betId_].tipsterWon = tipsterWon;
@@ -685,7 +615,14 @@ contract P2PBetting is Ownable, AutomationCompatibleInterface, FunctionsClient {
     /////// TESTING ///////////////////////////
     ///////////////////////////////////////////
 
-     function testingAddMatch(uint256 gameId, uint256 timestamp, string memory home_, string memory away_, uint256 pointsHome_, uint256 pointsAway_) external onlyOwner {
+    function testingAddMatch(
+        uint256 gameId,
+        uint256 timestamp,
+        string memory home_,
+        string memory away_,
+        uint256 pointsHome_,
+        uint256 pointsAway_
+    ) external onlyOwner {
         Match memory matchAux;
         matchAux.matchId = gameId;
         matchAux.timeOfGame = timestamp;
@@ -697,10 +634,9 @@ contract P2PBetting is Ownable, AutomationCompatibleInterface, FunctionsClient {
         allMatches.push(gameId);
     }
 
-    function testEndMatch(uint256 gameId) external onlyOwner{
+    function testEndMatch(uint256 gameId) external onlyOwner {
         s_Matches[gameId].ended = true;
-    } 
-    
+    }
 
     ///////////////////////////////////////////
     /////// SETTERS ///////////////////////////
@@ -724,6 +660,7 @@ contract P2PBetting is Ownable, AutomationCompatibleInterface, FunctionsClient {
     function setTimestampToGetMatches(uint256 newTimestamp) external onlyOwner {
         timestampToGetMatches = newTimestamp;
     }
+
     function setIntervalForAutomation(uint256 newInterval) external onlyOwner {
         intervalForAutomation = newInterval;
     }
@@ -782,10 +719,11 @@ contract P2PBetting is Ownable, AutomationCompatibleInterface, FunctionsClient {
     function getAllBets() external view returns (uint256[] memory) {
         return allMatches;
     }
+
     function getNumberOfMatchesDone() external view returns (uint256) {
         return numberOfMatchesDone;
     }
-    
+
     function getLastTimestamp() external view returns (uint256) {
         return lastTimestamp;
     }
@@ -793,7 +731,8 @@ contract P2PBetting is Ownable, AutomationCompatibleInterface, FunctionsClient {
     function getIntervalForAutomation() external view returns (uint256) {
         return intervalForAutomation;
     }
-    function getTimestampToGetMatches( ) external view returns(uint256) {
+
+    function getTimestampToGetMatches() external view returns (uint256) {
         return timestampToGetMatches;
     }
 
