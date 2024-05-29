@@ -136,9 +136,9 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode }) => {
     }, []);
 
     return (
-        <div className='relative w-full md:min-w-60 p-6'>
-            <h1 className='font-bold my-3 2xl:text-3xl'>Trend Bets</h1>
-            <div className="flex flex-row justify-between items-center">
+        <div className='relative w-full md:min-w-60 md:p-12 p-4'>
+            <h1 className='font-semibold my-3 text-xl 2xl:text-3xl'>Trend Bets</h1>
+            <div className="flex flex-row justify-between items-center md:px-4">
                 {showLeftArrow && <ChevronLeftIcon className="h-5 cursor-pointer" onClick={() => handleScroll('left')} />}
                 <div className='flex w-full gap-4 overflow-x-scroll scroll-invisible py-2 px-1' ref={scrollContainerRef}>
                     {matches.map((match, index) => (

@@ -1,6 +1,5 @@
 import React, { FC, useState } from "react";
 import { Bet, useTrayStore } from "../../store/useTrayStore";
-import { useStore } from "zustand";
 
 interface MatchData {
     id: string;
