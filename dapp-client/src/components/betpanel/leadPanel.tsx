@@ -214,9 +214,9 @@ export default function LeadPanel({ }: Props) {
                                 </div>
                                 <div className='w-full flex flex-row items-center justify-between col-span-11'>
                                     <p className='font-medium text-md'>{team}</p>
-                                    <div className='flex flex-row items-end justify-end gap-1'>
-                                        <p className='font-semibold text-xl text-primary w-12'>{gains.toFixed(2)}</p>
-                                        <input className='relative w-1/2 h-8 p-1 bg-white/30 focus:outline-none'
+                                    <div className='flex flex-row items-end justify-end gap-2'>
+                                        <p className='font-semibold text-xl w-full text-end text-primary'>{gains.toFixed(2)}</p>
+                                        <input className='w-32 h-8 p-1 bg-white/30 focus:outline-none'
                                             onChange={(e) => handleInputValues(id, e, gains)}
                                             value={inputValues[id]?.value || '$'}></input>
                                     </div>
@@ -246,8 +246,8 @@ export default function LeadPanel({ }: Props) {
                         <div className='w-auto flex flex-row items-center col-span-11'>
                             <p className='font-medium '>{store.tray.length > 1 ? leadTitle[store.tray.length] : store.tray[0].team}</p>
                             {showSelections ?
-                                <div className='flex flex-row h-auto items-end w-full justify-end gap-4 relative bottom-1'>
-                                    <p className='font-semibold text-xl text-primary pt-2 w-12'>{store?.totalGains?.toFixed(2)}</p>
+                                <div className='flex flex-row h-auto items-end w-full justify-end gap-2 relative bottom-1'>
+                                    <p className='font-semibold text-xl text-primary pt-2 w-12 text-end'>{store?.totalGains?.toFixed(2)}</p>
                                     <input className='w-44 h-8 bg-white/30 pl-1 mr-2 focus:outline-none'
                                         value={inputValue.value}
                                         onChange={(e) => handleChange(e)}

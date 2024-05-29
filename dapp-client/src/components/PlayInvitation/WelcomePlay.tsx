@@ -92,8 +92,8 @@ export default function WelcomePlay() {
     return (
         <div className='relative flex flex-col justify-center my-6  md:mx-10 gap-16'>
             <div className='mx-6 flex flex-col gap-4'>
-                <h1 className='text-4xl font-normal'>Start to play</h1>
-                <span className='md:text-lg  mx-auto text-center leading-relaxed '>Choose what you want to play among the following products developed by Dapp. Explore and join Web3 sports betting and fast crypto games! </span>
+                <h1 className='text-4xl font-normal 2xl:text-5xl'>Start to play</h1>
+                <span className='md:text-lg 2xl:text-4xl mx-auto text-center leading-relaxed '>Choose what you want to play among the following products developed by Dapp. Explore and join Web3 sports betting and fast crypto games! </span>
             </div>
             <div className='grid grid-cols-2 grid-rows-2 md:grid-rows-1 md:grid-cols-3 w-full px-8 md:gap-12 gap-6'>
                 {
@@ -111,20 +111,20 @@ export default function WelcomePlay() {
             </div>
             <div className='grid grid-cols-12 w-full -mt-12 px-8'>
                 <div className='col-span-5 gap-3 flex items-center flex-row opacity-50 relative -left-5 md:left-0'>
-                    <h1 className='text-3xl md:text-5xl font-bold'>100</h1>
-                    <p className='w-8'>Crypto networks</p>
-                    <div className='min-w-8 min-h-10 mx-2 transform rotate-90'>
+                    <h1 className='text-3xl md:text-5xl 2xl:text-7xl font-bold'>100</h1>
+                    <p className='w-8 2xl:text-3xl'>Crypto networks</p>
+                    <div className='min-w-8 min-h-10 mx-2 2xl:mx-20 2xl:min-w-16 2xl:relative left-8 transform rotate-90'>
                         <hr className='border-b border-black dark:border-white'></hr>
                     </div>
-                    <p className='text-3xl md:text-5xl font-bold'>500</p>
-                    <h1 className='min-w-8'>Crypto wallets</h1>
+                    <p className='text-3xl md:text-5xl 2xl:text-7xl font-bold'>500</p>
+                    <h1 className='min-w-8 2xl:text-3xl'>Crypto wallets</h1>
                 </div>
                 <div className='col-span-7 relative md:gap-3 flex items-center w-full justify-end flex-row opacity-50 relative -right-5 md:right-0'>
                     <div className='flex-row justify-end gap-3 lg:flex hidden'>
                         {cryptos.map(({ img, name }) =>
                             <div className='flex flex-row gap-2 items-center'>
-                                <img src={img} className='max-w-6'></img>
-                                <h2 className='font-semibold text-xl'>{name}</h2>
+                                <img src={img} className='max-w-6 2xl:max-w-10'></img>
+                                <h2 className='font-semibold text-xl 2xl:text-3xl'>{name}</h2>
                             </div>
                         )}
                     </div>
