@@ -64,8 +64,8 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode }: CardMatch
                         <p className="text-sm">{matchData.suscribed}/{matchData.limit}</p>
                     </div>
                 </div>
-                <div className="items-center text-sm bg-gradient-to-bl dark:from-gray-700 from-indigo-200 to-transparent p-1 absolute w-1 mt-[43px] ml-6 h-2 -rotate-45"></div>
-                <div className="flex flex-row items-start justify-between p-2 text-sm bg-gradient-to-r dark:from-gray-700/60 from-indigo-200 to-indigo-300/60 dark:to-gray-800/40 relative z-2 rounded-lg p-2">
+                <div className="items-center text-sm bg-gradient-to-bl dark:from-gray-900 from-indigo-200 to-transparent p-1 absolute w-1 mt-[43px] ml-6 h-2 -rotate-45"></div>
+                <div className="flex flex-row items-start justify-between p-2 text-sm bg-gradient-to-r dark:from-gray-900/60 from-indigo-200 to-indigo-300/60 dark:to-gray-800/40 relative z-2 rounded-lg p-2">
                     <div className="flex flex-col w-full">
                         <p>{matchData.winCondition}: </p>
                         <p className="max-w-32 md:max-w-full">{matchData.team1.name} </p>

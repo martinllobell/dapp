@@ -26,10 +26,11 @@ export default function LeadPanel({ }: Props) {
     const [inputValues, setInputValues] = useState<{ [id: string]: { value: string, gains: string } }[]>([]);
     const [shake, setShake] = useState<boolean>(false);
     const inputRef = useRef<HTMLDivElement>(null);
-    const inputValueRef = useRef(inputValue);
+    const inputValueRef = useRef(inputValue.value);
     const { store, removeTray, removeTrays } = useTrayStore();
+
     useEffect(() => {
-        inputValueRef.current = inputValue;
+        inputValueRef.current = inputValue.value;
     }, [inputValue]);
 
     useEffect(() => {
@@ -178,12 +179,12 @@ export default function LeadPanel({ }: Props) {
     return (
         store.tray.length ?
             <div className='fixed bottom-0 lg:bottom-12 start-1/2 transform -translate-x-1/2 w-full sm:w-2/3 lg:w-2/5 min-h-32 z-50 grid grid-cols-2 flex overflow-hidden'>
-                <div className='col-span-2 dark:bg-gray-700 bg-indigo-200 w-full flex sm:rounded-t-lg flex flex-col max-h-80'>
+                <div className='col-span-2 dark:bg-gray-900 bg-indigo-200 w-full flex sm:rounded-t-lg flex flex-col max-h-80'>
                     {store.tray.length > 1 && showSelections &&
                         <div className='w-full flex flex-row justify-between items-center p-2 whitespace-nowrap col-span-2 '>
                             <div className='flex'>
                                 <h2 className='font-medium text-xl'>Selections</h2>
-                                <p className='relative -top-1 bg-primary dark:bg-secundary rounded-2xl w-4 h-4 text-xs text-white text-center'>{store.tray.length}</p>
+                                <p className='relative -top-1 bg-primary dark:bg-secundary rounded-2xl w-4 h-4 text-xs text-gray-200 dark:text-gray-800 text-center'>{store.tray.length}</p>
                             </div>
                             {store.tray.length > 1 &&
                                 <div className='flex gap-2 items-center'>
