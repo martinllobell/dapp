@@ -1,0 +1,26 @@
+{
+    "name": "P2PBetting",
+    "version": "1.0.0",
+    "description": "Decentralized application with smart contracts",
+    "main": "index.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "@P2PBetting",
+    "license": "ISC",
+    "dependencies": {
+      "@chainlink/contracts": "^0.4.1",
+      "@openzeppelin/contracts": "^4.3.2",
+      "ethers": "5.7.2"
+    },
+    "devDependencies": {
+      "@nomiclabs/hardhat-ethers": "^2.0.2",
+      "@nomiclabs/hardhat-etherscan": "^3.0.0",
+      "@nomiclabs/hardhat-solhint": "^3.0.0",
+      "@nomiclabs/hardhat-waffle": "^2.0.0",
+      "hardhat": "^2.6.4",
+      "hardhat-gas-reporter": "^1.0.4",
+      "solidity-coverage": "^0.7.16"
+    }
+  }
+  
