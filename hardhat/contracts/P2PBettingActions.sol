@@ -79,7 +79,9 @@ contract P2PBettingActions is
 
     mapping(uint256 matchId => uint256[3]) s_Results;
 
-    constructor(address owner) Ownable(owner) FunctionsClient(router) {}
+    constructor(address owner) Ownable() FunctionsClient(router) {
+        transferOwnership(owner);
+    }
 
     /**
      *

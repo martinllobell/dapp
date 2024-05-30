@@ -7,7 +7,6 @@ import {AggregatorV3Interface} from "../lib/chainlink-brownie-contracts/contract
 import "../lib/BokkyPooBahsDateTimeLibrary/contracts/BokkyPooBahsDateTimeLibrary.sol";
 import {P2PBettingActions} from "./P2PBettingActions.sol";
 
-
 //Alomejor hay que importar esta:
 // import {ConfirmedOwner} from "@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwner.sol";
 
@@ -119,8 +118,8 @@ contract P2PBettingFront is Ownable {
      * @param fee_ Percentage of money collected as fee:
      * @param owner Person who will manage the contract
      */
-
-    constructor(uint256 fee_, address owner) Ownable(owner) {
+    constructor(uint256 fee_, address owner) Ownable() {
+        transferOwnership(owner);
         s_fee = fee_ * DECIMALS;
     }
 

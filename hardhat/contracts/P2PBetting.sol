@@ -145,11 +145,11 @@ contract P2PBetting is Ownable, FunctionsClient {
         uint256 fee_,
         address owner,
         uint64 subscriptionId_
-    ) Ownable(owner) FunctionsClient(router) {
+    ) Ownable() FunctionsClient(router) {
+        transferOwnership(owner);
         s_fee = fee_ * DECIMALS;
         subscriptionId = subscriptionId_;
     }
-
     /**
      * Sends the fees collected to the owner of the contract
      */
