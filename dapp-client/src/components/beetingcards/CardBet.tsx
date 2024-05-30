@@ -64,15 +64,15 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode }: CardMatch
                         <p className="text-sm">{matchData.suscribed}/{matchData.limit}</p>
                     </div>
                 </div>
-                <div className="items-center text-sm bg-gradient-to-bl dark:from-black from-white to-transparent p-1 absolute w-1 mt-[43px] ml-6 h-2 -rotate-45"></div>
-                <div className="flex flex-row items-start justify-between p-2 text-sm bg-gradient-to-r dark:from-black/60 from-white dark:to-black/40 relative z-2 rounded-mlg p-2">
+                <div className="items-center text-sm bg-gradient-to-bl dark:from-gray-700 from-indigo-200 to-transparent p-1 absolute w-1 mt-[43px] ml-6 h-2 -rotate-45"></div>
+                <div className="flex flex-row items-start justify-between p-2 text-sm bg-gradient-to-r dark:from-gray-700/60 from-indigo-200 to-indigo-300/60 dark:to-gray-800/40 relative z-2 rounded-mlg p-2">
                     <div className="flex flex-col w-full">
                         <p>{matchData.winCondition}: </p>
                         <p className="max-w-32 md:max-w-full">{matchData.team1.name} </p>
                     </div>
                     <div className="flex flex-col items-center w-auto whitespace-nowrap">
                         Max Bet
-                        <p className="font-bold dark:text-yellow-500 text-primary">{matchData.maxBet}</p>
+                        <p className="font-bold dark:text-secundary text-primary">{matchData.maxBet}</p>
                     </div>
                 </div>
                 <div className='flex flex-row justify-between items-center'>
@@ -102,9 +102,9 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode }: CardMatch
                                 Place Bet
                             </p>
                             <p>
-                                {matchData.team2.name} Win:
+                                {matchData.team2.name} Win
                             </p>
-                            <p className={`text-sm font-bold p-1 text-center w-12 dark:text-yellow-500 text-primary `}>
+                            <p className={`text-sm font-bold p-1 text-center w-12 dark:text-secundary text-primary `}>
                                 {matchData.team2.odd.toFixed(2)}
                             </p>
                         </div>
