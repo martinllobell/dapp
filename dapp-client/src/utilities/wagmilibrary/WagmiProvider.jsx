@@ -10,7 +10,7 @@ const projectId = 'bee67f4ed32e5f2859712f8b5a037806';
 const metadata = {
   name: 'Web3Modal',
   description: 'Web3Modal Example',
-  url: 'https://web3modal.com',
+  url: 'http://127.0.0.1:8545',
   icons: ['https://avatars.githubusercontent.com/u/37784886']
 };
 

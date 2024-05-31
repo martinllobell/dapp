@@ -1,110 +1,134 @@
 import React, { FC, useRef, useState, useEffect } from "react";
+import axios from "axios";
 import { CardMatch } from "./CardBet";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import { useContracts } from "../../hooks/useContracts";
 
 interface CardsMainProps {
     darkMode: boolean;
 }
 
+interface Team {
+    name: string;
+    logo: string;
+    odd: number;
+}
+
+interface Bet {
+    id: string;
+    tipster: string;
+    image: string;
+    winCondition: string;
+    maxBet: string;
+    limit: number;
+    suscribed: number;
+    team1: Team;
+    team2: Team;
+    draw: {
+        odd: number;
+    };
+}
+
+const defaultLogoUrl = "https://via.placeholder.com/150";
+
 export const CardsMain: FC<CardsMainProps> = ({ darkMode }) => {
-    const match1 = {
-        id: '0x2012391123123',
-        image: 'https://nmdfc.org/uploads/gallery/video/badgepng-cd449eedf7ca2d60e1875cf42dec68e3.png',
-        winCondition: 'Final result',
-        maxBet: '2.00 ETH',
-        limit: 10,
-        suscribed: 7,
-        team1: {
-            name: 'Manchester United',
-            logo: 'https://www.logo.wine/a/logo/Manchester_United_F.C./Manchester_United_F.C.-Logo.wine.svg',
-            odd: 1.52,
-        },
-        team2: {
-            name: 'Manchester City',
-            logo: 'https://download.logo.wine/logo/Manchester_City_F.C./Manchester_City_F.C.-Logo.wine.png',
-            odd: 3.20
-        },
-        draw: {
-            odd: 2.40,
-        }
-    };
-
-    const match2 = {
-        id: '0x20124567123123',
-        image: 'https://nmdfc.org/uploads/gallery/video/badgepng-cd449eedf7ca2d60e1875cf42dec68e3.png',
-        winCondition: 'Final result',
-        maxBet: '2.00 ETH',
-        limit: 10,
-        suscribed: 7,
-        team1: {
-            name: 'Manchester United',
-            logo: 'https://www.logo.wine/a/logo/Manchester_United_F.C./Manchester_United_F.C.-Logo.wine.svg',
-            odd: 2.80,
-        },
-        team2: {
-            name: 'Manchester City',
-            logo: 'https://download.logo.wine/logo/Manchester_City_F.C./Manchester_City_F.C.-Logo.wine.png',
-            odd: 3.20
-        },
-        draw: {
-            odd: 2.20,
-        }
-    };
-
-    const match3 = {
-        id: '0x203424567123123',
-        image: 'https://nmdfc.org/uploads/gallery/video/badgepng-cd449eedf7ca2d60e1875cf42dec68e3.png',
-        winCondition: 'Final result',
-        maxBet: '2.00 ETH',
-        limit: 10,
-        suscribed: 7,
-        team1: {
-            name: 'Manchester United',
-            logo: 'https://www.logo.wine/a/logo/Manchester_United_F.C./Manchester_United_F.C.-Logo.wine.svg',
-            odd: 2.80,
-        },
-        team2: {
-            name: 'Manchester City',
-            logo: 'https://download.logo.wine/logo/Manchester_City_F.C./Manchester_City_F.C.-Logo.wine.png',
-            odd: 3.20
-        },
-        draw: {
-            odd: 2.20,
-        }
-    };
-
-    const match4 = {
-        id: '0x2034224567123123',
-        image: 'https://nmdfc.org/uploads/gallery/video/badgepng-cd449eedf7ca2d60e1875cf42dec68e3.png',
-        winCondition: 'Final result',
-        maxBet: '2.00 ETH',
-        limit: 10,
-        suscribed: 7,
-        team1: {
-            name: 'Manchester United',
-            logo: 'https://www.logo.wine/a/logo/Manchester_United_F.C./Manchester_United_F.C.-Logo.wine.svg',
-            odd: 2.80,
-        },
-        team2: {
-            name: 'Manchester City',
-            logo: 'https://download.logo.wine/logo/Manchester_City_F.C./Manchester_City_F.C.-Logo.wine.png',
-            odd: 3.20
-        },
-        draw: {
-            odd: 2.20,
-        }
-    };
-
-    const matches = [match1, match2, match3, match4, match4, match4, match4, match4];
-
+    const { contracts, web3 } = useContracts();
+    const [matches, setMatches] = useState<Bet[]>([]);
+    const [teamLogos, setTeamLogos] = useState<{ [key: string]: string }>({});
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const [showLeftArrow, setShowLeftArrow] = useState(false);
     const [showRightArrow, setShowRightArrow] = useState(true);
 
+    const fetchNBATeamLogos = async () => {
+        try {
+            const response = await axios.get('/api/sportsdata/v3/nba/scores/json/teams', {
+                headers: { 'Ocp-Apim-Subscription-Key': '06b9feb762534274946d286934ff0235' }
+            });
+            const logos = {};
+            response.data.forEach(team => {
+                logos[team.Key] = team.WikipediaLogoUrl || defaultLogoUrl;
+            });
+            setTeamLogos(logos);
+        } catch (error) {
+            console.error('Error fetching NBA team logos:', error);
+        }
+    };
+
+    const fetchEventData = async (eventID: number) => {
+        try {
+            const season = new Date().getFullYear();
+            const response = await axios.get(`/api/sportsdata/v3/nba/scores/json/Games/${season}`, {
+                headers: { 'Ocp-Apim-Subscription-Key': '01e1ae2db9b642229876fbd8527f4822' }
+            });
+            const event = response.data.find(ev => ev.GameID === eventID);
+            return event || {};
+        } catch (error) {
+            console.error('Error fetching event data:', error);
+            return {};
+        }
+    };
+
+    useEffect(() => {
+        fetchNBATeamLogos();
+    }, []);
+
+    useEffect(() => {
+        const fetchBets = async () => {
+            try {
+                const numberOfBets = await contracts.p2pBetting.methods.getNumberOfBets().call();
+                const bets: Bet[] = [];
+
+                for (let i = 0; i < numberOfBets; i++) {
+                    const bet = await contracts.p2pBetting.methods.getBet(i).call();
+                    if (bet) {
+                        console.log(bet, "CLAUDIAAAA");
+
+                        const event = await fetchEventData(parseInt(bet[1], 10));
+
+                        const team1 = {
+                            name: event.HomeTeam || "Unknown",
+                            logo: teamLogos[event.HomeTeam] || defaultLogoUrl,
+                            odd: Number(bet[10]) || 0
+                        };
+                        const team2 = {
+                            name: event.AwayTeam || "Unknown",
+                            logo: teamLogos[event.AwayTeam] || defaultLogoUrl,
+                            odd: Number(bet[11]) || 0
+                        };
+
+                        const newBet: Bet = {
+                            id: bet[15] ? bet[15].toString() : '0',
+                            tipster: bet[2],
+                            image: 'https://nmdfc.org/uploads/gallery/video/badgepng-cd449eedf7ca2d60e1875cf42dec68e3.png', // Placeholder image
+                            winCondition: 'Final result',
+                            maxBet: bet[3] ? `${web3.utils.fromWei(bet[3].toString(), 'ether')} ETH` : '0 ETH',
+                            limit: Number(bet[5]) || 0,
+                            suscribed: bet[7] ? bet[7].length : 0,
+                            team1,
+                            team2,
+                            draw: {
+                                odd: Number(bet[12]) || 0
+                            }
+                        };
+                        bets.push(newBet);
+                    } else {
+                        console.error('Invalid bet data:', bet);
+                    }
+                }
+
+                setMatches(bets);
+            } catch (error) {
+                console.error("Error fetching bets:", error);
+            }
+        };
+
+        fetchBets();
+    }, [contracts, web3, teamLogos]);
+
     const handleScroll = (direction: 'left' | 'right') => {
         if (scrollContainerRef.current) {
             const { scrollLeft, clientWidth } = scrollContainerRef.current;
-            const scrollAmount = clientWidth / 4.9; // Ajusta este valor según sea necesario
+            const scrollAmount = clientWidth / 4.9;
 
             if (direction === 'left') {
                 scrollContainerRef.current.scrollTo({ left: scrollLeft - scrollAmount, behavior: 'smooth' });
@@ -125,7 +149,7 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode }) => {
     useEffect(() => {
         if (scrollContainerRef.current) {
             scrollContainerRef.current.addEventListener('scroll', updateArrowsVisibility);
-            updateArrowsVisibility(); // Initial check
+            updateArrowsVisibility();
 
             return () => {
                 if (scrollContainerRef.current) {
