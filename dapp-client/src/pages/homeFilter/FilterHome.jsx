@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Sidebar from '../../components/sideBar/SideBar';
-import futbol from '../../assets/images/champions.jpg';
-import nba from '../../assets/images/nba.jpg';
-import lol from '../../assets/images/lol.jpg';
+import futbol from '../../assets/images/soccer.webp';
+import nba from '../../assets/images/basket.webp';
+import lol from '../../assets/images/lol.webp';
 import csgo from '../../assets/images/cs2.webp';
+import bets from '../../assets/images/bet.webp';
 import LeagueEvents from '../../components/leagueEvents/LeagueEvents';
+import { CardsMain } from '../../components/beetingcards/CardsMain';
 
 const sportImages = {
     futbol,
     nba,
     lol,
-    csgo
+    csgo,
+    bets
 };
 
 const FilterHome = ({ darkMode }) => {
@@ -96,32 +99,34 @@ const FilterHome = ({ darkMode }) => {
     };
 
     const sportNames = {
-        futbol: 'Fútbol',
+        futbol: 'Football',
         nba: 'NBA',
         lol: 'LoL',
         csgo: 'CS:GO',
+        bets: 'Pupular Bets',
     };
 
     const filters = ['Torneos', 'En vivo', 'Pre partida', 'Outrights', 'Calendario'];
+    const filtersBet = ['Popular', 'Live Bets'];
 
     return (
         <div className="flex">
             <Sidebar setViewMore={setViewMore} setSelectedSport={handleSportChange} darkMode={darkMode} setSelectedLeague={handleLeagueSelection} />
             <div className={`ml-64 p-5 shadow-md min-h-[40rem] flex-1 mt-[5rem]`}>
                 <div className="mb-5">
-                    <img src={sportImages[selectedSport]} alt={selectedSport} className="w-full h-64 object-cover rounded-lg" />
+                    <img src={sportImages[selectedSport]} alt={selectedSport} className=" w-full h-[25vh] object-cover object-center rounded-lg" />
                     <h2 className="text-3xl mt-3 flex items-center">
                         {!selectedLeague ? sportNames[selectedSport] : selectedLeague.Name}
                         {selectedLeague?.IconUrl && (
                             <img src={selectedLeague.IconUrl} alt={selectedLeague.Name} className="w-12 h-12 ml-3" />
                         )}
                     </h2>
-                    {!selectedLeague && (
+                    {!selectedLeague && selectedSport !== "bets" && (
                         <div className="flex space-x-4 mt-3">
                             {filters.map(filter => (
                                 <button
                                     key={filter}
-                                    onClick={() => setActiveTab(filter)}
+                                    onClick={() => {}}
                                     className={`px-4 py-2 rounded-lg ${activeTab === filter ? 'bg-green-500' : 'dark:bg-gray-700 bg-indigo-500'} text-white`}
                                 >
                                     {filter}
@@ -130,70 +135,78 @@ const FilterHome = ({ darkMode }) => {
                         </div>
                     )}
                 </div>
-                {!selectedLeague && (
-                    <h2 className="text-2xl mb-5">{activeTab}</h2>
-                )}
-                {activeTab === 'Torneos' && !selectedLeague && (
-                    <div className=' w-full flex flex-col  '>
-                        <div className='w-full '>
+                {selectedSport === "bets" ? <>
+                    <CardsMain darkMode={darkMode} />
+                </> :
+                    <> {!selectedLeague && (
+                        <h2 className="text-2xl mb-5">{activeTab}</h2>
+                    )}
+                        {activeTab === 'Torneos' && !selectedLeague && (
+                            <div className=' w-full flex flex-col  '>
+                                <div className='w-full '>
 
-                            <div className={`${currentPage === 1 ? 'flex justify-end' : 'flex justify-between mb-5'} h-[3rem] `}>
-                                {currentPage > 1 && (
-                                    <button
-                                        className="px-4 py-2 bg-blue-500 text-white rounded-lg"
-                                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                                    >
-                                        Anterior
-                                    </button>
-                                )}
-                                {currentLeagues.length === 12 && (
-                                    <button
-                                        className="px-4 py-2 bg-blue-500 text-white rounded-lg"
-                                        onClick={() => setCurrentPage(prev => prev + 1)}
-                                    >
-                                        Siguiente
-                                    </button>
-                                )}
-                            </div>
-                            <div className="flex h-[20rem]  flex-wrap w-full justify-center mt-5 gap-8">
-                                {currentLeagues.map(league => (
-                                    <div key={league.CompetitionId || league.TeamID}
-                                        className="flex w-[23%] h-[4rem] items-center justify center p-3 bg-indigo-200 dark:bg-gray-700 rounded-lg cursor-pointer transition-colors hover:bg-gray-200"
-                                        onClick={() => handleLeagueSelection(league)}>
-                                        {league.WikipediaLogoUrl && (
-                                            <img src={league.WikipediaLogoUrl} alt={league.Name || league.FullName} className="w-12 h-12 mr-3" />
+                                    <div className={`${currentPage === 1 ? 'flex justify-end' : 'flex justify-between mb-5'} h-[3rem] `}>
+                                        {currentPage > 1 && (
+                                            <button
+                                                className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+                                                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                            >
+                                                Anterior
+                                            </button>
                                         )}
-                                        <span>{league.Name || league.FullName}</span>
+                                        {currentLeagues.length === 12 && (
+                                            <button
+                                                className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+                                                onClick={() => setCurrentPage(prev => prev + 1)} Kernel
+                                            >
+                                                Siguiente
+                                            </button>
+                                        )}
+                                    </div>
+                                    <div className="flex h-[20rem]  flex-wrap w-full justify-center mt-5 gap-8">
+                                        {currentLeagues.map(league => (
+                                            <div key={league.CompetitionId || league.TeamID}
+                                                className="flex w-[23%] h-[4rem] items-center justify center p-3 bg-indigo-200 dark:bg-gray-700 rounded-lg cursor-pointer transition-colors hover:bg-gray-200"
+                                                onClick={() => handleLeagueSelection(league)}>
+                                                {league.WikipediaLogoUrl && (
+                                                    <img src={league.WikipediaLogoUrl} alt={league.Name || league.FullName} className="w-12 h-12 mr-3" />
+                                                )}
+                                                <span>{league.Name || league.FullName}</span>
+
+                                            </div>
+
+                                        ))}
 
                                     </div>
-                                ))}
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                )}
-                {selectedLeague && (
-                    <>
-                        <button
-                            onClick={() => setSelectedLeague(null)}
-                            className="mb-5 text-blue-500 focus:outline-none"
-                        >
-                            Volver a ligas
-                        </button>
-                        <LeagueEvents league={selectedLeague} sport={selectedSport} />
+                        )}
+                        {selectedLeague && (
+                            <>
+                                <button
+                                    onClick={() => setSelectedLeague(null)}
+                                    className="mb-5 text-blue-500 focus:outline-none"
+                                >
+                                    Volver a ligas
+                                </button>
+                                <LeagueEvents league={selectedLeague} sport={selectedSport} />
+                            </>
+                        )}
+                        {activeTab === 'En vivo' && (
+                            <div>Contenido para En vivo</div>
+                        )}
+                        {activeTab === 'Pre partida' && (
+                            <div>Contenido para Pre partida</div>
+                        )}
+                        {activeTab === 'Outrights' && (
+                            <div>Contenido para Outrights</div>
+                        )}
+                        {activeTab === 'Calendario' && (
+                            <div>Contenido para Calendario</div>
+                        )}
                     </>
-                )}
-                {activeTab === 'En vivo' && (
-                    <div>Contenido para En vivo</div>
-                )}
-                {activeTab === 'Pre partida' && (
-                    <div>Contenido para Pre partida</div>
-                )}
-                {activeTab === 'Outrights' && (
-                    <div>Contenido para Outrights</div>
-                )}
-                {activeTab === 'Calendario' && (
-                    <div>Contenido para Calendario</div>
-                )}
+                }
+
             </div>
         </div>
     );
