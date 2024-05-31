@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { IoMdMenu, IoMdClose } from "react-icons/io";
 import SupportIcon from "../../assets/icons/support.svg";
 import SupportIconDark from "../../assets/icons/supportDark.svg";
@@ -13,7 +13,7 @@ import moon from "../../assets/icons/moon.svg";
 import sun from "../../assets/icons/sun.svg";
 
 // Definimos los elementos de navegación
-const NAV_ITEMS = (darkMode, language, toggleLanguage, toggleDarkMode) => [
+const NAV_ITEMS = (darkMode, language, toggleLanguage, toggleDarkMode, navigate) => [
   {
     type: "component",
     component: <WalletConnet darkMode={darkMode} />,
@@ -25,8 +25,8 @@ const NAV_ITEMS = (darkMode, language, toggleLanguage, toggleDarkMode) => [
     alt: "Cambio de Idioma",
   },
   {
-    type: "link",
-    to: "/notifications",
+    type: "button",
+    action: () => navigate("/notifications"),
     icon: darkMode ? NotificationIconDark : NotificationIcon,
     alt: "Notificaciones",
   },
@@ -41,6 +41,7 @@ const NAV_ITEMS = (darkMode, language, toggleLanguage, toggleDarkMode) => [
 const Navbar = ({ toggleDarkMode, darkMode }) => {
   const [language, setLanguage] = useState("es");
   const [navbarOpen, setNavbarOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleLanguage = () => {
     setLanguage((prevLanguage) => (prevLanguage === "es" ? "en" : "es"));
@@ -62,6 +63,8 @@ const Navbar = ({ toggleDarkMode, darkMode }) => {
                 objectFit: "cover",
                 borderRadius: "50%",
                 filter: darkMode ? "none" : "invert(1)",
+                width: "50px", // Ajuste del tamaño del logo
+                height: "50px", // Ajuste del tamaño del logo
               }}
             />
           </Link>
@@ -87,7 +90,7 @@ const Navbar = ({ toggleDarkMode, darkMode }) => {
 
         {/* Botones de la barra de navegación */}
         <div className="flex-1 flex justify-end items-center space-x-4 hidden md:flex">
-          {NAV_ITEMS(darkMode, language, toggleLanguage, toggleDarkMode).map(
+          {NAV_ITEMS(darkMode, language, toggleLanguage, toggleDarkMode, navigate).map(
             (item, index) => {
               if (item.type === "link") {
                 return (
@@ -133,7 +136,7 @@ const Navbar = ({ toggleDarkMode, darkMode }) => {
         } md:hidden backdrop-blur-lg bg-white/30 dark:bg-gray-900/30 p-4 fixed w-full z-40`} // Fondo transparente con blur
       >
         <div className="flex flex-col items-end space-y-4"> {/* Alineación a la derecha */}
-          {NAV_ITEMS(darkMode, language, toggleLanguage, toggleDarkMode).map(
+          {NAV_ITEMS(darkMode, language, toggleLanguage, toggleDarkMode, navigate).map(
             (item, index) => {
               if (item.type === "link") {
                 return (
