@@ -43,7 +43,7 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode }: CardMatch
             removeTray(id);
             setSelections('');
         } else {
-            const newBet: Bet = { id, winCondition, team, gains: Number(gains.toFixed(2)), match, maxBet, maxEntryFee };
+            const newBet: Bet = { id, winCondition, team, gains: Number(gains.toFixed(4)), match, maxBet, maxEntryFee };
             setSelections(id);
             actualizeTray(newBet);
         }

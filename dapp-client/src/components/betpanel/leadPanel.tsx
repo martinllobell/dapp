@@ -117,7 +117,9 @@ export default function LeadPanel({ }: Props) {
         // Formatea el resultado en el mismo formato que el dinero original
         let formattedResult = finalResult.toLocaleString(undefined, {
             style: 'currency',
-            currency: 'ETH'
+            currency: 'ETH',
+            minimumFractionDigits: 4,
+            maximumFractionDigits: 4
         });
 
         // Devuelve el resultado final
@@ -141,7 +143,7 @@ export default function LeadPanel({ }: Props) {
         let formattedValue = formatNumber(value);
 
         // Check if the number exceeds 10,000,000
-        if (parseFloat(formattedValue.replace(/[,$.]/g, '')) > Number(formatBigInt(maxEntryFee))) {
+        if (parseFloat(formattedValue.replace(/[$]/g, '').replace(/,/g, '.')) > Number(formatBigInt(maxEntryFee))) {
             formattedValue = '$' + formatBigInt(maxEntryFee).replace(/[.]/g, ',');
         }
 
