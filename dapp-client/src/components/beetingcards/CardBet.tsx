@@ -78,21 +78,22 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode }: CardMatch
                 <div className='flex flex-row justify-between items-center'>
                     <div className='flex flex-col max-w-20 items-center'>
                         <img src={matchData.team1.logo} alt={`${matchData.team1.name} logo`} className='max-w-12 md:max-w-20' />
-                        <h2 className={'text-sm text-xs font-medium w-20 text-center'}>{matchData.team1.name}</h2>
+                        <h2 className={'text-xs font-medium w-20 text-center'}>{matchData.team1.name}</h2>
                     </div>
-                    <h2 className={'font-medium md:hidden'}>v</h2> {/* Hidden on mobile */}
-                    <div className={'font-medium hidden md:flex items-center flex-col text-xs'}>
-                        <h2>18:00hs</h2> {/* Shown on desktop */}
-                        <h2>24/12/2024</h2> {/* Shown on desktop */}
-                        <h2>VS</h2> {/* Shown on desktop */}
+                    <div className={'font-medium flex items-center flex-col h-full justify-start text-[10px] md:text-xs'}>
+                        <div className="items-center w-full flex flex-col">
+                            <h2>18:00hs</h2> {/* Shown on desktop */}
+                            <h2>24/12/2024</h2> {/* Shown on desktop */}
+                        </div>
+                        <h2 className="mt-5">VS</h2> {/* Shown on desktop */}
                     </div>
                     <div className='flex flex-col max-w-20 items-center overflow-hidden'>
                         <img src={matchData.team2.logo} alt={`${matchData.team2.name} logo`} className='max-w-12 md:max-w-20' />
-                        <h2 className={'text-sm text-xs font-medium w-20 text-center'}>{matchData.team2.name}</h2>
+                        <h2 className={'text-xs font-medium w-20 text-center'}>{matchData.team2.name}</h2>
                     </div>
                 </div>
                 <div className="items-center w-full flex justify-center">
-                <hr className={`border-t w-5/6  ${darkMode ? 'border-white/20' : 'border-black/20'}`} />
+                    <hr className={`border-t w-5/6  ${darkMode ? 'border-white/20' : 'border-black/20'}`} />
                 </div>
                 <div className={`flex justify-around -mt-3 cursor-pointer text-center w-full `}>
                     <div className={`flex gap-2 p-1 items-center w-full rounded-lg whitespace-nowrap ${darkMode ? 'hover:bg-white/20' : 'hover:bg-gray-500/40'}`}
