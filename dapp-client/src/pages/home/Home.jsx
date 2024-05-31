@@ -1,7 +1,6 @@
 'use client';
 import WelcomePlay from '../../components/PlayInvitation/WelcomePlay';
 import { CardsMain } from '../../components/beetingcards/CardsMain';
-import MyCarousel from '../../components/carrousel/Carousel';
 import FirstComponent from '../../components/firstComponent/FirstComponent';
 
 export default function Home({ darkMode }) {

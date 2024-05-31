@@ -59,7 +59,17 @@ const Sidebar = ({ setViewMore, setSelectedSport, darkMode, setSelectedLeague })
             <div className="mt-[5rem] mb-4">
                 <Search />
             </div>
-            <h2 className="text-white text-sm mb-8">Juegos</h2>
+            <h2 className="text-white text-sm mb-8 mt-6">P2P Betting</h2>
+            <div className="space-y-4">
+                <button
+                    className="flex items-center p-2 bg-indigo-200 dark:bg-gray-700 rounded hover:bg-gray-600 w-full"
+                    onClick={() => {handleSportSelection("bets")}}
+                >
+                    <span>Bets</span>
+                </button>
+            </div>
+
+            <h2 className="text-white text-sm mb-8 mt-8">Sports</h2>
             <div className="space-y-4">
                 {Object.keys(leagues).map(sport => (
                     <div key={sport}>
@@ -74,8 +84,8 @@ const Sidebar = ({ setViewMore, setSelectedSport, darkMode, setSelectedLeague })
                             <div className="space-y-2 mt-2">
                                 {leagues[sport].slice(0, 5).map(league => (
                                     <div key={league.CompetitionId || league.TeamID}
-                                         className="flex items-center p-2 bg-gray-300 dark:bg-gray-700 rounded cursor-pointer"
-                                         onClick={() => handleLeagueSelection(league)}>
+                                        className="flex items-center p-2 bg-gray-300 dark:bg-gray-700 rounded cursor-pointer"
+                                        onClick={() => handleLeagueSelection(league)}>
                                         {league.IconUrl && (
                                             <img src={league.IconUrl} alt={league.Name} className="w-6 h-6 mr-3" />
                                         )}
