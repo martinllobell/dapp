@@ -5,10 +5,13 @@ interface MatchData {
     id: string;
     image: string;
     winCondition: string;
-    maxBet: string;
-    limit: number;
+    maxEntryFee: string;
+    maxNumberOfChallengers: number;
     tipster: string;
-    suscribed: number;
+    maxBet: string;
+    challengers: Array<string>;
+    dataBet: Array<string>;
+    eventDate: string;
     team1: {
         logo: string;
         name: string;
@@ -19,9 +22,7 @@ interface MatchData {
         name: string;
         odd: number;
     };
-    draw: {
-        odd: number;
-    };
+    odds: number;
 }
 
 interface CardMatchProps {
@@ -30,6 +31,8 @@ interface CardMatchProps {
 }
 
 export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode }: CardMatchProps) => {
+    console.log(matchData, "CLAUDIAAAA");
+
     const [selections, setSelections] = useState<string>('');
     const { actualizeTray, removeTray } = useTrayStore();
 
@@ -55,19 +58,19 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode }: CardMatch
                     shadow-black/50 transition ease-in-out duration-150`}>
                 <div className='flex flex-row px-3 gap-3 items-center justify-between'>
                     <div className="flex flex-row gap-2 items-center">
-                        <img src={matchData.image} alt={`${matchData.team1.name} logo`} className='w-8' />
-                        <p className='text-sm text-xs font-medium w-40 bg-red-700 truncate'>{matchData.id}</p>
+                        <img src={matchData.image} alt={`${matchData.team1.name} logo`} className='w-8 rounded-full' />
+                        <p className='text-sm text-xs font-medium w-40 truncate'>{matchData.tipster}</p>
                     </div>
                     <div className="flex flex-col items-center rounded-full w-12">
                         <p className="text-[10px]">Limit</p>
-                        <p className="text-sm">{matchData.suscribed}/{matchData.limit}</p>
+                        <p className="text-sm">{matchData.challengers?.length}/{matchData.maxNumberOfChallengers.toString()}</p>
                     </div>
                 </div>
                 <div className="items-center text-sm bg-gradient-to-bl dark:from-gray-900 from-indigo-200 to-transparent p-1 absolute w-1 mt-[43px] ml-6 h-2 -rotate-45"></div>
                 <div className="flex flex-row items-start justify-between p-2 text-sm bg-gradient-to-r dark:from-gray-900/60 from-indigo-200 to-indigo-300/60 dark:to-gray-800/40 relative z-2 rounded-lg p-2">
                     <div className="flex flex-col w-full">
                         <p>{matchData.winCondition}: </p>
-                        <p className="max-w-32 md:max-w-full">{matchData.team1.name} </p>
+                        <p className="max-w-32 md:max-w-full">{matchData.dataBet && matchData.dataBet[0] === "0n" && matchData.dataBet[1] === "0n" ? matchData.team1.name : matchData.team2.name} </p>
                     </div>
                     <div className="flex flex-col items-center w-auto whitespace-nowrap">
                         Max Bet
@@ -81,8 +84,8 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode }: CardMatch
                     </div>
                     <div className={'font-medium flex items-center flex-col h-full justify-start text-[10px] md:text-xs'}>
                         <div className="items-center w-full flex flex-col">
-                            <h2>18:00hs</h2> {/* Shown on desktop */}
-                            <h2>24/12/2024</h2> {/* Shown on desktop */}
+                            <h2>{matchData.eventDate.split("T")[0]}</h2>
+                            <h2>{matchData.eventDate.split("T")[1]}</h2>
                         </div>
                         <h2 className="mt-5">VS</h2> {/* Shown on desktop */}
                     </div>
@@ -101,11 +104,18 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode }: CardMatch
                             <p>
                                 Place Bet
                             </p>
-                            <p>
-                                {matchData.team2.name} Win
-                            </p>
+                            <div className="flex gap-2">
+                                <h3>WIN</h3>
+                                <p>
+                                    {
+                                        matchData.dataBet && matchData.dataBet[0] === "0n" && matchData.dataBet[1] === "0n" ? matchData.team2.name : matchData.team1.name
+                                    }
+                                </p>
+                            </div>
+
+
                             <p className={`text-sm font-bold p-1 text-center w-12 dark:text-secundary text-primary `}>
-                                {matchData.team2.odd.toFixed(2)}
+                                X  {Number(matchData.odds)}
                             </p>
                         </div>
                     </div>

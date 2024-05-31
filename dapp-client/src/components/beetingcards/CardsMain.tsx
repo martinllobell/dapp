@@ -3,6 +3,7 @@ import axios from "axios";
 import { CardMatch } from "./CardBet";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { useContracts } from "../../hooks/useContracts";
+import { MD5 } from "crypto-js";
 
 interface CardsMainProps {
     darkMode: boolean;
@@ -20,13 +21,16 @@ interface Bet {
     image: string;
     winCondition: string;
     maxBet: string;
+    eventDate: string;
+    maxEntryFee: number;
     limit: number;
-    suscribed: number;
+    maxNumberOfChallengers: number;
+    challengers: Array<string>;
+    dataBet: Array<string>;
     team1: Team;
     team2: Team;
-    draw: {
-        odd: number;
-    };
+    odds: number;
+
 }
 
 const defaultLogoUrl = "https://via.placeholder.com/150";
@@ -83,6 +87,8 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode }) => {
                     if (bet) {
 
                         const event = await fetchEventData(parseInt(bet[1], 10));
+                        console.log(event, "CLAUDIAAAA");
+
 
                         const team1 = {
                             name: event.HomeTeam || "Unknown",
@@ -94,20 +100,24 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode }) => {
                             logo: teamLogos[event.AwayTeam] || defaultLogoUrl,
                             odd: Number(bet[11]) || 0
                         };
+                        const randomString = Math.random().toString();
+                        const hash = MD5(randomString).toString();
 
                         const newBet: Bet = {
                             id: bet[15] ? bet[15].toString() : '0',
                             tipster: bet[2],
-                            image: 'https://nmdfc.org/uploads/gallery/video/badgepng-cd449eedf7ca2d60e1875cf42dec68e3.png', // Placeholder image
+                            image: `https://www.gravatar.com/avatar/${hash}?d=retro&f=y&s=128`, // Placeholder image
                             winCondition: 'Final result',
                             maxBet: bet[3] ? `${web3.utils.fromWei(bet[3].toString(), 'ether')} ETH` : '0 ETH',
                             limit: Number(bet[5]) || 0,
-                            suscribed: bet[7] ? bet[7].length : 0,
                             team1,
                             team2,
-                            draw: {
-                                odd: Number(bet[12]) || 0
-                            }
+                            maxEntryFee: bet.maxEntryFee,
+                            eventDate: event.DateTime,
+                            maxNumberOfChallengers: bet.maxNumberOfChallengers,
+                            challengers: bet.challengers,
+                            dataBet: bet.dataBet,
+                            odds: bet.odds || 0
                         };
                         bets.push(newBet);
                     } else {
