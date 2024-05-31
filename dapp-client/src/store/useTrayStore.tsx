@@ -5,7 +5,12 @@ export type Bet = {
     id: string;  // Asegurarse de que cada Bet tenga un id único
     match: string;
     winCondition: string;
-    team: string;
+    maxBet: string;
+    maxEntryFee: number;
+    team: {
+        name: string,
+        logo?: string,
+    };
     gains: number;  // Cambiar a número para facilitar cálculos
 };
 

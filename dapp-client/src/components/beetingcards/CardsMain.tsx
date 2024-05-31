@@ -87,7 +87,7 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode }) => {
                     if (bet) {
 
                         const event = await fetchEventData(parseInt(bet[1], 10));
-                        console.log(event, "CLAUDIAAAA");
+                        console.log(Number(bet.betData[2]), "CLAUDIAAAA");
 
 
                         const team1 = {
@@ -104,10 +104,12 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode }) => {
                         const hash = MD5(randomString).toString();
 
                         const newBet: Bet = {
-                            id: bet[15] ? bet[15].toString() : '0',
+                            id: bet[0] ? bet[0].toString() : '0',
                             tipster: bet[2],
                             image: `https://www.gravatar.com/avatar/${hash}?d=retro&f=y&s=128`, // Placeholder image
-                            winCondition: 'Final result',
+                            winCondition: String(bet.betData[0]) === '0' ? 'Final result' : `Goals/Points`,
+                            points: bet.betData[3] ? String(bet.betData[3]) : '',
+                            comparator: bet.betData[2] !== undefined ? Number(bet.betData[2]) === 0 ? 'Exactly' :  Number(bet.betData[2]) === 1 ? 'Greater than' : 'Less than' :'',
                             maxBet: bet[3] ? `${web3.utils.fromWei(bet[3].toString(), 'ether')} ETH` : '0 ETH',
                             limit: Number(bet[5]) || 0,
                             team1,
@@ -116,8 +118,8 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode }) => {
                             eventDate: event.DateTime,
                             maxNumberOfChallengers: bet.maxNumberOfChallengers,
                             challengers: bet.challengers,
-                            dataBet: bet.dataBet,
-                            odds: bet.odds || 0
+                            dataBet: bet.betData.map((each) => Number(each)),
+                            odds: Number(bet.odds) / 1000 || 0
                         };
                         bets.push(newBet);
                     } else {
@@ -173,7 +175,7 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode }) => {
             <h1 className='font-semibold my-3 text-xl 2xl:text-3xl'>Trend Bets</h1>
             <div className="flex flex-row justify-between items-center md:px-4">
                 {showLeftArrow && <ChevronLeftIcon className="h-5 cursor-pointer" onClick={() => handleScroll('left')} />}
-                <div className='flex w-full gap-4 overflow-x-scroll scroll-invisible py-2 px-1' ref={scrollContainerRef}>
+                <div className='flex w-full gap-4 overflow-x-scroll scroll-invisible justify-start py-2 px-1' ref={scrollContainerRef}>
                     {matches.map((match, index) => (
                         <CardMatch key={index} matchData={match} darkMode={darkMode} />
                     ))}

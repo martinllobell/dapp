@@ -23,7 +23,7 @@ export default function LeadPanel({ }: Props) {
     const [openInput, setOpenInput] = useState<boolean>(false);
     const [showSelections, setShowSelections] = useState<boolean>(false);
     const [inputValue, setInputValue] = useState<{ value: string, gains: string }>({ value: "$", gains: '' });
-    const [inputValues, setInputValues] = useState<{ [id: string]: { value: string, gains: string } }[]>([]);
+    const [inputValues, setInputValues] = useState<{ [id: string]: { value: string, gains: string } }[] | []>([]);
     const [shake, setShake] = useState<boolean>(false);
     const inputRef = useRef<HTMLDivElement>(null);
     const inputValueRef = useRef(inputValue.value);
@@ -46,6 +46,9 @@ export default function LeadPanel({ }: Props) {
         };
     }, [inputRef]);
 
+    const formatBigInt = (value: number) => {
+        return (value / 1000000000000000000).toFixed(4)
+    }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         let value = e.target.value;
@@ -63,12 +66,13 @@ export default function LeadPanel({ }: Props) {
         let formattedValue = formatNumber(value);
 
         // Check if the number exceeds 10,000,000
-        if (parseFloat(formattedValue.replace(/[,$.]/g, '')) > 999999999) {
-            formattedValue = '$999.999.999';
+        if (parseFloat(formattedValue.replace(/[$]/g, '').replace(/,/g, '.')) > Number(formatBigInt(store.tray[0].maxEntryFee))) {
+            formattedValue = '$' + formatBigInt(store.tray[0].maxEntryFee).replace(/[.]/g, ',');
         }
 
         setInputValue({ value: formattedValue, gains: calculateAndFormat(formattedValue, store.totalGains) });
     };
+
 
 
     const formatNumber = (value: string) => {
@@ -120,7 +124,7 @@ export default function LeadPanel({ }: Props) {
         return formattedResult;
     }
 
-    const handleInputValues = (id: string, e: React.ChangeEvent<HTMLInputElement>, gain: number) => {
+    const handleInputValues = (id: string, e: React.ChangeEvent<HTMLInputElement>, gain: number, maxEntryFee: number) => {
         let value = e.target.value;
 
         // Remove any character that is not a digit or comma
@@ -137,8 +141,8 @@ export default function LeadPanel({ }: Props) {
         let formattedValue = formatNumber(value);
 
         // Check if the number exceeds 10,000,000
-        if (parseFloat(formattedValue.replace(/[,$.]/g, '')) > 999999999) {
-            formattedValue = '$999.999.999';
+        if (parseFloat(formattedValue.replace(/[,$.]/g, '')) > Number(formatBigInt(maxEntryFee))) {
+            formattedValue = '$' + formatBigInt(maxEntryFee).replace(/[.]/g, ',');
         }
 
         setInputValues({ ...inputValues, [id]: { value: formattedValue, gains: calculateAndFormat(formattedValue, gain) } });
@@ -152,7 +156,8 @@ export default function LeadPanel({ }: Props) {
     };
 
     useEffect(() => {
-        if (store.tray.length < 2) setShowSelections(false)
+        if (store.tray.length > 1) setInputValue({ value: '$', gains: '' })
+        if (store.tray.length < 2) setShowSelections(false); setInputValues([])
         // Código para ejecutar cuando el componente se monta o actualiza
     }, [store]);
 
@@ -160,7 +165,7 @@ export default function LeadPanel({ }: Props) {
         let total = 0;
         let combined = Number(inputValue.gains.split(' ')[0].replace(/\./g, '').replace(',', '.'))
 
-        Object.values(inputValues).forEach(({ gains }) => {
+        Object.values(inputValues).forEach(({ gains }: any) => {
             // Eliminar el signo de dólar y formatear el número para convertirlo a un valor numérico
             const numericValue = Number(gains.split(' ')[0].replace(/\./g, '').replace(',', '.'));
 
@@ -184,12 +189,12 @@ export default function LeadPanel({ }: Props) {
                         <div className='w-full flex flex-row justify-between items-center p-2 whitespace-nowrap col-span-2 '>
                             <div className='flex'>
                                 <h2 className='font-medium text-xl'>Selections</h2>
-                                <p className='relative -top-1 bg-primary dark:bg-secundary rounded-2xl w-4 h-4 text-xs text-gray-200 dark:text-gray-800 text-center'>{store.tray.length}</p>
+                                <p className='relative -top-1 bg-primary dark:bg-secundary font-semibold rounded-2xl w-4 h-4 text-xs text-gray-200 dark:text-gray-800 text-center'>{store.tray.length}</p>
                             </div>
                             {store.tray.length > 1 &&
                                 <div className='flex gap-2 items-center'>
                                     {store.availableMoney &&
-                                        <div className='flex flex-col items-end font-light text-[10px]'>
+                                        <div className='flex flex-col items-end font-semibold text-[10px]'>
                                             <p>
                                                 Available money
                                             </p>
@@ -207,19 +212,23 @@ export default function LeadPanel({ }: Props) {
                     }
                     <div className={`col-span-2 bg-black/10 dark:bg-black/20 w-full flex overflow-y-auto flex flex-col transition transform
                 ${!showSelections && 'hidden'}`}>
-                        {store.tray.length > 1 && showSelections && store.tray.map(({ winCondition, match, id, team, gains }, index: number) =>
+                        {store.tray.length > 1 && showSelections && store.tray.map(({ winCondition, match, id, team, gains, maxBet, maxEntryFee }, index: number) =>
                             <div className='w-full h-auto grid grid-cols-12 items-center border-b border-primary dark:border-secundary pb-2 pr-2'>
                                 <div className='w-full h-5 hover:text-primary hover:dark:text-secundary cursor-pointer col-span-1 flex justify-center'
                                     onClick={() => removeTray(id)}>
                                     <XMarkIcon />
                                 </div>
                                 <div className='w-full flex flex-row items-center justify-between col-span-11'>
-                                    <p className='font-medium text-md'>{team}</p>
+                                    <div className='flex gap-2'>
+                                        {team.logo && <img src={team.logo} className='w-5'></img>}
+                                        <p className='font-medium text-md'>{team.name.split(':')[0]}</p>
+                                    </div>
                                     <div className='flex flex-row items-end justify-end gap-2'>
                                         <p className='font-semibold text-xl w-full text-end text-primary dark:text-secundary'>{gains.toFixed(2)}</p>
                                         <input className='w-32 h-8 p-1 bg-white/30 focus:outline-none'
-                                            onChange={(e) => handleInputValues(id, e, gains)}
-                                            value={inputValues[id]?.value || '$'}></input>
+                                            onChange={(e) => handleInputValues(id, e, gains, maxEntryFee)}
+                                            value={inputValues[id]?.value || '$'}>
+                                        </input>
                                     </div>
                                 </div>
                                 <div></div>
@@ -230,8 +239,9 @@ export default function LeadPanel({ }: Props) {
                                         </p>
                                         <p className='font-medium text-xs pt-1 opacity-80'>{match}</p>
                                     </div>
-                                    {inputValues[id] && inputValues[id].value !== '$' &&
+                                    {inputValues[id] && inputValues[id].value !== '$' ?
                                         <p className='text-end text-primary-300 font-semibold dark:text-green-500'>Potencial gains {inputValues[id].gains}</p>
+                                        : <p className='text-end text-primary-300 font-semibold dark:text-green-500'>Max entry: {formatBigInt(maxEntryFee)}</p>
                                     }
 
                                 </div>
@@ -239,26 +249,19 @@ export default function LeadPanel({ }: Props) {
                         )}
                     </div>
 
-                    <div className='flex grid grid-cols-12 min-h-20 max-h-auto items-center py-1'>
+                    <div className='flex grid grid-cols-12 min-h-20 justify-start items-center py-1'>
                         <div className='h-5 hover:text-primary hover:dark:text-secundary cursor-pointer flex justify-center'
                             onClick={() => removeTrays()}>
                             <XMarkIcon />
                         </div>
-                        <div className='w-auto flex flex-row items-center col-span-11'>
-                            <p className='font-medium '>{store.tray.length > 1 ? leadTitle[store.tray.length] : store.tray[0].team}</p>
-                            {showSelections ?
-                                <div className='flex flex-row h-auto items-end w-full justify-end gap-2 relative bottom-1'>
-                                    <p className='font-semibold text-xl text-primary dark:text-secundary pt-2 w-12 text-end'>{store?.totalGains?.toFixed(2)}</p>
-                                    <input className='w-44 h-8 bg-white/30 pl-1 mr-2 focus:outline-none'
-                                        value={inputValue.value}
-                                        onChange={(e) => handleChange(e)}
-                                    ></input>
-                                </div>
-                                :
-                                <p className='font-semibold text-xl text-primary dark:text-secundary w-12 pl-3'>{store.totalGains.toFixed(2)}</p>
+                        <div className='w-auto flex flex-row items-center gap-2 col-span-11'>
+                            {store.tray.length === 1 && store.tray[0].team.logo && <img src={store.tray[0].team.logo} className='w-5'></img>}
+                            <p className='font-medium '>{store.tray.length > 1 ? leadTitle[store.tray.length] : store.tray[0].team.name.split(':')[0]}</p>
+                            {store.tray.length === 1 && !showSelections &&
+                                <p className='font-semibold text-xl text-primary dark:text-secundary w-12'>{store?.totalGains?.toFixed(2)}</p>
                             }
                             {store.tray.length > 1 && !showSelections &&
-                                <div className='w-full flex flex-row justify-end items-center text-primary dark:text-secundary whitespace-nowrap p-2'>
+                                <div className='w-full flex flex-row justify-end items-center text-primary dark:text-secundary whitespace-nowrap px-2'>
                                     <p className='flex flex-row gap-1 relative -top-1 items-center hover:underline cursor-pointer'
                                         onClick={() => setShowSelections(true)}>
                                         Show selections
@@ -277,23 +280,26 @@ export default function LeadPanel({ }: Props) {
                                         {store.tray[0].winCondition}</p>
 
                                 }
-                                {store.tray.length > 1 ?
-                                    <p className='font-medium text-xs col-span-11 w-4/5 p4 pt-1 opacity-90'>{store.tray.reduce((acc, { team }, i) => acc += team + (store.tray.length !== i + 1 ? ', ' : '.'), '')}</p>
-                                    :
-                                    <p className='font-medium text-xs col-span-11 pt-1 opacity-90'>{store.tray[0].match}</p>
-                                }
+                                <div className='flex w-full gap-1'>
+                                    {store.tray.length > 1 ?
+                                        store.tray.map(({ team }, index) =>
+                                            <div className='flex gap-1 items-center justify-center '>
+                                                {team.logo && <img src={team.logo} className={`w-5`} ></img>}
+                                                <p className='font-medium text-xs col-span-11 w-full opacity-90'>{team.name}{index === store.tray.length - 1 ? '.' : ', '}</p>
+                                            </div>
+                                        )
+                                        :
+                                        <p className='font-medium text-xs col-span-11 opacity-90'>{store.tray[0].match}</p>
+                                    }
+                                </div>
                             </div>
-                            {inputValue && inputValue.value !== '$' && showSelections &&
-                                <p className='text-end text-primary-300 font-semibold dark:text-secundary pr-2'>Potencial gains {inputValue.gains}</p>
-                            }
-
                         </div>
 
                     </div>
                 </div>
                 <div className='col-span-2 flex-row flex min-h-14 w-full justify-center transform transition-transform duration-700'>
                     <div className={`dark:bg-gray-800 bg-indigo-300 flex pl-3 h-full justify-center items-center lg:rounded-bl-lg
-            ${showSelections ? 'hidden' : 'w-full'}`}
+            ${showSelections || store.tray.length > 1 ? 'hidden' : 'w-full'}`}
                         ref={inputRef}
                         onClick={() => setOpenInput(true)}>
                         {!openInput ?
@@ -312,13 +318,16 @@ export default function LeadPanel({ }: Props) {
                     </div>
                     <div className={`flex flex-col items-center justify-center lg:rounded-br-lg transform transition-transform duration-300
             ${inputValue.value === '$' && getTotalGains() === '$0' ? 'bg-gray-400 cursor-not-allowed' : 'bg-primary dark:bg-secundary cursor-pointer'}
-            ${showSelections ? 'w-full rounded-b' : 'w-full'}`}
+            ${showSelections || store.tray.length > 1 ? 'w-full rounded-b' : 'w-full'}`}
                         onClick={() => handleSubmit()}>
                         <p
                             className='text-center rounded w-full font-semibold dark:text-gray-800 text-indigo-200'>
                             Place bet
                         </p>
-                        {showSelections && getTotalGains() !== '$0'
+                        {!openInput && store.tray.length < 2 &&
+                            <p className='text-center rounded w-full font-semibold dark:text-gray-800 text-indigo-200'>Max entry: {formatBigInt(store.tray[0].maxEntryFee)}</p>
+                        }
+                        {getTotalGains() !== '$0'
                             ?
                             <p className={`text-xs font-semibold relative text-center dark:text-gray-800 text-indigo-200`}>
                                 {'Total gains ' + calculateAndFormat(getTotalGains(), 1)}
