@@ -5,7 +5,7 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
-  "darkMode": "class",
+  darkMode: "class",
 
   theme: {
     extend: {
@@ -20,6 +20,14 @@ export default {
           300: "#DA70D6", // Orquídea (un tono medio de violeta)
           400: "#9932CC", // Violeta oscuro (Dark Violet)
           500: "#4B0082", // Índigo (un tono muy oscuro de violeta)
+        },
+        secundary: {
+          DEFAULT: "#32CD32", // Lime Green
+          100: "#E0FFE0", // Light Green
+          200: "#A3FFA3", // Medium Light Green
+          300: "#66FF66", // Medium Green
+          400: "#32CD32", // Lime Green
+          500: "#228B22", // Forest Green
         },
         boxShadow: {
           'purple': '0 4px 6px -1px rgba(138, 43, 226, 0.5), 0 2px 4px -2px rgba(138, 43, 226, 0.5)',
@@ -43,4 +51,3 @@ export default {
     'tailwindcss-animated'
   ],
 }
-

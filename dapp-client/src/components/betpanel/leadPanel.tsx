@@ -26,10 +26,11 @@ export default function LeadPanel({ }: Props) {
     const [inputValues, setInputValues] = useState<{ [id: string]: { value: string, gains: string } }[]>([]);
     const [shake, setShake] = useState<boolean>(false);
     const inputRef = useRef<HTMLDivElement>(null);
-    const inputValueRef = useRef(inputValue);
+    const inputValueRef = useRef(inputValue.value);
     const { store, removeTray, removeTrays } = useTrayStore();
+
     useEffect(() => {
-        inputValueRef.current = inputValue;
+        inputValueRef.current = inputValue.value;
     }, [inputValue]);
 
     useEffect(() => {
@@ -177,13 +178,13 @@ export default function LeadPanel({ }: Props) {
 
     return (
         store.tray.length ?
-            <div className='fixed bottom-0 lg:bottom-12 text-gray-200 start-1/2 transform -translate-x-1/2 w-full sm:w-2/3 lg:w-2/5 min-h-32 z-50 grid grid-cols-2 flex overflow-hidden'>
-                <div className='col-span-2 bg-black/80 w-full flex sm:rounded-t-lg flex flex-col max-h-80'>
+            <div className='fixed bottom-0 lg:bottom-12 start-1/2 transform -translate-x-1/2 w-full sm:w-2/3 lg:w-2/5 min-h-32 z-50 grid grid-cols-2 flex overflow-hidden'>
+                <div className='col-span-2 dark:bg-gray-900 bg-indigo-200 w-full flex sm:rounded-t-lg flex flex-col max-h-80'>
                     {store.tray.length > 1 && showSelections &&
                         <div className='w-full flex flex-row justify-between items-center p-2 whitespace-nowrap col-span-2 '>
                             <div className='flex'>
                                 <h2 className='font-medium text-xl'>Selections</h2>
-                                <p className='relative -top-1 bg-primary rounded-2xl w-4 h-4 text-xs text-center'>{store.tray.length}</p>
+                                <p className='relative -top-1 bg-primary dark:bg-secundary rounded-2xl w-4 h-4 text-xs text-gray-200 dark:text-gray-800 text-center'>{store.tray.length}</p>
                             </div>
                             {store.tray.length > 1 &&
                                 <div className='flex gap-2 items-center'>
@@ -195,27 +196,27 @@ export default function LeadPanel({ }: Props) {
                                             <p>{store.availableMoney}</p>
                                         </div>
                                     }
-                                    <p className='flex flex-row gap-1 items-center hover:underline text-primary cursor-pointer'
+                                    <p className='flex flex-row gap-1 items-center hover:underline text-primary dark:text-secundary cursor-pointer'
                                         onClick={() => setShowSelections(false)}>
                                         Show selections
-                                        <ChevronDownIcon className='w-4 h-4 text-primary hover:underline' />
+                                        <ChevronDownIcon className='w-4 h-4 text-primary dark:text-secundary hover:underline' />
                                     </p>
                                 </div>
                             }
                         </div>
                     }
-                    <div className={`col-span-2 bg-black/60 w-full flex overflow-y-auto flex flex-col transition transform
+                    <div className={`col-span-2 bg-black/10 dark:bg-black/20 w-full flex overflow-y-auto flex flex-col transition transform
                 ${!showSelections && 'hidden'}`}>
                         {store.tray.length > 1 && showSelections && store.tray.map(({ winCondition, match, id, team, gains }, index: number) =>
-                            <div className='w-full h-auto grid grid-cols-12 items-center border-b border-primary pb-2 pr-2'>
-                                <div className='w-full h-5 hover:text-primary cursor-pointer col-span-1 flex justify-center'
+                            <div className='w-full h-auto grid grid-cols-12 items-center border-b border-primary dark:border-secundary pb-2 pr-2'>
+                                <div className='w-full h-5 hover:text-primary hover:dark:text-secundary cursor-pointer col-span-1 flex justify-center'
                                     onClick={() => removeTray(id)}>
                                     <XMarkIcon />
                                 </div>
                                 <div className='w-full flex flex-row items-center justify-between col-span-11'>
                                     <p className='font-medium text-md'>{team}</p>
                                     <div className='flex flex-row items-end justify-end gap-2'>
-                                        <p className='font-semibold text-xl w-full text-end text-primary'>{gains.toFixed(2)}</p>
+                                        <p className='font-semibold text-xl w-full text-end text-primary dark:text-secundary'>{gains.toFixed(2)}</p>
                                         <input className='w-32 h-8 p-1 bg-white/30 focus:outline-none'
                                             onChange={(e) => handleInputValues(id, e, gains)}
                                             value={inputValues[id]?.value || '$'}></input>
@@ -230,7 +231,7 @@ export default function LeadPanel({ }: Props) {
                                         <p className='font-medium text-xs pt-1 opacity-80'>{match}</p>
                                     </div>
                                     {inputValues[id] && inputValues[id].value !== '$' &&
-                                        <p className='text-end text-primary-300'>Potencial gains {inputValues[id].gains}</p>
+                                        <p className='text-end text-primary-300 font-semibold dark:text-green-500'>Potencial gains {inputValues[id].gains}</p>
                                     }
 
                                 </div>
@@ -239,7 +240,7 @@ export default function LeadPanel({ }: Props) {
                     </div>
 
                     <div className='flex grid grid-cols-12 min-h-20 max-h-auto items-center py-1'>
-                        <div className='h-5 hover:text-primary cursor-pointer flex justify-center'
+                        <div className='h-5 hover:text-primary hover:dark:text-secundary cursor-pointer flex justify-center'
                             onClick={() => removeTrays()}>
                             <XMarkIcon />
                         </div>
@@ -247,21 +248,21 @@ export default function LeadPanel({ }: Props) {
                             <p className='font-medium '>{store.tray.length > 1 ? leadTitle[store.tray.length] : store.tray[0].team}</p>
                             {showSelections ?
                                 <div className='flex flex-row h-auto items-end w-full justify-end gap-2 relative bottom-1'>
-                                    <p className='font-semibold text-xl text-primary pt-2 w-12 text-end'>{store?.totalGains?.toFixed(2)}</p>
+                                    <p className='font-semibold text-xl text-primary dark:text-secundary pt-2 w-12 text-end'>{store?.totalGains?.toFixed(2)}</p>
                                     <input className='w-44 h-8 bg-white/30 pl-1 mr-2 focus:outline-none'
                                         value={inputValue.value}
                                         onChange={(e) => handleChange(e)}
                                     ></input>
                                 </div>
                                 :
-                                <p className='font-semibold text-xl text-primary w-12 pl-3'>{store.totalGains.toFixed(2)}</p>
+                                <p className='font-semibold text-xl text-primary dark:text-secundary w-12 pl-3'>{store.totalGains.toFixed(2)}</p>
                             }
                             {store.tray.length > 1 && !showSelections &&
-                                <div className='w-full flex flex-row justify-end items-center text-primary whitespace-nowrap p-2'>
+                                <div className='w-full flex flex-row justify-end items-center text-primary dark:text-secundary whitespace-nowrap p-2'>
                                     <p className='flex flex-row gap-1 relative -top-1 items-center hover:underline cursor-pointer'
                                         onClick={() => setShowSelections(true)}>
                                         Show selections
-                                        <ChevronUpIcon className='w-4 h-4 text-primary hover:underline' />
+                                        <ChevronUpIcon className='w-4 h-4 text-primary dark:text-secundary hover:underline' />
                                     </p>
                                 </div>
                             }
@@ -283,7 +284,7 @@ export default function LeadPanel({ }: Props) {
                                 }
                             </div>
                             {inputValue && inputValue.value !== '$' && showSelections &&
-                                <p className='text-end text-primary-300 pr-2'>Potencial gains {inputValue.gains}</p>
+                                <p className='text-end text-primary-300 font-semibold dark:text-secundary pr-2'>Potencial gains {inputValue.gains}</p>
                             }
 
                         </div>
@@ -291,18 +292,18 @@ export default function LeadPanel({ }: Props) {
                     </div>
                 </div>
                 <div className='col-span-2 flex-row flex min-h-14 w-full justify-center transform transition-transform duration-700'>
-                    <div className={`bg-gray-800 flex pl-3 h-full justify-center items-center lg:rounded-bl-lg
+                    <div className={`dark:bg-gray-800 bg-indigo-300 flex pl-3 h-full justify-center items-center lg:rounded-bl-lg
             ${showSelections ? 'hidden' : 'w-full'}`}
                         ref={inputRef}
                         onClick={() => setOpenInput(true)}>
                         {!openInput ?
-                            <h1 className={`font-medium text-2xl opacity-90 w-full text-start text-primary ${shake ? 'animate-shake animate-twice animate-duration-300' : ''}`}>
+                            <h1 className={`font-medium text-2xl opacity-90 w-full text-start text-primary dark:text-secundary ${shake ? 'animate-shake animate-twice animate-duration-300' : ''}`}>
                                 Set Import</h1>
                             :
                             <div className='flex flex-col pt-1'>
-                                <p className={`text-xs font-light`}>Import</p>
+                                <p className={`text-xs`}>Import</p>
                                 <input
-                                    className='text-2xl font-semibold w-full text-primary bg-white/0 focus:outline-none cursor-pointer'
+                                    className='text-2xl font-semibold w-full text-primary dark:text-secundary bg-white/0 focus:outline-none cursor-pointer'
                                     value={inputValue.value}
                                     onChange={(e) => handleChange(e)}
                                 />
@@ -310,20 +311,20 @@ export default function LeadPanel({ }: Props) {
                         }
                     </div>
                     <div className={`flex flex-col items-center justify-center lg:rounded-br-lg transform transition-transform duration-300
-            ${inputValue.value === '$' && getTotalGains() === '$0' ? 'bg-gray-400 cursor-not-allowed' : 'bg-primary  cursor-pointer'}
+            ${inputValue.value === '$' && getTotalGains() === '$0' ? 'bg-gray-400 cursor-not-allowed' : 'bg-primary dark:bg-secundary cursor-pointer'}
             ${showSelections ? 'w-full rounded-b' : 'w-full'}`}
                         onClick={() => handleSubmit()}>
                         <p
-                            className='text-center rounded w-full font-semibold'>
+                            className='text-center rounded w-full font-semibold dark:text-gray-800 text-indigo-200'>
                             Place bet
                         </p>
                         {showSelections && getTotalGains() !== '$0'
                             ?
-                            <p className={`text-xs font-light relative text-center`}>
+                            <p className={`text-xs font-semibold relative text-center dark:text-gray-800 text-indigo-200`}>
                                 {'Total gains ' + calculateAndFormat(getTotalGains(), 1)}
                             </p>
                             :
-                            <p className={`text-xs font-light relative text-center`}>
+                            <p className={`text-xs font-semibold relative text-center dark:text-gray-800 text-indigo-200`}>
                                 {inputValue.value !== '$' ? 'Potencial gains ' + inputValue.gains : ''}
                             </p>
                         }

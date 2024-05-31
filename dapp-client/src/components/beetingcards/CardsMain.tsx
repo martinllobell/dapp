@@ -81,7 +81,6 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode }) => {
                 for (let i = 0; i < numberOfBets; i++) {
                     const bet = await contracts.p2pBetting.methods.getBet(i).call();
                     if (bet) {
-                        console.log(bet, "CLAUDIAAAA");
 
                         const event = await fetchEventData(parseInt(bet[1], 10));
 

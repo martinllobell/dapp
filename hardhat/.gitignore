@@ -1,10 +1,11 @@
 node_modules
+frontend/src/contracts
 .env
 coverage
 coverage.json
 typechain
 typechain-types
-frontend
+
 
 # Hardhat files
 cache

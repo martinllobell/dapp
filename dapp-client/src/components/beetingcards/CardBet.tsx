@@ -63,31 +63,32 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode }: CardMatch
                         <p className="text-sm">{matchData.suscribed}/{matchData.limit}</p>
                     </div>
                 </div>
-                <div className="items-center text-sm bg-gradient-to-bl dark:from-black from-white to-transparent p-1 absolute w-1 mt-[43px] ml-6 h-2 -rotate-45"></div>
-                <div className="flex flex-row items-start justify-between p-2 text-sm bg-gradient-to-r dark:from-black/60 from-white dark:to-black/40 relative z-2 rounded-mlg p-2">
+                <div className="items-center text-sm bg-gradient-to-bl dark:from-gray-900 from-indigo-200 to-transparent p-1 absolute w-1 mt-[43px] ml-6 h-2 -rotate-45"></div>
+                <div className="flex flex-row items-start justify-between p-2 text-sm bg-gradient-to-r dark:from-gray-900/60 from-indigo-200 to-indigo-300/60 dark:to-gray-800/40 relative z-2 rounded-lg p-2">
                     <div className="flex flex-col w-full">
                         <p>{matchData.winCondition}: </p>
                         <p className="max-w-32 md:max-w-full">{matchData.team1.name} </p>
                     </div>
                     <div className="flex flex-col items-center w-auto whitespace-nowrap">
                         Max Bet
-                        <p className="font-bold dark:text-yellow-500 text-primary">{matchData.maxBet}</p>
+                        <p className="font-bold dark:text-secundary text-primary">{matchData.maxBet}</p>
                     </div>
                 </div>
                 <div className='flex flex-row justify-between items-center'>
                     <div className='flex flex-col max-w-20 items-center'>
                         <img src={matchData.team1.logo} alt={`${matchData.team1.name} logo`} className='max-w-12 md:max-w-20' />
-                        <h2 className={'text-sm text-xs font-medium w-20 text-center'}>{matchData.team1.name}</h2>
+                        <h2 className={'text-xs font-medium w-20 text-center'}>{matchData.team1.name}</h2>
                     </div>
-                    <h2 className={'font-medium md:hidden'}>v</h2>
-                    <div className={'font-medium hidden md:flex items-center flex-col text-xs'}>
-                        <h2>18:00hs</h2>
-                        <h2>24/12/2024</h2>
-                        <h2>VS</h2>
+                    <div className={'font-medium flex items-center flex-col h-full justify-start text-[10px] md:text-xs'}>
+                        <div className="items-center w-full flex flex-col">
+                            <h2>18:00hs</h2> {/* Shown on desktop */}
+                            <h2>24/12/2024</h2> {/* Shown on desktop */}
+                        </div>
+                        <h2 className="mt-5">VS</h2> {/* Shown on desktop */}
                     </div>
                     <div className='flex flex-col max-w-20 items-center overflow-hidden'>
                         <img src={matchData.team2.logo} alt={`${matchData.team2.name} logo`} className='max-w-12 md:max-w-20' />
-                        <h2 className={'text-sm text-xs font-medium w-20 text-center'}>{matchData.team2.name}</h2>
+                        <h2 className={'text-xs font-medium w-20 text-center'}>{matchData.team2.name}</h2>
                     </div>
                 </div>
                 <div className="items-center w-full flex justify-center">
@@ -101,9 +102,9 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode }: CardMatch
                                 Place Bet
                             </p>
                             <p>
-                                {matchData.team2.name} Win:
+                                {matchData.team2.name} Win
                             </p>
-                            <p className={`text-sm font-bold p-1 text-center w-12 dark:text-yellow-500 text-primary `}>
+                            <p className={`text-sm font-bold p-1 text-center w-12 dark:text-secundary text-primary `}>
                                 {matchData.team2.odd.toFixed(2)}
                             </p>
                         </div>
