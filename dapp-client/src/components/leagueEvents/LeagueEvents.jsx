@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Loading from '../loading/Loading';
 import BetCreationModal from '../betCreationModal/BetCreationModal';
+import Pagination from '../pagination/Pagination';
 
 const LeagueEvents = ({ league, sport }) => {
     const [teamLogos, setTeamLogos] = useState({});
@@ -13,7 +14,7 @@ const LeagueEvents = ({ league, sport }) => {
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [simulatedDate, setSimulatedDate] = useState(new Date('2023-12-01T00:00:00')); // Fecha simulada
     const defaultLogoUrl = 'default_logo_url'; // URL de imagen predeterminada
-    const eventsPerPage = 10;
+    const eventsPerPage = 12;
 
     useEffect(() => {
         if (sport === 'futbol') {
@@ -109,31 +110,20 @@ const LeagueEvents = ({ league, sport }) => {
         return new Date(eventDate) < simulatedDate;
     };
 
+    const totalPages = Math.ceil(allEvents.length / eventsPerPage);
+
     return (
         <div className="flex justify-center">
-            <div className="w-[80%]">
-                <div className="flex justify-between mb-5 h-[3rem]">
-                    {currentPage > 1 && (
-                        <button
-                            className="px-4 py-2 bg-blue-500 text-white rounded-lg"
-                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                        >
-                            Anterior
-                        </button>
-                    )}
-                    {currentPage < Math.ceil(allEvents.length / eventsPerPage) && (
-                        <button
-                            className="px-4 py-2 bg-blue-500 text-white rounded-lg"
-                            onClick={() => setCurrentPage(prev => prev + 1)}
-                        >
-                            Siguiente
-                        </button>
-                    )}
-                </div>
-                <div className="flex justify-between flex-wrap mt-5 gap-8">
+            <div className="w-[100%]">
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                />
+                <div className="flex flex-wrap mt-5 mb-8 gap-8">
                     {loading ? (
-                        Array(6).fill(0).map((_, index) => (
-                            <div key={index} className="p-4 bg-gray-200 w-[45%] dark:bg-gray-700 rounded-lg flex flex-col space-y-3 animate-pulse">
+                        Array(12).fill(0).map((_, index) => (
+                            <div key={index} className="p-4 bg-gray-200 w-[30%] dark:bg-gray-700 rounded-lg flex flex-col space-y-3 animate-pulse">
                                 <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-1/2"></div>
                                 <div className="flex justify-between items-center">
                                     <div className="flex items-center space-x-8">
@@ -151,10 +141,10 @@ const LeagueEvents = ({ league, sport }) => {
                         ))
                     ) : (
                         currentEvents.map(event => (
-                            <div key={event.GameId || event.GameID} className={`p-4 ${isPastEvent(event.DateTime) ? 'bg-gray-400 dark:bg-gray-800' : 'bg-gray-100 dark:bg-gray-700'} w-[45%] rounded-lg flex flex-col space-y-3`}>
-                                <div className="text-gray-600 dark:text-gray-400 font-bold text-lg">{new Date(event.DateTime).toLocaleString()}</div>
-                                <div className="flex justify-between items-center">
-                                    <div className="flex items-center space-x-8">
+                            <div key={event.GameId || event.GameID} className={`p-4 ${isPastEvent(event.DateTime) ? 'backdrop-blur-xl bg-black/10 dark:bg-black/20 shadow-xl shadow-sm shadow-black/10 rounded-lg ' : 'backdrop-blur-xl bg-white/10 shadow-xl shadow-sm shadow-black/10 rounded-lg transition-colors'}sm:w-[45%] md:w-[30%] lg:w-[30%]   rounded-lg flex flex-col items-center space-y-3`}>
+                                <div className="text-black dark:text-white flex items-center justify-center rounded-lg bg-indigo-800/40 dark:bg-indigo-700/40 w-[100%] dark:font-light font-bold text-lg">{new Date(event.DateTime).toLocaleString()}</div>
+                                <div className="flex justify-between w-[80%] items-center">
+                                    <div className="flex items-center w-[25%] justify-between">
                                         <span className="text-lg font-semibold">{event.HomeTeamName || event.HomeTeam}</span>
                                         {
                                             teamLogos[event.HomeTeamName || event.HomeTeam] ?
@@ -163,7 +153,7 @@ const LeagueEvents = ({ league, sport }) => {
                                         }
                                     </div>
                                     <span className="text-lg font-semibold mx-3">vs</span>
-                                    <div className="flex items-center space-x-8">
+                                    <div className="flex items-center w-[25%] justify-between">
                                         {
                                             teamLogos[event.AwayTeamName || event.AwayTeam] ?
                                                 <img src={teamLogos[event.AwayTeamName || event.AwayTeam]} alt={event.AwayTeamName || event.AwayTeam} className="w-12 h-12" />
@@ -173,32 +163,24 @@ const LeagueEvents = ({ league, sport }) => {
                                     </div>
                                 </div>
                                 {isPastEvent(event.DateTime) ? (
-                                    <div className="text-center text-white dark:bg-gray-900 bg-gray-500 py-2 rounded-lg">{event.HomeTeamScore} - {event.AwayTeamScore}</div>
+                                    <div className="text-center w-[80%] flex content-center items-center justify-between ">
+                                        <div className="w-[25%] text-white dark:bg-gray-900 bg-gray-500 py-2 rounded-lg">
+                                            {event.HomeTeamScore}
+                                        </div>
+                                        <p className="">
+                                            -
+                                        </p>
+                                        <div className="w-[25%] text-white dark:bg-gray-900 bg-gray-500 py-2 rounded-lg">
+                                            {event.AwayTeamScore}
+                                        </div>
+                                    </div>
                                 ) : (
-                                    <div className="flex justify-end">
-                                        <button className="px-4 py-2 bg-green-500 text-white rounded-lg" onClick={() => handleCreateBet(event)}>Crear apuesta</button>
+                                    <div className="flex pt-9 justify-center">
+                                        <button className="px-4 py-2 bg-indigo-500 text-white hover:bg-purple-500  rounded-lg" onClick={() => handleCreateBet(event)}>Make a bet</button>
                                     </div>
                                 )}
                             </div>
                         ))
-                    )}
-                </div>
-                <div className="flex justify-between mt-5 h-[3rem]">
-                    {currentPage > 1 && (
-                        <button
-                            className="px-4 py-2 bg-blue-500 text-white rounded-lg"
-                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                        >
-                            Anterior
-                        </button>
-                    )}
-                    {currentPage < Math.ceil(allEvents.length / eventsPerPage) && (
-                        <button
-                            className="px-4 py-2 bg-blue-500 text-white rounded-lg"
-                            onClick={() => setCurrentPage(prev => prev + 1)}
-                        >
-                            Siguiente
-                        </button>
                     )}
                 </div>
             </div>
