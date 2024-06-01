@@ -18,7 +18,7 @@ const sportImages = {
     bets
 };
 
-const FilterHome = ({ darkMode }) => {
+const FilterHome = ({ darkMode, setStartMatchTimestamp}) => {
     const [viewMore, setViewMore] = useState(false);
     const [allLeagues, setAllLeagues] = useState({});
     const [currentLeagues, setCurrentLeagues] = useState([]);
@@ -143,7 +143,7 @@ const FilterHome = ({ darkMode }) => {
                 </div>
                 {selectedSport === "bets" ? (
                     <div className=''>
-                        <CardsMain darkMode={darkMode} />
+                        <CardsMain darkMode={darkMode} setStartMatchTimestamp={setStartMatchTimestamp} />
                     </div>
                 ) : (
                     <>

@@ -3,7 +3,7 @@ import { CardsMain } from "../../components/beetingcards/CardsMain";
 import FirstComponent from "../../components/firstComponent/FirstComponent";
 import WelcomePlay from "../../components/PlayInvitation/WelcomePlay";
 
-const Home = ({ darkMode }) => {
+const Home = ({ darkMode, setStartMatchTimestamp}) => {
   return (
     <div
       className={`w-full pt-1 flex flex-col items-center justify-center space-y-48 ${
@@ -15,7 +15,7 @@ const Home = ({ darkMode }) => {
         <WelcomePlay />
       </div>
       <div className="mb-8">
-        <CardsMain darkMode={darkMode} />
+        <CardsMain setStartMatchTimestamp={setStartMatchTimestamp} darkMode={darkMode} />
       </div>
     </div>
   );
