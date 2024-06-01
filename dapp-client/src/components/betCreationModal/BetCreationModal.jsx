@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { useContracts } from '../../hooks/useContracts';
 
@@ -16,6 +16,38 @@ const BetCreationModal = ({ isOpen, onRequestClose, event, teamLogos }) => {
     const [odds, setOdds] = useState('');
     const [maxEntryFee, setMaxEntryFee] = useState('');
 
+    useEffect(() => {
+        if (amount && odds) {
+            const potentialWinCalculated = (parseFloat(amount) * (parseFloat(odds) / 1000)).toFixed(2);
+            setPotentialWin(potentialWinCalculated);
+        }
+    }, [amount, odds]);
+
+    useEffect(() => {
+        if (potentialWin && odds) {
+            const amountCalculated = (parseFloat(potentialWin) / (parseFloat(odds) / 1000)).toFixed(2);
+            setAmount(amountCalculated);
+        }
+    }, [potentialWin, odds]);
+
+    const handlePotentialWinChange = (e) => {
+        const value = e.target.value;
+        setPotentialWin(value);
+        if (odds) {
+            const amountCalculated = (parseFloat(value) / (parseFloat(odds) / 1000)).toFixed(2);
+            setAmount(amountCalculated);
+        }
+    };
+
+    const handleOddsChange = (e) => {
+        const value = e.target.value;
+        setOdds(value);
+        if (amount) {
+            const potentialWinCalculated = (parseFloat(amount) * (parseFloat(value) / 1000)).toFixed(2);
+            setPotentialWin(potentialWinCalculated);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -28,17 +60,14 @@ const BetCreationModal = ({ isOpen, onRequestClose, event, teamLogos }) => {
                 betDetails.push(parseInt(comparator), parseInt(points));
             }
 
-            console.log('Bet details:', betDetails); // Línea de depuración
-
             await contracts.p2pBetting.methods.createBet(
                 event.GameID,
                 parseInt(maxNumberOfChallengers),
-                parseInt(odds),
+                parseInt(odds) * 1000,
                 weiMaxEntryFee,
                 betDetails
             ).send({ from: account, value: weiAmount });
 
-            console.log(`Bet created for event ${event.GameID} with amount: ${amount}, bet details: ${betDetails}, potential win: ${potentialWin}`);
             onRequestClose();
         } catch (error) {
             console.error('Error creating bet:', error);
@@ -69,7 +98,7 @@ const BetCreationModal = ({ isOpen, onRequestClose, event, teamLogos }) => {
             isOpen={isOpen}
             onRequestClose={onRequestClose}
             contentLabel="Create Bet"
-            className="modal-content transition duration-300 transform dark:bg-gray-800 dark:text-white"
+            className="modal-content transition duration-300 transform max-h-[90vh] flex flex-col overflow-y-auto dark:text-white"
             overlayClassName="modal-overlay transition duration-300"
             closeTimeoutMS={300}
         >
@@ -161,8 +190,9 @@ const BetCreationModal = ({ isOpen, onRequestClose, event, teamLogos }) => {
                     <label className="block mb-2">Odds</label>
                     <input
                         type="number"
+                        step="0.01"
                         value={odds}
-                        onChange={(e) => setOdds(e.target.value)}
+                        onChange={handleOddsChange}
                         className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                         required
                     />
@@ -193,7 +223,7 @@ const BetCreationModal = ({ isOpen, onRequestClose, event, teamLogos }) => {
                         <input
                             type="number"
                             value={potentialWin}
-                            onChange={(e) => setPotentialWin(e.target.value)}
+                            onChange={handlePotentialWinChange}
                             className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                             required
                         />

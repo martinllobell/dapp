@@ -8,6 +8,7 @@ import csgo from '../../assets/images/cs2.webp';
 import bets from '../../assets/images/bet.webp';
 import LeagueEvents from '../../components/leagueEvents/LeagueEvents';
 import { CardsMain } from '../../components/beetingcards/CardsMain';
+import Pagination from '../../components/pagination/Pagination';
 
 const sportImages = {
     futbol,
@@ -26,6 +27,9 @@ const FilterHome = ({ darkMode }) => {
     const [activeTab, setActiveTab] = useState('Torneos');
     const [selectedLeague, setSelectedLeague] = useState(null);
     const [leagueEvents, setLeagueEvents] = useState([]);
+    const [totalLeagues, setTotalLeagues] = useState(0);
+
+    const leaguesPerPage = 12;
 
     useEffect(() => {
         fetchAllLeagues();
@@ -33,10 +37,10 @@ const FilterHome = ({ darkMode }) => {
 
     useEffect(() => {
         if (allLeagues[selectedSport]) {
-            const leaguesPerPage = 12;
             const startIndex = (currentPage - 1) * leaguesPerPage;
             const endIndex = startIndex + leaguesPerPage;
             setCurrentLeagues(allLeagues[selectedSport].slice(startIndex, endIndex));
+            setTotalLeagues(allLeagues[selectedSport].length);
         }
     }, [allLeagues, currentPage, selectedSport]);
 
@@ -103,18 +107,20 @@ const FilterHome = ({ darkMode }) => {
         nba: 'NBA',
         lol: 'LoL',
         csgo: 'CS:GO',
-        bets: 'Pupular Bets',
+        bets: 'Popular Bets',
     };
 
-    const filters = ['Torneos', 'En vivo', 'Pre partida', 'Outrights', 'Calendario'];
-    const filtersBet = ['Popular', 'Live Bets'];
+    const filters = ['Torneos', 'En vivo', 'Calendario'];
+
+    const totalPages = Math.ceil(totalLeagues / leaguesPerPage);
 
     return (
-        <div className="flex">
-            <Sidebar setViewMore={setViewMore} setSelectedSport={handleSportChange} darkMode={darkMode} setSelectedLeague={handleLeagueSelection} />
-            <div className={`ml-64 p-5 shadow-md min-h-[40rem] flex-1 mt-[5rem]`}>
+        <div className="flex flex-col lg:flex-row">
+            <div className="lg:ml-64 p-5 flex-1">
                 <div className="mb-5">
-                    <img src={sportImages[selectedSport]} alt={selectedSport} className=" w-full h-[25vh] object-cover object-center rounded-lg" />
+                    <img src={sportImages[selectedSport]} alt={selectedSport} className="w-full h-56 md:h-64 object-cover object-center rounded-lg" />
+
+                    <Sidebar setViewMore={setViewMore} setSelectedSport={handleSportChange} darkMode={darkMode} setSelectedLeague={handleLeagueSelection} />
                     <h2 className="text-3xl mt-3 flex items-center">
                         {!selectedLeague ? sportNames[selectedSport] : selectedLeague.Name}
                         {selectedLeague?.IconUrl && (
@@ -122,12 +128,12 @@ const FilterHome = ({ darkMode }) => {
                         )}
                     </h2>
                     {!selectedLeague && selectedSport !== "bets" && (
-                        <div className="flex space-x-4 mt-3">
+                        <div className="flex space-x-2 md:space-x-4 mt-3 overflow-auto">
                             {filters.map(filter => (
                                 <button
                                     key={filter}
-                                    onClick={() => {}}
-                                    className={`px-4 py-2 rounded-lg ${activeTab === filter ? 'bg-green-500' : 'dark:bg-gray-700 bg-indigo-500'} text-white`}
+                                    onClick={() => { setActiveTab(filter) }}
+                                    className={`px-2 py-1 md:px-4 md:py-2 rounded-lg ${activeTab === filter ? 'border-b-4 border-indigo-500' : ''}`}
                                 >
                                     {filter}
                                 </button>
@@ -135,49 +141,33 @@ const FilterHome = ({ darkMode }) => {
                         </div>
                     )}
                 </div>
-                {selectedSport === "bets" ? <>
-                    <CardsMain darkMode={darkMode} />
-                </> :
-                    <> {!selectedLeague && (
-                        <h2 className="text-2xl mb-5">{activeTab}</h2>
-                    )}
+                {selectedSport === "bets" ? (
+                    <div className=''>
+                        <CardsMain darkMode={darkMode} />
+                    </div>
+                ) : (
+                    <>
+                        {!selectedLeague && (
+                            <h2 className="text-2xl mb-5">{activeTab}</h2>
+                        )}
                         {activeTab === 'Torneos' && !selectedLeague && (
-                            <div className=' w-full flex flex-col  '>
-                                <div className='w-full '>
-
-                                    <div className={`${currentPage === 1 ? 'flex justify-end' : 'flex justify-between mb-5'} h-[3rem] `}>
-                                        {currentPage > 1 && (
-                                            <button
-                                                className="px-4 py-2 bg-blue-500 text-white rounded-lg"
-                                                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                                            >
-                                                Anterior
-                                            </button>
-                                        )}
-                                        {currentLeagues.length === 12 && (
-                                            <button
-                                                className="px-4 py-2 bg-blue-500 text-white rounded-lg"
-                                                onClick={() => setCurrentPage(prev => prev + 1)} Kernel
-                                            >
-                                                Siguiente
-                                            </button>
-                                        )}
-                                    </div>
-                                    <div className="flex h-[20rem]  flex-wrap w-full justify-center mt-5 gap-8">
-                                        {currentLeagues.map(league => (
-                                            <div key={league.CompetitionId || league.TeamID}
-                                                className="flex w-[23%] h-[4rem] items-center justify center p-3 bg-indigo-200 dark:bg-gray-700 rounded-lg cursor-pointer transition-colors hover:bg-gray-200"
-                                                onClick={() => handleLeagueSelection(league)}>
-                                                {league.WikipediaLogoUrl && (
-                                                    <img src={league.WikipediaLogoUrl} alt={league.Name || league.FullName} className="w-12 h-12 mr-3" />
-                                                )}
-                                                <span>{league.Name || league.FullName}</span>
-
-                                            </div>
-
-                                        ))}
-
-                                    </div>
+                            <div className='w-full flex flex-col'>
+                                <Pagination
+                                    currentPage={currentPage}
+                                    totalPages={totalPages}
+                                    onPageChange={setCurrentPage}
+                                />
+                                <div className="flex flex-wrap justify-center gap-4 mt-5">
+                                    {currentLeagues.map(league => (
+                                        <div key={league.CompetitionId || league.TeamID}
+                                            className="flex w-full sm:w-[45%] md:w-[30%] lg:w-[23%] h-20 items-center justify-center p-3 backdrop-blur-xl bg-white/10 shadow-xl shadow-sm shadow-black/10 rounded-lg cursor-pointer transition-colors hover:bg-indigo-300 hover:dark:bg-purple-700"
+                                            onClick={() => handleLeagueSelection(league)}>
+                                            {league.WikipediaLogoUrl && (
+                                                <img src={league.WikipediaLogoUrl} alt={league.Name || league.FullName} className="w-12 h-12 mr-3" />
+                                            )}
+                                            <span className="text-sm md:text-base lg:text-lg">{league.Name || league.FullName}</span>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                         )}
@@ -192,21 +182,8 @@ const FilterHome = ({ darkMode }) => {
                                 <LeagueEvents league={selectedLeague} sport={selectedSport} />
                             </>
                         )}
-                        {activeTab === 'En vivo' && (
-                            <div>Contenido para En vivo</div>
-                        )}
-                        {activeTab === 'Pre partida' && (
-                            <div>Contenido para Pre partida</div>
-                        )}
-                        {activeTab === 'Outrights' && (
-                            <div>Contenido para Outrights</div>
-                        )}
-                        {activeTab === 'Calendario' && (
-                            <div>Contenido para Calendario</div>
-                        )}
                     </>
-                }
-
+                )}
             </div>
         </div>
     );
