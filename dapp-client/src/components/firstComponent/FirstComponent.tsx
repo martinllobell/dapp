@@ -6,7 +6,7 @@ const FirstComponent = () => {
     <div className="p-6">
       <div className="p-6 flex flex-col md:flex-row items-center justify-center">
         <div className="text-center md:text-left">
-          <h1 className="text-4xl font-bold mt-6 md:mt-0 md:text-7xl text-white">
+          <h1 className="text-4xl font-bold mt-6 md:mt-0 md:text-7xl">
             Explore
             <span className="font-bold text-primary"> D</span>'
             <span className="font-bold text-yellow-400">Best</span> way to P2P
