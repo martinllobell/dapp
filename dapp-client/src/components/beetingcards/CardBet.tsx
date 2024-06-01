@@ -1,5 +1,6 @@
-import React, { FC, useState } from "react";
-import { Bet, useTrayStore } from "../../store/useTrayStore";
+import React, { FC, useEffect, useState } from "react";
+import { useTrayStore } from "../../store/useTrayStore";
+import { useContracts } from "../../hooks/useContracts";
 
 interface MatchData {
     id: string;
@@ -25,28 +26,77 @@ interface MatchData {
         odd: number;
     };
     odds: number;
+    isOngoing: boolean
+
 }
 
 interface CardMatchProps {
     matchData: MatchData;
     darkMode: boolean;
+    setStartMatchTimestamp: (betId: string, newTimestamp: number) => Promise<void>;
 }
 
-export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode }: CardMatchProps) => {
-    const [selections, setSelections] = useState<string>('');
-    const { store, actualizeTray, removeTray } = useTrayStore();
-    console.log(matchData.dataBet);
+export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode, setStartMatchTimestamp }) => {
+    const [showBetInput, setShowBetInput] = useState<boolean>(false);
+    const [betAmount, setBetAmount] = useState<string>('');
+    const { contracts, account, web3 } = useContracts();
+    const [isOngoing, setIsOngoing] = useState<boolean>(matchData.isOngoing);
+    const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
 
-    const handleAddBet = (id: string, winCondition: string, team: { name: string, logo?: string }, gains: number, maxBet: string, maxEntryFee: number) => {
-        const match = matchData.team1.name + ' v ' + matchData.team2.name;
-        if (selections === id) {
-            removeTray(id);
-            setSelections('');
-        } else {
-            const newBet: Bet = { id, winCondition, team, gains: Number(gains.toFixed(4)), match, maxBet, maxEntryFee };
-            setSelections(id);
-            actualizeTray(newBet);
+    useEffect(() => {
+        const checkIfSubscribed = async () => {
+            if (contracts && contracts.p2pBetting) {
+                try {
+                    const bet = await contracts.p2pBetting.methods.getBet(matchData.id).call();
+                    setIsSubscribed(bet.challengers.includes(account));
+                    setIsOngoing(bet.startMatchTimestamp > 0 && bet.startMatchTimestamp < Math.floor(Date.now() / 1000));
+                } catch (error) {
+                    console.error("Error checking subscription:", error);
+                }
+            }
+        };
+
+        checkIfSubscribed();
+    }, [contracts, matchData.id, account]);
+
+    const handlePlaceBetClick = () => {
+        setShowBetInput(true);
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        const maxBet = parseFloat(matchData.maxBet);
+        if (!isNaN(Number(value)) && parseFloat(value) <= maxBet) {
+            setBetAmount(value);
+        } else if (parseFloat(value) > maxBet) {
+            setBetAmount(matchData.maxBet);
         }
+    };
+
+    const handleConfirmBet = async () => {
+        if (contracts && contracts.p2pBetting && betAmount) {
+            try {
+                const betId = matchData.id;
+                const valueInWei = web3.utils.toWei(betAmount, 'ether');
+                await contracts.p2pBetting.methods.joinBet(betId).send({
+                    from: account,
+                    value: valueInWei
+                });
+                console.log("Bet subscribed successfully!");
+                setShowBetInput(false);
+                setBetAmount('');
+            } catch (error) {
+                console.error("Error subscribing to bet:", error);
+            }
+        }
+    };
+
+
+
+    const simulateOngoingEvent = async () => {
+        const oneHourLater = Math.floor(Date.now() / 1000) + 3600; // Current time in seconds + 1 hour
+        await setStartMatchTimestamp(matchData.id, oneHourLater);
     };
 
     return (
@@ -56,7 +106,7 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode }: CardMatch
                 bg-gradient-to-b
                 ${!darkMode ? 'from-black/10 to-black/10 hover:bg-indigo-500/10'
                         : 'from-white/10 to-black/20 hover:bg-indigo-500/10'}
-                    shadow-black/50 transition ease-in-out duration-150`}>
+                shadow-black/50 transition ease-in-out duration-150`}>
                 <div className='flex flex-row px-3 gap-3 items-center justify-between'>
                     <div className="flex flex-row gap-2 items-center">
                         <img src={matchData.image} alt={`${matchData.team1.name} logo`} className='w-8 rounded-full' />
@@ -98,7 +148,7 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode }: CardMatch
                         <p className="font-bold dark:text-secundary text-primary">{matchData.maxBet}</p>
                     </div>
                 </div>
-                <div className='flex flex-row h-full justify-around items-center'>
+                <div className='flex flex-row justify-around items-center'>
                     <div className='flex flex-col h-full items-center justify-between rounded-full  w-full z-10'>
                         <img src={matchData.team1.logo} alt={`${matchData.team1.name} logo`} className='max-w-12 object-cover h-auto md:max-w-20 ' />
                         <h2 className={'text-xs font-medium w-20 text-center'}>{matchData.team1.name}</h2>
@@ -116,46 +166,56 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode }: CardMatch
                         <h2 className={'text-xs font-medium w-20 text-center'}>{matchData.team2.name}</h2>
                     </div>
                 </div>
-                <div className="items-center w-full flex justify-center">
-                </div>
-                <div className={`flex justify-around -mt-3 cursor-pointer text-center w-full `}>
-                    <div className={`flex gap-2 p-1 items-center w-full rounded-lg whitespace-nowrap bg-black/10 dark:hover:bg-white/20 hover:bg-gray-500/40 ${store.tray.some(({ id }) => id === matchData.id) ? 'dark:bg-white/20 bg-gray-500/40' : ''}`}
-                        onClick={() => handleAddBet(
-                            matchData.id,
-                            matchData.winCondition + ' ' + matchData.comparator + ' ' + matchData.points,
-                            matchData?.dataBet[1] === 0 ?
-                                { name: matchData.team1.name, logo: matchData.team1.logo }
-                                : matchData?.dataBet[1] === 1 ?
-                                    { name: matchData.team2.name, logo: matchData.team2.logo }
-                                    : matchData?.dataBet[1] === 2 ?
-                                        { name: 'Sum of both: ' + matchData.comparator + ' ' + matchData.points + ' (' + matchData.team1.name + ' v ' + matchData.team2.name + ')' } :
-                                        matchData?.dataBet[1] === 3 ?
-                                            { name: 'Difference: ' + matchData.comparator + ' ' + matchData.points + ' (' + matchData.team1.name + ' v ' + matchData.team2.name + ')' }
-                                            : { name: 'Both: ' + matchData.comparator + ' ' + matchData.points + ' (' + matchData.team1.name + ' v ' + matchData.team2.name + ')' },
-                            Number(matchData.odds),
-                            String(matchData.maxBet),
-                            Number(matchData.maxEntryFee))}>
-                        <div className="flex flex-col items-center w-full">
-                            <p>
-                                Place Bet
-                            </p>
-                            {/* <div className="flex gap-1">
-                                <p>
-                                    {
-                                        matchData.dataBet && matchData.dataBet[0] === "0n" && matchData.dataBet[1] === "0n" ? matchData.team2.name : matchData.team1.name
-                                    }
-                                </p>
-                                <h3>WIN</h3>
-                            </div> */}
+                {
+                    !isSubscribed ? <div className="flex justify-center items-center mt-4">
 
+                        {showBetInput ? (
+                            <div className="flex w-full flex-row justify-around gap-5 items-center ">
+                                <div className="flex flex-col ml-1 w-[55%]">
+                                    <p className="mb-2 text-sm text-nowrap">
+                                        Potential Gain: {betAmount ? (parseFloat(betAmount) * matchData.odds).toFixed(4) : '0'} ETH
+                                    </p>
+                                    <input
+                                        type="number"
+                                        value={betAmount}
+                                        onChange={handleInputChange}
+                                        className={`p-2 border rounded-lg w-full text-center bg-transparent
+                                    ${darkMode ? 'text-white' : 'text-black'}`}
+                                        placeholder="Amount..."
+                                        max={matchData.maxBet}
+                                    />
 
-                            <p className={`text-sm font-bold p-1 text-center w-12 dark:text-secundary text-primary `}>
-                                X  {matchData.odds.toFixed(2)}
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                                </div>
+
+                                <button
+                                    className="bg-green-500 text-white rounded-lg mt-7 w-[40%] h-[2.5rem]"
+                                    onClick={handleConfirmBet}
+                                >Bet X {matchData.odds.toFixed(2)}
+                                </button>
+                            </div>
+                        ) : (
+                            <button
+                                className="bg-blue-500 text-white rounded-lg px-4 py-2 flex items-center justify-center"
+                                onClick={handlePlaceBetClick}
+                                style={{ width: '100%', height: '100%' }}
+                            >
+                                <span>Place Bet</span>
+                                <span className="ml-2 text-green-500 font-bold">X {matchData.odds.toFixed(2)}</span>
+                            </button>
+                        )}
+                    </div> : <p className="flex justify-center items-center mt-10 text-gray-500"> Already Subscribed </p>
+                }
+                {isOngoing &&
+                    <button
+                        className="bg-red-500 text-white rounded-lg px-4 py-2 flex items-center justify-center mt-4"
+                        onClick={simulateOngoingEvent}
+                        style={{ width: '100%', height: '100%' }}
+                    >
+                        <span>Simulate Ongoing Event</span>
+                    </button>
+                }
+
             </div>
-        </div >
+        </div>
     );
-}
+};

@@ -150,6 +150,7 @@ contract P2PBetting is Ownable, FunctionsClient {
         s_fee = fee_ * DECIMALS;
         subscriptionId = subscriptionId_;
     }
+
     /**
      * Sends the fees collected to the owner of the contract
      */
@@ -238,6 +239,16 @@ contract P2PBetting is Ownable, FunctionsClient {
      *
      * @param betId_ Id of the bet you want to join
      */
+    function setStartMatchTimestamp(
+        uint256 betId_,
+        uint256 newTimestamp
+    ) external {
+        Bet storage betSelected = s_Bets[betId_];
+        betSelected.startMatchTimestamp = newTimestamp;
+    }
+
+    // Declarar el evento LogError
+    event LogError(string message);
 
     function joinBet(uint256 betId_) external payable {
         Bet memory betSelected = s_Bets[betId_];
@@ -483,7 +494,6 @@ contract P2PBetting is Ownable, FunctionsClient {
         payable(betSelected.tipster).transfer(amountToTransferBack);
     }
 
-
     // function endUsingMatchId(uint256 matchId_) public returns (bytes32) {
     //     if (
     //         s_Matches[matchId_].timeOfGame == 0 &&
@@ -604,7 +614,6 @@ contract P2PBetting is Ownable, FunctionsClient {
     ///////////////////////////////////////////
     ////// CHAINLINK AUTOMATION ///////////////
     ///////////////////////////////////////////
-
 
     function endBetOwner(uint256 betId_, bool tipsterWon) external onlyOwner {
         s_Bets[betId_].tipsterWon = tipsterWon;

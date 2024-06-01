@@ -30,18 +30,19 @@ interface Bet {
     team1: Team;
     team2: Team;
     odds: number;
-
+    isOngoing: boolean;
 }
 
 const defaultLogoUrl = "https://via.placeholder.com/150";
 
 export const CardsMain: FC<CardsMainProps> = ({ darkMode }) => {
-    const { contracts, web3 } = useContracts();
+    const { contracts, web3, setStartMatchTimestamp } = useContracts();
     const [matches, setMatches] = useState<Bet[]>([]);
     const [teamLogos, setTeamLogos] = useState<{ [key: string]: string }>({});
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const [showLeftArrow, setShowLeftArrow] = useState(false);
     const [showRightArrow, setShowRightArrow] = useState(true);
+    
 
     const fetchNBATeamLogos = async () => {
         try {
@@ -85,10 +86,8 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode }) => {
                 for (let i = 0; i < numberOfBets; i++) {
                     const bet = await contracts.p2pBetting.methods.getBet(i).call();
                     if (bet) {
-
                         const event = await fetchEventData(parseInt(bet[1], 10));
-                        console.log(Number(bet.betData[2]), "CLAUDIAAAA");
-
+                        console.log(bet, "CLAUDIAAAA");
 
                         const team1 = {
                             name: event.HomeTeam || "Unknown",
@@ -102,7 +101,8 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode }) => {
                         };
                         const randomString = Math.random().toString();
                         const hash = MD5(randomString).toString();
-
+                        console.log(bet.startMatchTimestamp < Math.floor(Date.now() / 1000));
+                        
                         const newBet: Bet = {
                             id: bet[0] ? bet[0].toString() : '0',
                             tipster: bet[2],
@@ -119,7 +119,8 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode }) => {
                             maxNumberOfChallengers: bet.maxNumberOfChallengers,
                             challengers: bet.challengers,
                             dataBet: bet.betData.map((each) => Number(each)),
-                            odds: Number(bet.odds) / 1000 || 0
+                            odds: Number(bet.odds) / 1000 || 0,
+                            isOngoing: bet.startMatchTimestamp !== 0
                         };
                         bets.push(newBet);
                     } else {
@@ -177,7 +178,7 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode }) => {
                 {showLeftArrow && <ChevronLeftIcon className="h-5 cursor-pointer" onClick={() => handleScroll('left')} />}
                 <div className='flex w-full gap-4 overflow-x-scroll scroll-invisible justify-start py-2 px-1' ref={scrollContainerRef}>
                     {matches.map((match, index) => (
-                        <CardMatch key={index} matchData={match} darkMode={darkMode} />
+                        <CardMatch key={index} matchData={match} darkMode={darkMode} setStartMatchTimestamp={setStartMatchTimestamp} />
                     ))}
                 </div>
                 <div>

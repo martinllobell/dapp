@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/home/Home';
 import './index.scss';
@@ -8,13 +8,16 @@ import Footer from './components/footer/footer.jsx';
 import FilterHome from './pages/homeFilter/FilterHome.jsx';
 import LeagueEvents from './components/leagueEvents/LeagueEvents.jsx';
 import LeadPanel from './components/betpanel/leadPanel';
-import Profile from './pages/profile/Profile.jsx'
+import Profile from './pages/profile/Profile.jsx';
+import { useContracts } from "./hooks/useContracts";
 
 const App = () => {
   const [darkMode, setDarkMode] = useState(() => {
     const savedMode = localStorage.getItem('darkMode');
     return savedMode === 'true' || false;
   });
+
+  const { setStartMatchTimestamp } = useContracts();
 
   useEffect(() => {
     localStorage.setItem('darkMode', darkMode);
@@ -23,6 +26,11 @@ const App = () => {
     } else {
       document.documentElement.classList.remove('dark');
     }
+
+    // Supongamos que el ID de la apuesta es `matchData.id` y queremos establecer la fecha del partido para dentro de una hora:
+    const oneHourLater = Math.floor(Date.now() / 1000) + 3600; // Tiempo actual en segundos + 1 hora
+    setStartMatchTimestamp("betId", oneHourLater); // Asegúrate de pasar el betId correcto
+
   }, [darkMode]);
 
   const toggleDarkMode = () => {
@@ -38,9 +46,9 @@ const App = () => {
         <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
         <LeadPanel />
         <Routes>
-          <Route path="/" element={<Home darkMode={darkMode} />} />
+          <Route path="/" element={<Home darkMode={darkMode} setStartMatchTimestamp={setStartMatchTimestamp} />} />
           <Route path="/profile" element={<Profile darkMode={darkMode} />} />
-          <Route path="/sports" element={<FilterHome darkMode={darkMode} />} />
+          <Route path="/sports" element={<FilterHome darkMode={darkMode} setStartMatchTimestamp={setStartMatchTimestamp} />} />
           <Route path="/sports/league/:leagueId" element={<LeagueEvents />} />
           <Route path="*" element={<NotFound darkMode={darkMode} />} />
         </Routes>
