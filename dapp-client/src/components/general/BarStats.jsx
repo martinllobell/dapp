@@ -19,7 +19,7 @@ const TotalBetsCard = () => {
         {
           label: "In Game",
           size: 10,
-          color: "white",
+          color: "gray-400",
         },
       ]
     : [];
