@@ -183,18 +183,18 @@ contract P2PBetting is Ownable, FunctionsClient {
         // if (odds_ <= 1000) {
         //     revert P2PBetting__OddsMustBeHigherThanOne();
         // }
-        // if (maxNumberOfChallengers_ == 0) {
-        //     revert P2PBetting__NumberOfChallengersCantBeZero();
-        // }
-        // if (maxEntryFee_ == 0) {
-        //     revert P2PBetting__MaxPriceCantBeZero();
-        // }
+        if (maxNumberOfChallengers_ == 0) {
+            revert P2PBetting__NumberOfChallengersCantBeZero();
+        }
+        if (maxEntryFee_ == 0) {
+            revert P2PBetting__MaxPriceCantBeZero();
+        }
         // if (s_Matches[matchId].timeOfGame == 0) {
         //     revert P2PBetting__MatchDoesntExist();
         // }
-        // if (betData_.length < 2) {
-        //     revert P2PBetting__WrongBetFormat();
-        // }
+        if (betData_.length < 2) {
+            revert P2PBetting__WrongBetFormat();
+        }
         // if (
         //     msg.value <
         //     ((maxNumberOfChallengers_ * odds_ * maxEntryFee_) /
