@@ -18,13 +18,14 @@ const sportImages = {
     bets
 };
 
-const FilterHome = ({ darkMode, setStartMatchTimestamp}) => {
+const FilterHome = ({ darkMode, setStartMatchTimestamp }) => {
     const [viewMore, setViewMore] = useState(false);
     const [allLeagues, setAllLeagues] = useState({});
     const [currentLeagues, setCurrentLeagues] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [selectedSport, setSelectedSport] = useState('futbol');
+    const [selectedSport, setSelectedSport] = useState('nba');
     const [activeTab, setActiveTab] = useState('Torneos');
+    const [betactiveTab, setBetActiveTab] = useState('Popular');
     const [selectedLeague, setSelectedLeague] = useState(null);
     const [leagueEvents, setLeagueEvents] = useState([]);
     const [totalLeagues, setTotalLeagues] = useState(0);
@@ -107,10 +108,11 @@ const FilterHome = ({ darkMode, setStartMatchTimestamp}) => {
         nba: 'NBA',
         lol: 'LoL',
         csgo: 'CS:GO',
-        bets: 'Popular Bets',
+        bets: 'Bets',
     };
 
     const filters = ['Torneos', 'En vivo', 'Calendario'];
+    const betfilters = ['Popular', 'My Bets', 'Active'];
 
     const totalPages = Math.ceil(totalLeagues / leaguesPerPage);
 
@@ -142,9 +144,23 @@ const FilterHome = ({ darkMode, setStartMatchTimestamp}) => {
                     )}
                 </div>
                 {selectedSport === "bets" ? (
-                    <div className=''>
-                        <CardsMain darkMode={darkMode} setStartMatchTimestamp={setStartMatchTimestamp} />
+                    <div className="">
+                        <div className="flex space-x-2 md:space-x-4 mt-3 mb-10 overflow-auto"> {betfilters.map(filter => (
+                            <button
+                                key={filter}
+                                onClick={() => {setBetActiveTab(filter) }}
+                                className={`px-2 py-1 md:px-4 md:py-2 rounded-lg ${betactiveTab === filter ? 'border-b-4 border-indigo-500' : ''}`}
+                            >
+                                {filter}
+                            </button>
+                        ))}
+                        </div>
+                        <div className='lg:w-[85vw] '>
+
+                            <CardsMain darkMode={darkMode} setStartMatchTimestamp={setStartMatchTimestamp} />
+                        </div>
                     </div>
+
                 ) : (
                     <>
                         {!selectedLeague && (

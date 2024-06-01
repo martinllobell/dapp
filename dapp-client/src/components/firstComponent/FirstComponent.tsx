@@ -12,7 +12,7 @@ const FirstComponent = () => {
             <span className="font-bold text-yellow-400">Best</span> way to P2P
             betting with Crypto
           </h1>
-          <button className="w-1/2 p-4 rounded-lg bg-primary font-bold text-gray-200 hover:text-black hover:shadow-xs hover:bg-yellow-500 hover:brightness-110 transition duration-300 ease-in-out text-shadow 2xl:text-xl mt-6">
+          <button onClick={()=> {window.scrollY}} className="w-1/2 p-4 rounded-lg bg-primary font-bold text-gray-200 hover:text-black hover:shadow-xs hover:bg-yellow-500 hover:brightness-110 transition duration-300 ease-in-out text-shadow 2xl:text-xl mt-6">
             Ready, Set, Bet!
           </button>
         </div>

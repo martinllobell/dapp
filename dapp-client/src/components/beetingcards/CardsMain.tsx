@@ -1,7 +1,7 @@
 import React, { FC, useRef, useState, useEffect } from "react";
 import axios from "axios";
 import { CardMatch } from "./CardBet";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import CardSkeleton from "./CardSkeleton"; // Importa el nuevo componente de carga
 import { useContracts } from "../../hooks/useContracts";
 import { MD5 } from "crypto-js";
 
@@ -42,7 +42,8 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode }) => {
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const [showLeftArrow, setShowLeftArrow] = useState(false);
     const [showRightArrow, setShowRightArrow] = useState(true);
-    
+    const [loading, setLoading] = useState(true); // Estado de carga
+
 
     const fetchNBATeamLogos = async () => {
         try {
@@ -79,6 +80,7 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode }) => {
 
     useEffect(() => {
         const fetchBets = async () => {
+            setLoading(true); // Inicia la carga
             try {
                 const numberOfBets = await contracts.p2pBetting.methods.getNumberOfBets().call();
                 const bets: Bet[] = [];
@@ -101,15 +103,14 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode }) => {
                         };
                         const randomString = Math.random().toString();
                         const hash = MD5(randomString).toString();
-                        console.log(bet.startMatchTimestamp < Math.floor(Date.now() / 1000));
-                        
+
                         const newBet: Bet = {
                             id: bet[0] ? bet[0].toString() : '0',
                             tipster: bet[2],
                             image: `https://www.gravatar.com/avatar/${hash}?d=retro&f=y&s=128`, // Placeholder image
                             winCondition: String(bet.betData[0]) === '0' ? 'Final result' : `Goals/Points`,
                             points: bet.betData[3] ? String(bet.betData[3]) : '',
-                            comparator: bet.betData[2] !== undefined ? Number(bet.betData[2]) === 0 ? 'Exactly' :  Number(bet.betData[2]) === 1 ? 'Greater than' : 'Less than' :'',
+                            comparator: bet.betData[2] !== undefined ? Number(bet.betData[2]) === 0 ? 'Exactly' : Number(bet.betData[2]) === 1 ? 'Greater than' : 'Less than' : '',
                             maxBet: bet[3] ? `${web3.utils.fromWei(bet[3].toString(), 'ether')} ETH` : '0 ETH',
                             limit: Number(bet[5]) || 0,
                             team1,
@@ -120,7 +121,7 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode }) => {
                             challengers: bet.challengers,
                             dataBet: bet.betData.map((each) => Number(each)),
                             odds: Number(bet.odds) / 1000 || 0,
-                            isOngoing: bet.startMatchTimestamp !== 0
+                            isOngoing: bet.startMatchTimestamp
                         };
                         bets.push(newBet);
                     } else {
@@ -129,8 +130,10 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode }) => {
                 }
 
                 setMatches(bets);
+                setLoading(false); // Termina la carga
             } catch (error) {
                 console.error("Error fetching bets:", error);
+                setLoading(false); // Termina la carga en caso de error
             }
         };
 
@@ -172,18 +175,17 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode }) => {
     }, []);
 
     return (
-        <div className='relative w-full md:min-w-60 md:p-12 p-4'>
-            <h1 className='my-3 text-xl 2xl:text-3xl'>Your Crypto, <span className="font-bold text-primary">Your Bets</span></h1>
-            <div className="flex flex-row justify-between items-center md:px-4">
-                {showLeftArrow && <ChevronLeftIcon className="h-5 cursor-pointer" onClick={() => handleScroll('left')} />}
-                <div className='flex w-full gap-4 overflow-x-scroll scroll-invisible justify-start py-2 px-1' ref={scrollContainerRef}>
-                    {matches.map((match, index) => (
+        <div className='w-full mb-5'>
+            <div className='flex flex-wrap w-full gap-10 overflow-x-scroll scroll-invisible justify-center' ref={scrollContainerRef}>
+                {loading ? (
+                    Array.from({ length: 8 }).map((_, index) => (
+                        <CardSkeleton key={index} />
+                    ))
+                ) : (
+                    matches.map((match, index) => (
                         <CardMatch key={index} matchData={match} darkMode={darkMode} setStartMatchTimestamp={setStartMatchTimestamp} />
-                    ))}
-                </div>
-                <div>
-                    {showRightArrow && <ChevronRightIcon className="h-5 cursor-pointer" onClick={() => handleScroll('right')} />}
-                </div>
+                    ))
+                )}
             </div>
         </div>
     );
