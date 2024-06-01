@@ -20,7 +20,7 @@ const leagues = {
     csgo: [],
 };
 
-const Sidebar = ({ setViewMore, setSelectedSport, darkMode, setSelectedLeague }) => {
+const Sidebar = ({ setViewMore, setSelectedSport, darkMode, setSelectedLeague, sport }) => {
     const [isExpanded, setIsExpanded] = useState({
         futbol: false,
         nba: false,
@@ -41,51 +41,55 @@ const Sidebar = ({ setViewMore, setSelectedSport, darkMode, setSelectedLeague })
     const handleSportSelection = (sport) => {
         setSelectedSport(sport);
         setViewMore(false);
-        setIsExpanded({
-            futbol: false,
-            nba: false,
-            lol: false,
-            csgo: false,
-            [sport]: !isExpanded[sport]
-        });
+
     };
 
-    const handleLeagueSelection = (league) => {
+    const handleLeagueSelection = (league, sport) => {
+
         setSelectedLeague(league);
     };
 
     return (
-        <div className={`w-64 h-screen fixed ${darkMode ? 'bg-gray-900' : 'bg-indigo-400/40'} backdrop-blur-xl drop-shadow-xl p-5`}>
-            <div className="mt-[5rem] mb-4">
+        <div className={`h-[3rem] lg:mt-0 mt-8 w-full flex lg:block lg:w-64 lg:h-screen lg:fixed lg:top-0 lg:left-0 lg:bg-indigo-900/20 lg:ark:bg-white/10 lg:shadow-sm transition-colors lg:backdrop-blur-xl lg:shadow-xl lg:drop-shadow-xl lg:p-5`}>
+            <div className="hidden lg:flex mt-[5rem] mb-4">
                 <Search />
             </div>
-            <h2 className="text-white text-sm mb-8 mt-6">P2P Betting</h2>
-            <div className="space-y-4">
+            <h2 className="hidden lg:flex text-white text-sm lg:mb-8 lg:mt-6">P2P Betting</h2>
+            <div className="lg:space-y-4">
                 <button
-                    className="flex items-center p-2 bg-indigo-200 dark:bg-gray-700 rounded hover:bg-gray-600 w-full"
-                    onClick={() => {handleSportSelection("bets")}}
+                    className="hidden lg:flex items-center lg:w-full p-4 backdrop-blur-xl bg-white/10 shadow-xl shadow-black/10 rounded-lg cursor-pointer transition-colors hover:bg-purple-400 hover:dark:bg-purple-700"
+                    onClick={() => { handleSportSelection("bets") }}
                 >
                     <span>Bets</span>
                 </button>
             </div>
 
-            <h2 className="text-white text-sm mb-8 mt-8">Sports</h2>
-            <div className="space-y-4">
+            <h2 className="hidden lg:flex text-white text-sm mb-8 mt-8">Sports</h2>
+            <div className="lg:space-y-4 lg:w-auto w-full lg:inline flex gap-10 items-center justify-center ">
+                <div className='lg:hidden w-[10%] flex lg:h-auto h-full lg:w-auto lg:block'>
+                    <button
+                        className="flex items-center justify-center w-full lg:p-2 backdrop-blur-xl bg-white/10 shadow-xl shadow-black/10 rounded-lg cursor-pointer transition-colors hover:bg-purple-400 hover:dark:bg-purple-700"
+
+                        onClick={() => { handleSportSelection("bets") }}
+                    >
+                        <span>Bets</span>
+                    </button>
+                </div>
                 {Object.keys(leagues).map(sport => (
-                    <div key={sport}>
+                    <div key={sport} className=' w-[10%] lg:h-auto h-full flex lg:w-auto lg:block'>
                         <button
-                            className="flex items-center p-2 bg-indigo-200 dark:bg-gray-700 rounded hover:bg-gray-600 w-full"
-                            onClick={() => handleSportSelection(sport)}
+                            className="flex items-center justify-center lg:justify-between w-full lg:p-2 backdrop-blur-xl bg-white/10 shadow-xl shadow-black/10 rounded-lg cursor-pointer transition-colors hover:bg-purple-400 hover:dark:bg-purple-700"
+
                         >
-                            <span>{sport.charAt(0).toUpperCase() + sport.slice(1)}</span>
-                            <span className="ml-auto">{isExpanded[sport] ? '-' : '+'}</span>
+                            <span onClick={() => handleSportSelection(sport)} className='w-full h-full flex items-center justify-center'>{sport.charAt(0).toUpperCase() + sport.slice(1)}</span>
+                            <span onClick={() => toggleExpand(sport)} className="hidden lg:flex +right-0 z-500 w-[2rem] h-[1.5rem]">{isExpanded[sport] ? '-' : '+'}</span>
                         </button>
                         {isExpanded[sport] && (
-                            <div className="space-y-2 mt-2">
+                            <div className="hidden lg:inline space-y-2 mt-2">
                                 {leagues[sport].slice(0, 5).map(league => (
                                     <div key={league.CompetitionId || league.TeamID}
-                                        className="flex items-center p-2 bg-gray-300 dark:bg-gray-700 rounded cursor-pointer"
-                                        onClick={() => handleLeagueSelection(league)}>
+                                        className="flex items-center p-2 backdrop-blur-xl bg-white/10  shadow-md rounded-lg cursor-pointer transition-colors hover:bg-purple-400 hover:dark:bg-purple-700"
+                                        onClick={() => handleLeagueSelection(league, sport)}>
                                         {league.IconUrl && (
                                             <img src={league.IconUrl} alt={league.Name} className="w-6 h-6 mr-3" />
                                         )}
@@ -93,7 +97,7 @@ const Sidebar = ({ setViewMore, setSelectedSport, darkMode, setSelectedLeague })
                                     </div>
                                 ))}
                                 <button
-                                    className="text-blue-500 hover:underline"
+                                    className="hidden lg:flex text-blue-500 hover:underline"
                                     onClick={() => handleSportSelection(sport)}
                                 >
                                     Ver más
