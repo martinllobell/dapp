@@ -52,7 +52,7 @@ const Sidebar = ({ setViewMore, setSelectedSport, darkMode, setSelectedLeague, s
     return (
         <div className={`h-[3rem] lg:mt-0 mt-8 w-full flex lg:block lg:w-64 lg:h-screen lg:fixed lg:top-0 lg:left-0 lg:bg-indigo-900/20 lg:ark:bg-white/10 lg:shadow-sm transition-colors lg:backdrop-blur-xl lg:shadow-xl lg:drop-shadow-xl lg:p-5`}>
             <div className="hidden lg:flex mt-[5rem] mb-4">
-                <Search />
+                {/* <Search /> */}
             </div>
             <h2 className="hidden lg:flex text-white text-sm lg:mb-8 lg:mt-6">P2P Betting</h2>
             <div className="lg:space-y-4">
