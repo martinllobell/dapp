@@ -2,13 +2,12 @@
 
 pragma solidity 0.8.20;
 
-import {ConfirmedOwner} from "@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwner.sol";
-
-import "@chainlink/contracts/src/v0.8/AutomationCompatible.sol";
-import {FunctionsClient} from "@chainlink/contracts/src/v0.8/functions/dev/v1_0_0/FunctionsClient.sol";
-import {FunctionsRequest} from "@chainlink/contracts/src/v0.8/functions/dev/v1_0_0/libraries/FunctionsRequest.sol";
+import {ConfirmedOwner} from "../lib/chainlink-brownie-contracts/contracts/src/v0.8/shared/access/ConfirmedOwner.sol";
+import "../lib/chainlink-brownie-contracts/contracts/src/v0.8/AutomationCompatible.sol";
+import {FunctionsClient} from "../lib/chainlink-brownie-contracts/contracts/src/v0.8/functions/dev/v1_0_0/FunctionsClient.sol";
+import {FunctionsRequest} from "../lib/chainlink-brownie-contracts/contracts/src/v0.8/functions/dev/v1_0_0/libraries/FunctionsRequest.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
-import {P2PBetting} from "../src/P2PBettingFront.sol";
+import {P2PBettingFront} from "./P2PBettingFront.sol";
 
 //Alomejor hay que importar esta:
 // import {ConfirmedOwner} from "@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwner.sol";
@@ -20,7 +19,7 @@ contract P2PBettingActions is
 {
     using FunctionsRequest for FunctionsRequest.Request;
     using Strings for uint256;
-    P2PBetting p2pBetting;
+    P2PBettingFront p2pBetting;
 
     /////////////////////////////////////////////
     ////////// ERRORS ///////////////////////////
@@ -250,7 +249,7 @@ contract P2PBettingActions is
     }
 
     function setBettingFrontAddress(address bettingFront) external onlyOwner {
-        p2pBetting = P2PBetting(bettingFront);
+        p2pBetting = P2PBettingFront(bettingFront);
     }
 
     /////////////////////
