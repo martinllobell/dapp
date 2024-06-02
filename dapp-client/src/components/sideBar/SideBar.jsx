@@ -65,7 +65,7 @@ const Sidebar = ({ setViewMore, setSelectedSport, darkMode, setSelectedLeague, s
             </div>
 
             <h2 className="hidden lg:flex text-white text-sm mb-8 mt-8">Sports</h2>
-            <div className="lg:space-y-4 lg:w-auto w-full lg:inline flex gap-10 mb-2 items-center justify-center ">
+            <div className="lg:space-y-4 lg:w-auto w-full lg:inline flex gap-2 mb-2 items-center justify-center ">
                 <div className='lg:hidden w-full flex lg:h-auto h-full lg:w-auto lg:block'>
                     <button
                         className="flex items-center justify-center w-full lg:p-2 backdrop-blur-xl bg-white/10 shadow-md shadow-black/10 rounded-lg cursor-pointer transition-colors hover:bg-secundary/50 hover:dark:bg-secundary/50"

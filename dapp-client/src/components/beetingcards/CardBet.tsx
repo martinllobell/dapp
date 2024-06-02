@@ -33,9 +33,10 @@ interface CardMatchProps {
     matchData: MatchData;
     darkMode: boolean;
     setStartMatchTimestamp: (betId: string, newTimestamp: number) => Promise<void>;
+    filter: string;
 }
 
-export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode, setStartMatchTimestamp }) => {
+export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode, setStartMatchTimestamp, filter }) => {
     const [showBetInput, setShowBetInput] = useState<boolean>(false);
     const [betAmount, setBetAmount] = useState<string>("0.0001");
     const { contracts, account, web3 } = useContracts();
@@ -83,7 +84,7 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode, setStartMat
                 // Otherwise, set the bet amount to the max entry fee
                 setBetAmount(maxEntryFeeFloat.toFixed(4));
             }
-        } else  {
+        } else {
             setBetAmount('')
         }
     };
@@ -113,8 +114,18 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode, setStartMat
         setIsOngoing(true);
     };
 
+    if (filter === 'Active') {
+        if (!isOngoing) {
+            return;
+        }
+    } else if (filter === 'My Bets') {
+        if (!isSubscribed) {
+            return;
+        }
+    }
+
     return (
-        <div className="font-semibold mb-8 lg:w-[22%] p-4 lg:h-[22rem] h-[25rem] backdrop-blur-xl bg-white/10 shadow-xl shadow-sm shadow-black/10 rounded-lg transition-colors">
+        <div className="font-semibold mb-8 w-auto p-4 lg:h-[22rem] h-[25rem] backdrop-blur-xl bg-white/10 shadow-xl shadow-sm shadow-black/10 rounded-lg transition-colors">
             <div
                 className="h-full flex flex-col justify-between">
 
@@ -164,8 +175,8 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode, setStartMat
 
                 </div>
 
-                <div className='h-[35%] flex flex-row justify-between  items-center'>
-                    <div className='px-2 flex flex-col h-full items-center justify-center rounded-full  z-10'>
+                <div className='h-[35%] flex flex-row justify-center w-full items-center'>
+                    <div className='px-2 flex flex-col h-full items-center justify-center rounded-full z-10'>
                         <img src={matchData.team1.logo} alt={`${matchData.team1.name} logo`} className='max-w-12 w-16 lg:max-w-[4rem] object-cover h-auto' />
                     </div>
                     <h2 className={'text-xs font-medium text-center'}>{matchData.team1.name}</h2>
@@ -179,7 +190,7 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode, setStartMat
                     </div>
                     <h2 className={'text-xs font-medium  text-center'}>{matchData.team2.name}</h2>
 
-                    <div className='px-2 flex flex-col h-full items-center overflow-hidden justify-center rounded-full z-10 '>
+                    <div className='px-2 flex flex-col h-full items-center justify-center rounded-full z-10 '>
                         <img src={matchData.team2.logo} alt={`${matchData.team2.name} logo`} className='max-w-12 w-16 lg:max-w-[4rem] h-auto object-cover ' />
                     </div>
                 </div>
@@ -204,7 +215,7 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode, setStartMat
                                                 type="number"
                                                 value={betAmount}
                                                 onChange={handleInputChange}
-                                                className={`p-2 border rounded-lg w-full text-center bg-transparent
+                                                className={`p-2 w-32 border rounded-lg text-center bg-transparent
                                                 ${darkMode ? 'text-white' : 'text-black'}`}
                                                 placeholder="Amount..."
                                                 max={matchData.maxBet}
@@ -228,10 +239,9 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode, setStartMat
                                     >
                                         <span className="text-yellow-400 font-bold">BET</span>
                                         <span className="ml-2 font-bold">X {matchData.odds.toFixed(2)}</span>
-                                        
                                     </button>
                                 )}
-                        </div> : <p className="flex justify-center items-center mt-10 text-gray-500"> Already Subscribed </p>
+                        </div> : <p className="flex justify-center items-center h-full text-gray-500"> Already Subscribed </p>
                     }
                 </div>
 

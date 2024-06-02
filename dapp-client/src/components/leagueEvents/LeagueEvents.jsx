@@ -148,7 +148,7 @@ const LeagueEvents = ({ league, sport }) => {
                                 </div>
                                 <div className="flex justify-around w-full items-center">
                                     <div className="flex flex-col items-center w-[25%] justify-between">
-                                        <span className="text-lg font-semibold">{event.HomeTeamName || event.HomeTeam}</span>
+                                        <span className="text-lg font-semibold text-center max-h-14 mb-2 overflow-hidden w-24r">{event.HomeTeamName || event.HomeTeam}</span>
                                         {
                                             teamLogos[event.HomeTeamName || event.HomeTeam] ?
                                                 <img src={teamLogos[event.HomeTeamName || event.HomeTeam]} alt={event.HomeTeamName || event.HomeTeam} className="w-12 h-12" />
@@ -157,7 +157,7 @@ const LeagueEvents = ({ league, sport }) => {
                                     </div>
                                     <span className="text-lg font-semibold mt-5">vs</span>
                                     <div className="flex flex-col items-center w-[25%] justify-between">
-                                        <span className="text-lg font-semibold">{event.AwayTeamName || event.AwayTeam}</span>
+                                        <span className="text-lg font-semibold text-center max-h-14 mb-2 overflow-hidden w-24">{event.AwayTeamName || event.AwayTeam}</span>
                                         {
                                             teamLogos[event.AwayTeamName || event.AwayTeam] ?
                                                 <img src={teamLogos[event.AwayTeamName || event.AwayTeam]} alt={event.AwayTeamName || event.AwayTeam} className="w-12 h-12" />

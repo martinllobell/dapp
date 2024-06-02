@@ -156,9 +156,9 @@ const FilterHome = ({ darkMode, setStartMatchTimestamp }) => {
                             </button>
                         ))}
                         </div>
-                        <div className='lg:w-[85vw] '>
+                        <div className='flex w-full overflow-x-scroll'>
 
-                            <CardsMain darkMode={darkMode} setStartMatchTimestamp={setStartMatchTimestamp} />
+                            <CardsMain darkMode={darkMode} setStartMatchTimestamp={setStartMatchTimestamp} filter={betactiveTab}/>
                         </div>
                     </div>
 

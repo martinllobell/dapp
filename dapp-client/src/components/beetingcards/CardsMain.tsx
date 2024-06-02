@@ -7,6 +7,7 @@ import { MD5 } from "crypto-js";
 
 interface CardsMainProps {
     darkMode: boolean;
+    filter: string,
 }
 
 interface Team {
@@ -37,12 +38,12 @@ interface Bet {
 
 const defaultLogoUrl = "https://via.placeholder.com/150";
 
-export const CardsMain: FC<CardsMainProps> = ({ darkMode }) => {
+export const CardsMain: FC<CardsMainProps> = ({ darkMode, filter }) => {
     const { contracts, web3, setStartMatchTimestamp } = useContracts();
     const [matches, setMatches] = useState<Bet[]>([]);
     const [teamLogos, setTeamLogos] = useState<{ [key: string]: string }>({});
     const [loading, setLoading] = useState(true); // Estado de carga
-
+    const [filters, setFilters] = useState('Popular')
 
     const fetchNBATeamLogos = async () => {
         try {
@@ -148,7 +149,7 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode }) => {
                     ))
                 ) : (
                     matches.map((match, index) => (
-                        <CardMatch key={index} matchData={match} darkMode={darkMode} setStartMatchTimestamp={setStartMatchTimestamp} />
+                        <CardMatch key={index} matchData={match} darkMode={darkMode} setStartMatchTimestamp={setStartMatchTimestamp} filter={filter}/>
                     ))
                 )}
             </div>

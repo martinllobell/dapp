@@ -7,8 +7,28 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         pageNumbers.push(i);
     }
 
+    const getVisiblePageNumbers = () => {
+        const maxVisiblePages = 7;
+        const halfVisiblePages = Math.floor(maxVisiblePages / 2);
+        let startPage = Math.max(1, currentPage - halfVisiblePages);
+        let endPage = Math.min(totalPages, currentPage + halfVisiblePages);
+
+        if (currentPage <= halfVisiblePages) {
+            endPage = Math.min(totalPages, maxVisiblePages);
+        } else if (currentPage + halfVisiblePages >= totalPages) {
+            startPage = Math.max(1, totalPages - maxVisiblePages + 1);
+        }
+
+        const visiblePages = [];
+        for (let i = startPage; i <= endPage; i++) {
+            visiblePages.push(i);
+        }
+
+        return visiblePages;
+    };
+
     return (
-        <div className="flex items-center justify-center font-bold space-x-2 mb-5">
+        <div className="flex items-center justify-center font-bold space-x-2 mb-5 max-w-md mx-auto">
             <button
                 className={`px-3 py-1 rounded ${currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-secundary dark:text-secundary'}`}
                 onClick={() => onPageChange(currentPage - 1)}
@@ -16,7 +36,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
             >
                 &laquo;
             </button>
-            {pageNumbers.map(number => (
+            {getVisiblePageNumbers().map(number => (
                 <button
                     key={number}
                     className={`px-3 py-1 rounded ${currentPage === number ? 'bg-secundary dark:bg-secundary text-white' : 'text-secundary dark:text-secundary'}`}
