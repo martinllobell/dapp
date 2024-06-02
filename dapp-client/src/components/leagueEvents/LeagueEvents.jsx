@@ -114,13 +114,13 @@ const LeagueEvents = ({ league, sport }) => {
 
     return (
         <div className="flex justify-center">
-            <div className="w-[100%]">
+            <div className="w-full">
                 <Pagination
                     currentPage={currentPage}
                     totalPages={totalPages}
                     onPageChange={setCurrentPage}
                 />
-                <div className="flex flex-wrap mt-5 mb-8 gap-8">
+                <div className="flex w-full justify-around flex-wrap mt-5 mb-8 gap-8">
                     {loading ? (
                         Array(12).fill(0).map((_, index) => (
                             <div key={index} className="p-4 bg-gray-200 w-[30%] dark:bg-gray-700 rounded-lg flex flex-col space-y-3 animate-pulse">
@@ -142,9 +142,9 @@ const LeagueEvents = ({ league, sport }) => {
                     ) : (
                         currentEvents.map(event => (
                             <div key={event.GameId || event.GameID} className={`p-4 ${isPastEvent(event.DateTime) ? 'backdrop-blur-xl bg-black/10 dark:bg-black/20 shadow-xl shadow-sm shadow-black/10 rounded-lg ' : 'backdrop-blur-xl bg-white/10 shadow-xl shadow-sm shadow-black/10 rounded-lg transition-colors'}sm:w-[45%] md:w-[30%] lg:w-[30%]   rounded-lg flex flex-col items-center space-y-3`}>
-                                <div className="text-black dark:text-white flex items-center justify-center rounded-lg bg-indigo-800/40 dark:bg-indigo-700/40 w-[100%] dark:font-light font-bold text-lg">{new Date(event.DateTime).toLocaleString()}</div>
-                                <div className="flex justify-between w-[80%] items-center">
-                                    <div className="flex items-center w-[25%] justify-between">
+                                <div className="text-black dark:text-white flex items-center justify-center rounded-lg bg-indigo-800/40 dark:bg-indigo-700/40 w-[100%] font-semibold text-lg">{new Date(event.DateTime).toLocaleString()}</div>
+                                <div className="flex justify-around w-full items-center">
+                                    <div className="flex flex-col items-center w-[25%] justify-between">
                                         <span className="text-lg font-semibold">{event.HomeTeamName || event.HomeTeam}</span>
                                         {
                                             teamLogos[event.HomeTeamName || event.HomeTeam] ?
@@ -152,30 +152,30 @@ const LeagueEvents = ({ league, sport }) => {
                                                 : <Loading />
                                         }
                                     </div>
-                                    <span className="text-lg font-semibold mx-3">vs</span>
-                                    <div className="flex items-center w-[25%] justify-between">
+                                    <span className="text-lg font-semibold mt-5">vs</span>
+                                    <div className="flex flex-col items-center w-[25%] justify-between">
+                                        <span className="text-lg font-semibold">{event.AwayTeamName || event.AwayTeam}</span>
                                         {
                                             teamLogos[event.AwayTeamName || event.AwayTeam] ?
                                                 <img src={teamLogos[event.AwayTeamName || event.AwayTeam]} alt={event.AwayTeamName || event.AwayTeam} className="w-12 h-12" />
                                                 : <Loading />
                                         }
-                                        <span className="text-lg font-semibold">{event.AwayTeamName || event.AwayTeam}</span>
                                     </div>
                                 </div>
                                 {isPastEvent(event.DateTime) ? (
-                                    <div className="text-center w-[80%] flex content-center items-center justify-between ">
-                                        <div className="w-[25%] text-white dark:bg-gray-900 bg-gray-500 py-2 rounded-lg">
+                                    <div className="text-center w-full flex content-center items-center justify-around">
+                                        <div className="w-1/3 text-white dark:bg-gray-900 bg-gray-500 py-2 rounded-lg">
                                             {event.HomeTeamScore}
                                         </div>
                                         <p className="">
                                             -
                                         </p>
-                                        <div className="w-[25%] text-white dark:bg-gray-900 bg-gray-500 py-2 rounded-lg">
+                                        <div className="w-1/3 text-white dark:bg-gray-900 bg-gray-500 py-2 rounded-lg">
                                             {event.AwayTeamScore}
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="flex pt-9 justify-center">
+                                    <div className="flex justify-center">
                                         <button className="px-4 py-2 bg-indigo-500 text-white hover:bg-purple-500  rounded-lg" onClick={() => handleCreateBet(event)}>Make a bet</button>
                                     </div>
                                 )}

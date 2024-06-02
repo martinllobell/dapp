@@ -23,10 +23,12 @@ interface Bet {
     maxBet: string;
     eventDate: string;
     maxEntryFee: number;
+    points: string;
+    comparator: string;
     limit: number;
     maxNumberOfChallengers: number;
     challengers: Array<string>;
-    dataBet: Array<string>;
+    dataBet: Array<number>;
     team1: Team;
     team2: Team;
     odds: number;
@@ -39,9 +41,6 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode }) => {
     const { contracts, web3, setStartMatchTimestamp } = useContracts();
     const [matches, setMatches] = useState<Bet[]>([]);
     const [teamLogos, setTeamLogos] = useState<{ [key: string]: string }>({});
-    const scrollContainerRef = useRef<HTMLDivElement>(null);
-    const [showLeftArrow, setShowLeftArrow] = useState(false);
-    const [showRightArrow, setShowRightArrow] = useState(true);
     const [loading, setLoading] = useState(true); // Estado de carga
 
 
@@ -140,43 +139,9 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode }) => {
         fetchBets();
     }, [contracts, web3, teamLogos]);
 
-    const handleScroll = (direction: 'left' | 'right') => {
-        if (scrollContainerRef.current) {
-            const { scrollLeft, clientWidth } = scrollContainerRef.current;
-            const scrollAmount = clientWidth / 4.9;
-
-            if (direction === 'left') {
-                scrollContainerRef.current.scrollTo({ left: scrollLeft - scrollAmount, behavior: 'smooth' });
-            } else {
-                scrollContainerRef.current.scrollTo({ left: scrollLeft + scrollAmount, behavior: 'smooth' });
-            }
-        }
-    };
-
-    const updateArrowsVisibility = () => {
-        if (scrollContainerRef.current) {
-            const { scrollLeft, clientWidth, scrollWidth } = scrollContainerRef.current;
-            setShowLeftArrow(scrollLeft > 0);
-            setShowRightArrow(scrollLeft + clientWidth < scrollWidth);
-        }
-    };
-
-    useEffect(() => {
-        if (scrollContainerRef.current) {
-            scrollContainerRef.current.addEventListener('scroll', updateArrowsVisibility);
-            updateArrowsVisibility();
-
-            return () => {
-                if (scrollContainerRef.current) {
-                    scrollContainerRef.current.removeEventListener('scroll', updateArrowsVisibility);
-                }
-            };
-        }
-    }, []);
-
     return (
         <div className='w-full mb-5'>
-            <div className='flex flex-wrap w-full gap-10 overflow-x-scroll scroll-invisible justify-center' ref={scrollContainerRef}>
+            <div className='flex flex-wrap w-full gap-10 overflow-x-scroll scroll-invisible justify-center'>
                 {loading ? (
                     Array.from({ length: 8 }).map((_, index) => (
                         <CardSkeleton key={index} />

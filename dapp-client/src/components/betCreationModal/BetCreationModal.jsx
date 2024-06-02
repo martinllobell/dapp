@@ -102,8 +102,8 @@ const BetCreationModal = ({ isOpen, onRequestClose, event, teamLogos }) => {
             overlayClassName="modal-overlay transition duration-300"
             closeTimeoutMS={300}
         >
-            <h2 className="text-2xl mb-7">Create P2P Bet</h2>
-            <div className="flex justify-between h-16 items-center bg-black/20 dark:bg-white/20 rounded-full mb-4">
+            <h2 className="text-2xl mb-6">Create P2P Bet</h2>
+            <div className="flex justify-between p-2 items-center bg-black/20 dark:bg-white/20 rounded-full mb-4">
                 <div className="flex items-center justify-center w-[33.33%]">
                     <span className="font-bold">{event.HomeTeam || event.HomeTeamName}</span>
                 </div>
