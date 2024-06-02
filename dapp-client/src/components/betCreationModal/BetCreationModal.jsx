@@ -18,19 +18,18 @@ const BetCreationModal = ({ isOpen, onRequestClose, event, teamLogos }) => {
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
 
     useEffect(() => {
-        if (amount && odds) {
-            const potentialWinCalculated = (parseFloat(amount) * parseFloat(odds)).toFixed(4);
+        if (maxNumberOfChallengers && maxEntryFee) {
+            const potentialWinCalculated = (parseFloat(maxNumberOfChallengers) * parseFloat(maxEntryFee)).toFixed(4);
             setPotentialWin(potentialWinCalculated);
         }
-    }, [amount]);
+    }, [maxNumberOfChallengers, maxEntryFee]);
 
     useEffect(() => {
-        if (potentialWin && odds) {
-            const amountCalculated = (parseFloat(potentialWin) / parseFloat(odds)).toFixed(4);
-            setAmount(amountCalculated);
+        if (amount && maxNumberOfChallengers && odds > 1) {
+            const maxEntryFeeCalculated = (parseFloat(amount) / ((maxNumberOfChallengers * parseFloat(odds)) - maxNumberOfChallengers)).toFixed(4);
+            setMaxEntryFee(maxEntryFeeCalculated);
         }
-    }, [potentialWin, odds]);
-
+    }, [amount, maxNumberOfChallengers, odds]);
 
     const handleAmountChange = (e) => {
         let value = e.target.value;
@@ -48,7 +47,7 @@ const BetCreationModal = ({ isOpen, onRequestClose, event, teamLogos }) => {
     }
 
     const handlePotentialWinChange = (e) => {
-        const value = e.target.value;
+        let value = e.target.value;
         // Reemplaza comas con puntos
         value = value.replace(',', '.');
 
@@ -134,7 +133,7 @@ const BetCreationModal = ({ isOpen, onRequestClose, event, teamLogos }) => {
             await contracts.p2pBetting.methods.createBet(
                 event.GameID,
                 parseInt(maxNumberOfChallengers),
-                parseInt(odds) * 1000,
+                odds * 1000,
                 weiMaxEntryFee,
                 betDetails
             ).send({ from: account, value: weiAmount });

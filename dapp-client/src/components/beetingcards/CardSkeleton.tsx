@@ -2,7 +2,7 @@ import React from "react";
 
 const CardSkeleton = () => {
     return (
-        <div className="font-semibold mb-8 lg:w-[22%] lg:h-[22rem] h-[25rem] backdrop-blur-xl bg-gray-700 animate-pulse shadow-xl shadow-sm shadow-black/10 rounded-lg transition-colors">
+        <div className="font-semibold mb-8 w-1/3 lg:h-[22rem] h-[25rem] backdrop-blur-xl bg-gray-700 animate-pulse shadow-xl shadow-sm shadow-black/10 rounded-lg transition-colors">
             <div className="h-full flex flex-col justify-between">
 
                 <div className='h-[20%] mb-3 flex flex-row items-center justify-between'>

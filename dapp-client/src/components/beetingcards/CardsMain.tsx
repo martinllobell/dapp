@@ -142,7 +142,7 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode, filter }) => {
 
     return (
         <div className='w-full mb-5'>
-            <div className='flex flex-wrap w-full gap-10 overflow-x-scroll scroll-invisible justify-center'>
+            <div className='flex flex-wrap w-full gap-10 justify-center '>
                 {loading ? (
                     Array.from({ length: 8 }).map((_, index) => (
                         <CardSkeleton key={index} />

@@ -79,7 +79,7 @@ export default function WelcomePlay() {
         </h1>
         <span className="md:text-lg 2xl:text-2xl mx-auto leading-relaxed">
           Choose what you want to play among the following products developed by
-          <span className="font-semibold text-secundary"> DBetting</span>. Explore
+          <span className="font-semibold text-primary"> DBetting</span>. Explore
           and join Web3 sports betting and fast crypto games!{" "}
         </span>
       </div>

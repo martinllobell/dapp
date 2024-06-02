@@ -169,7 +169,7 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode, setStartMat
                         {matchData.comparator && <p>{matchData.comparator}: {matchData.points}</p>}
                     </div>
                     <div className="flex flex-col h-full items-center justify-center w-auto whitespace-nowrap">
-                        Max Bet
+                        Total Pull 
                         <p className="font-bold dark:text-secundary text-secundary">{Number(matchData.maxBet.split(' ')[0]).toFixed(4) + ' ETH'}</p>
                     </div>
 
@@ -197,51 +197,58 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode, setStartMat
 
                 <div className="h-[25%] h-16">
                     {
-                        !isSubscribed ? <div className="flex justify-center items-center mt-4">
-                            {!isOngoing ?
-                                <button
-                                    className="bg-red-700 text-sm text-white rounded-lg px-4 py-2 flex items-center justify-center mb-4"
-                                    onClick={simulateOngoingEvent}
-                                >
-                                    <span>Simulate Event</span>
-                                </button> :
-                                showBetInput ? (
-                                    <div className="flex text-sm flex-row justify-around  items-center ">
-                                        <div className="flex flex-col w-[50%]">
-                                            <p className="mb-2 text-sm text-nowrap">
-                                                Potential Gain: {betAmount ? (parseFloat(betAmount) * matchData.odds).toFixed(4) : '0'} ETH
-                                            </p>
-                                            <input
-                                                type="number"
-                                                value={betAmount}
-                                                onChange={handleInputChange}
-                                                className={`p-2 w-32 border rounded-lg text-center bg-transparent
+                        matchData.challengers.length >= matchData.maxNumberOfChallengers ?
+                            <p className="flex justify-center items-center h-full text-gray-500"> {isSubscribed ? 'Already Subscribed' : 'Bet Closed' } </p>
+                            :
+                            <div className="flex justify-center items-center h-full">
+                                {
+                                    !isSubscribed ? <div className="flex justify-center items-center mt-4">
+                                        {!isOngoing ?
+                                            <button
+                                                className="bg-red-700 text-sm text-white rounded-lg px-4 py-2 flex items-center justify-center"
+                                                onClick={simulateOngoingEvent}
+                                            >
+                                                <span>Simulate Event</span>
+                                            </button> :
+                                            showBetInput ? (
+                                                <div className="flex text-sm flex-row justify-center items-end gap-2">
+                                                    <div className="flex flex-col gap-2">
+                                                        <p className="text-sm text-nowrap w-10">
+                                                            Potential Gain: {betAmount ? (parseFloat(betAmount) * matchData.odds).toFixed(4) : '0'} ETH
+                                                        </p>
+                                                        <input
+                                                            type="text"
+                                                            value={betAmount}
+                                                            onChange={handleInputChange}
+                                                            className={`p-1.5 w-32 border rounded-lg text-center bg-transparent
                                                 ${darkMode ? 'text-white' : 'text-black'}`}
-                                                placeholder="Amount..."
-                                                max={matchData.maxBet}
-                                            />
+                                                            placeholder="Amount..."
+                                                            max={matchData.maxBet}
+                                                        />
 
-                                        </div>
+                                                    </div>
 
-                                        <button
-                                            className={`text-white rounded-lg px-4 mt-7 py-2 flex items-center justify-center bg-green-600  ${betAmount === '' || Number(betAmount) < 0.0001 ? 'cursor-not-allowed' : 'bg-green-600 cursor-pointer'}`}
-                                            onClick={handleConfirmBet}
-                                            disabled={betAmount === '' || Number(betAmount) < 0.0001}
-                                        ><span className="text-yellow-400 font-bold">BET</span>
-                                            <span className="ml-2 font-bold">X {matchData.odds.toFixed(2)}</span>
-                                        </button>
-                                    </div>
-                                ) : (
-                                    <button
-                                        className={`text-white rounded-lg px-4 py-2 flex items-center justify-center ${betAmount === '' || Number(betAmount) < 0.0001 ? 'bg-gray-300 cursor-not-allowed' : 'bg-green-600 cursor-pointer'}`}
-                                        onClick={handlePlaceBetClick}
-                                        disabled={betAmount === '' || Number(betAmount) < 0.0001}
-                                    >
-                                        <span className="text-yellow-400 font-bold">BET</span>
-                                        <span className="ml-2 font-bold">X {matchData.odds.toFixed(2)}</span>
-                                    </button>
-                                )}
-                        </div> : <p className="flex justify-center items-center h-full text-gray-500"> Already Subscribed </p>
+                                                    <button
+                                                        className={`text-white rounded-lg px-4 py-2 flex items-center justify-center bg-green-600  ${betAmount === '' || Number(betAmount) < 0.0001 ? 'cursor-not-allowed' : 'bg-green-600 cursor-pointer'}`}
+                                                        onClick={handleConfirmBet}
+                                                        disabled={betAmount === '' || Number(betAmount) < 0.0001}
+                                                    ><span className="text-yellow-400 font-bold">BET</span>
+                                                        <span className="ml-2 font-bold">X {matchData.odds.toFixed(2)}</span>
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <button
+                                                    className={`text-white rounded-lg px-4 py-2 flex items-center justify-center ${betAmount === '' || Number(betAmount) < 0.0001 ? 'bg-gray-300 cursor-not-allowed' : 'bg-green-600 cursor-pointer'}`}
+                                                    onClick={handlePlaceBetClick}
+                                                    disabled={betAmount === '' || Number(betAmount) < 0.0001}
+                                                >
+                                                    <span className="text-yellow-400 font-bold">BET</span>
+                                                    <span className="ml-2 font-bold">X {matchData.odds.toFixed(2)}</span>
+                                                </button>
+                                            )}
+                                    </div> : <p className="text-gray-500"> Already Subscribed </p>
+                                }
+                            </div>
                     }
                 </div>
 
