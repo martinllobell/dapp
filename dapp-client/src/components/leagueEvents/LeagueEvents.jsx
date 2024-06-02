@@ -142,13 +142,13 @@ const LeagueEvents = ({ league, sport }) => {
                     ) : (
                         currentEvents.map(event => (
                             <div key={event.GameId || event.GameID} className={`p-4 ${isPastEvent(event.DateTime) ? 'backdrop-blur-xl bg-black/10 dark:bg-black/20 shadow-xl shadow-sm shadow-black/10 rounded-lg ' : 'backdrop-blur-xl bg-white/10 shadow-xl shadow-sm shadow-black/10 rounded-lg transition-colors'} sm:w-[45%] md:w-[30%] lg:w-[30%]   rounded-lg flex flex-col items-center space-y-3`}>
-                                <div className="text-black dark:text-white flex gap-2 items-center justify-center rounded-lg bg-primary-500/50 dark:bg-secundary-500/50 w-[100%] font-semibold text-lg">
+                                <div className="text-black dark:text-white flex gap-2 items-center justify-center rounded-lg bg-secundary-500/50 dark:bg-secundary-500/50 w-[100%] font-medium text-lg">
                                     <p>{event.DateTime.split('T')[0].split('-').join('/')}</p>
                                     <p>{event.DateTime.split('T')[1].slice(0, 5)}hs</p>
                                 </div>
                                 <div className="flex justify-around w-full items-center">
                                     <div className="flex flex-col items-center w-[25%] justify-between">
-                                        <span className="text-lg font-semibold">{event.HomeTeamName || event.HomeTeam}</span>
+                                        <span className="text-lg font-semibold text-center max-h-14 mb-2 overflow-hidden w-24r">{event.HomeTeamName || event.HomeTeam}</span>
                                         {
                                             teamLogos[event.HomeTeamName || event.HomeTeam] ?
                                                 <img src={teamLogos[event.HomeTeamName || event.HomeTeam]} alt={event.HomeTeamName || event.HomeTeam} className="w-12 h-12" />
@@ -157,7 +157,7 @@ const LeagueEvents = ({ league, sport }) => {
                                     </div>
                                     <span className="text-lg font-semibold mt-5">vs</span>
                                     <div className="flex flex-col items-center w-[25%] justify-between">
-                                        <span className="text-lg font-semibold">{event.AwayTeamName || event.AwayTeam}</span>
+                                        <span className="text-lg font-semibold text-center max-h-14 mb-2 overflow-hidden w-24">{event.AwayTeamName || event.AwayTeam}</span>
                                         {
                                             teamLogos[event.AwayTeamName || event.AwayTeam] ?
                                                 <img src={teamLogos[event.AwayTeamName || event.AwayTeam]} alt={event.AwayTeamName || event.AwayTeam} className="w-12 h-12" />
@@ -179,7 +179,12 @@ const LeagueEvents = ({ league, sport }) => {
                                     </div>
                                 ) : (
                                     <div className="flex justify-center">
-                                        <button className="px-4 py-2 bg-primary dark:bg-secundary-400 text-white font-medium hover:brightness-110 rounded-lg" onClick={() => handleCreateBet(event)}>Make a bet</button>
+                                        <button className="px-4 py-2 gap-1 bg-green-600 text-white font-medium hover:brightness-110 rounded-lg flex" onClick={() => handleCreateBet(event)}>
+                                            Make a
+                                            <p className='text-yellow-400 font-bold'>
+                                                 BET
+                                            </p>
+                                        </button>
                                     </div>
                                 )}
                             </div>

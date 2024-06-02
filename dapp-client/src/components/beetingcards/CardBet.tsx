@@ -33,11 +33,12 @@ interface CardMatchProps {
     matchData: MatchData;
     darkMode: boolean;
     setStartMatchTimestamp: (betId: string, newTimestamp: number) => Promise<void>;
+    filter: string;
 }
 
-export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode, setStartMatchTimestamp }) => {
+export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode, setStartMatchTimestamp, filter }) => {
     const [showBetInput, setShowBetInput] = useState<boolean>(false);
-    const [betAmount, setBetAmount] = useState<string>('');
+    const [betAmount, setBetAmount] = useState<string>("0.0001");
     const { contracts, account, web3 } = useContracts();
     const [isOngoing, setIsOngoing] = useState<boolean>(matchData.isOngoing);
     const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
@@ -64,11 +65,27 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode, setStartMat
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        const maxBet = parseFloat(matchData.maxBet);
-        if (!isNaN(Number(value)) && parseFloat(value) <= maxBet) {
-            setBetAmount(value);
-        } else if (parseFloat(value) > maxBet) {
-            setBetAmount(matchData.maxBet);
+
+        // Convert the value to a number
+        const numericValue = parseFloat(value);
+
+        // Convert maxEntryFee (BigInt) to a number
+        const maxEntryFeeFloat = parseFloat(matchData.maxBet.toString());
+
+        // Regular expression to check if the value has up to 4 decimal places
+        const decimalRegex = /^\d+(\.\d{0,4})?$/;
+
+        // Check if the value matches the decimal pattern and is at least 0.0001
+        if (numericValue >= 0) {
+            // Set the bet amount to the entered value if it's less than or equal to the max entry fee
+            if (numericValue <= maxEntryFeeFloat) {
+                setBetAmount(value);
+            } else {
+                // Otherwise, set the bet amount to the max entry fee
+                setBetAmount(maxEntryFeeFloat.toFixed(4));
+            }
+        } else {
+            setBetAmount('')
         }
     };
 
@@ -97,8 +114,18 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode, setStartMat
         setIsOngoing(true);
     };
 
+    if (filter === 'Active') {
+        if (!isOngoing) {
+            return;
+        }
+    } else if (filter === 'My Bets') {
+        if (!isSubscribed) {
+            return;
+        }
+    }
+
     return (
-        <div className="font-semibold mb-8 lg:w-[22%] p-4 lg:h-[22rem] h-[25rem] backdrop-blur-xl bg-white/10 shadow-xl shadow-sm shadow-black/10 rounded-lg transition-colors">
+        <div className="font-semibold mb-8 w-auto p-4 lg:h-[22rem] h-[25rem] backdrop-blur-xl bg-white/10 shadow-xl shadow-sm shadow-black/10 rounded-lg transition-colors">
             <div
                 className="h-full flex flex-col justify-between">
 
@@ -113,9 +140,9 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode, setStartMat
                     </div>
                 </div>
 
-                <div className="h-[20%] px-4 mb-2 flex flex-row items-center justify-between text-sm bg-gradient-to-r dark:from-gray-900/60 from-indigo-200 to-indigo-300/60 dark:to-gray-800/40 relative z-2 rounded-lg">
+                <div className={`h-[20%] px-4 mb-2 flex flex-row items-center justify-between text-sm bg-gradient-to-r dark:from-gray-900/60 from-indigo-200 to-indigo-300/60 dark:to-gray-800/40 relative z-2 rounded-lg ${isOngoing ? 'rounded-tl-none' : ''}`}>
                     <div className="flex flex-col w-full  justify-center">
-                        {isOngoing && <p className="absolute -top-6 text-green-500  text-[10px]">
+                        {isOngoing && <p className="absolute -top-5 bg-gradient-to-r dark:from-gray-900/60 from-indigo-200 to-indigo-300/60 dark:to-gray-800/40 flex justify-center rounded-t-full w-24 text-secundary dark:text-secundary font-bold left-0 text-[10px] px-2">
                             Event Active
                         </p>}
                         <p>{matchData.winCondition} </p>
@@ -133,7 +160,7 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode, setStartMat
                                     </div>
                                     :
                                     matchData?.dataBet[1] === 2 ?
-                                        <p>{'Sum of both'}</p>
+                                        <p>{matchData.dataBet[0] === 1 ? 'Sum of both' : 'Draw'}</p>
                                         :
                                         <p>{'Both'}</p>
                             }
@@ -143,13 +170,13 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode, setStartMat
                     </div>
                     <div className="flex flex-col h-full items-center justify-center w-auto whitespace-nowrap">
                         Max Bet
-                        <p className="font-bold dark:text-secundary text-primary">{matchData.maxBet}</p>
+                        <p className="font-bold dark:text-secundary text-secundary">{Number(matchData.maxBet.split(' ')[0]).toFixed(4) + ' ETH'}</p>
                     </div>
 
                 </div>
 
-                <div className='h-[35%] flex flex-row justify-between  items-center'>
-                    <div className='px-2 flex flex-col h-full items-center justify-center rounded-full  z-10'>
+                <div className='h-[35%] flex flex-row justify-center w-full items-center'>
+                    <div className='px-2 flex flex-col h-full items-center justify-center rounded-full z-10'>
                         <img src={matchData.team1.logo} alt={`${matchData.team1.name} logo`} className='max-w-12 w-16 lg:max-w-[4rem] object-cover h-auto' />
                     </div>
                     <h2 className={'text-xs font-medium text-center'}>{matchData.team1.name}</h2>
@@ -163,7 +190,7 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode, setStartMat
                     </div>
                     <h2 className={'text-xs font-medium  text-center'}>{matchData.team2.name}</h2>
 
-                    <div className='px-2 flex flex-col h-full items-center overflow-hidden justify-center rounded-full z-10 '>
+                    <div className='px-2 flex flex-col h-full items-center justify-center rounded-full z-10 '>
                         <img src={matchData.team2.logo} alt={`${matchData.team2.name} logo`} className='max-w-12 w-16 lg:max-w-[4rem] h-auto object-cover ' />
                     </div>
                 </div>
@@ -188,7 +215,7 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode, setStartMat
                                                 type="number"
                                                 value={betAmount}
                                                 onChange={handleInputChange}
-                                                className={`p-2 border rounded-lg w-full text-center bg-transparent
+                                                className={`p-2 w-32 border rounded-lg text-center bg-transparent
                                                 ${darkMode ? 'text-white' : 'text-black'}`}
                                                 placeholder="Amount..."
                                                 max={matchData.maxBet}
@@ -197,22 +224,24 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode, setStartMat
                                         </div>
 
                                         <button
-                                            className="bg-green-600 text-white rounded-lg mt-7 w-[40%] h-[2.5rem]"
+                                            className={`text-white rounded-lg px-4 mt-7 py-2 flex items-center justify-center bg-green-600  ${betAmount === '' || Number(betAmount) < 0.0001 ? 'cursor-not-allowed' : 'bg-green-600 cursor-pointer'}`}
                                             onClick={handleConfirmBet}
+                                            disabled={betAmount === '' || Number(betAmount) < 0.0001}
                                         ><span className="text-yellow-400 font-bold">BET</span>
                                             <span className="ml-2 font-bold">X {matchData.odds.toFixed(2)}</span>
                                         </button>
                                     </div>
                                 ) : (
                                     <button
-                                        className="bg-green-600 text-white rounded-lg px-4 py-2 flex items-center justify-center"
+                                        className={`text-white rounded-lg px-4 py-2 flex items-center justify-center ${betAmount === '' || Number(betAmount) < 0.0001 ? 'bg-gray-300 cursor-not-allowed' : 'bg-green-600 cursor-pointer'}`}
                                         onClick={handlePlaceBetClick}
+                                        disabled={betAmount === '' || Number(betAmount) < 0.0001}
                                     >
                                         <span className="text-yellow-400 font-bold">BET</span>
                                         <span className="ml-2 font-bold">X {matchData.odds.toFixed(2)}</span>
                                     </button>
                                 )}
-                        </div> : <p className="flex justify-center items-center mt-10 text-gray-500"> Already Subscribed </p>
+                        </div> : <p className="flex justify-center items-center h-full text-gray-500"> Already Subscribed </p>
                     }
                 </div>
 

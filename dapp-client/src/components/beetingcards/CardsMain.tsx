@@ -6,7 +6,8 @@ import { useContracts } from "../../hooks/useContracts";
 import { MD5 } from "crypto-js";
 
 interface CardsMainProps {
-  darkMode: boolean;
+    darkMode: boolean;
+    filter: string,
 }
 
 interface Team {
@@ -37,20 +38,26 @@ interface Bet {
 
 const defaultLogoUrl = "https://via.placeholder.com/150";
 
-export const CardsMain: FC<CardsMainProps> = ({ darkMode }) => {
-  const { contracts, web3, setStartMatchTimestamp } = useContracts();
-  const [matches, setMatches] = useState<Bet[]>([]);
-  const [teamLogos, setTeamLogos] = useState<{ [key: string]: string }>({});
-  const [loading, setLoading] = useState(true); // Estado de carga
 
-  const fetchNBATeamLogos = async () => {
-    try {
-      const response = await axios.get(
-        "/api/sportsdata/v3/nba/scores/json/teams",
-        {
-          headers: {
-            "Ocp-Apim-Subscription-Key": "06b9feb762534274946d286934ff0235",
-          },
+export const CardsMain: FC<CardsMainProps> = ({ darkMode, filter }) => {
+    const { contracts, web3, setStartMatchTimestamp } = useContracts();
+    const [matches, setMatches] = useState<Bet[]>([]);
+    const [teamLogos, setTeamLogos] = useState<{ [key: string]: string }>({});
+    const [loading, setLoading] = useState(true); // Estado de carga
+    const [filters, setFilters] = useState('Popular')
+
+    const fetchNBATeamLogos = async () => {
+        try {
+            const response = await axios.get('/api/sportsdata/v3/nba/scores/json/teams', {
+                headers: { 'Ocp-Apim-Subscription-Key': '06b9feb762534274946d286934ff0235' }
+            });
+            const logos = {};
+            response.data.forEach(team => {
+                logos[team.Key] = team.WikipediaLogoUrl || defaultLogoUrl;
+            });
+            setTeamLogos(logos);
+        } catch (error) {
+            console.error('Error fetching NBA team logos:', error);
         }
       );
       const logos = {};
@@ -158,7 +165,6 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode }) => {
         setLoading(false); // Termina la carga en caso de error
       }
     };
-
     fetchBets();
   }, [contracts, web3, teamLogos]);
 
@@ -188,6 +194,7 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode }) => {
                   matchData={match}
                   darkMode={darkMode}
                   setStartMatchTimestamp={setStartMatchTimestamp}
+                  filter={filter}
                 />
               ))}
         </div>

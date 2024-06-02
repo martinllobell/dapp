@@ -156,9 +156,9 @@ const FilterHome = ({ darkMode, setStartMatchTimestamp }) => {
                             </button>
                         ))}
                         </div>
-                        <div className='lg:w-[85vw] '>
+                        <div className='flex w-full overflow-x-scroll'>
 
-                            <CardsMain darkMode={darkMode} setStartMatchTimestamp={setStartMatchTimestamp} />
+                            <CardsMain darkMode={darkMode} setStartMatchTimestamp={setStartMatchTimestamp} filter={betactiveTab}/>
                         </div>
                     </div>
 
@@ -177,10 +177,10 @@ const FilterHome = ({ darkMode, setStartMatchTimestamp }) => {
                                 <div className="flex flex-wrap justify-center gap-4 mt-5">
                                     {currentLeagues.map(league => (
                                         <div key={league.CompetitionId || league.TeamID}
-                                            className="flex w-full sm:w-[45%] md:w-[30%] lg:w-[23%] h-20 items-center justify-center p-3 backdrop-blur-xl bg-white/10 shadow-xl shadow-sm shadow-black/10 rounded-lg cursor-pointer transition-colors hover:bg-primary/60 hover:dark:bg-secundary/60"
+                                            className="flex w-full sm:w-[45%] md:w-[30%] lg:w-[23%] h-20 items-center justify-start p-3 backdrop-blur-xl bg-white/10 shadow-xl shadow-sm shadow-black/10 rounded-lg cursor-pointer transition-colors hover:bg-secundary/60 hover:dark:bg-secundary/60"
                                             onClick={() => handleLeagueSelection(league)}>
                                             {league.WikipediaLogoUrl && (
-                                                <img src={league.WikipediaLogoUrl} alt={league.Name || league.FullName} className="w-12 h-12 mr-3" />
+                                                <img src={league.WikipediaLogoUrl} alt={league.Name || league.FullName} className="w-16 h-16 mr-3" />
                                             )}
                                             <span className="text-sm md:text-base lg:text-lg">{league.Name || league.FullName}</span>
                                         </div>
@@ -192,7 +192,7 @@ const FilterHome = ({ darkMode, setStartMatchTimestamp }) => {
                             <>
                                 <button
                                     onClick={() => setSelectedLeague(null)}
-                                    className="mb-5 text-primary dark:text-secundary focus:outline-none"
+                                    className="mb-5 text-secundary dark:text-secundary focus:outline-none"
                                 >
                                     Volver a ligas
                                 </button>

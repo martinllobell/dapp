@@ -80,6 +80,7 @@ export default function WelcomePlay() {
         <span className="md:text-lg 2xl:text-2xl mx-auto leading-relaxed">
           Choose a Sport or Esport, Beat the Odds and Claim Big Profits by Matering Your Betting Skills!
           <span className="font-semibold text-primary"> What Are You Waiting For?</span>
+
         </span>
       </div>
       <div className="grid grid-cols-2 grid-rows-2 md:grid-rows-1 md:grid-cols-3 w-full px-8 md:gap-12 gap-6">
