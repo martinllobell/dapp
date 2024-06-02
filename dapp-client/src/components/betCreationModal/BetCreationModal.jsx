@@ -112,8 +112,8 @@ const BetCreationModal = ({ isOpen, onRequestClose, event, teamLogos }) => {
             parseFloat(potentialWin) > 0 &&
             parseFloat(maxEntryFee) >= 0.01 &&
             parseInt(maxNumberOfChallengers) >= 1 &&
-            parseFloat(odds) >= 1.00 &&
-            (betType === '0' || (betType === '1' && comparator !== '0' && points >= 1));
+            parseFloat(odds) > 1.00 &&
+            (betType === '0' || (betType === '1' && points >= 1));
 
         setIsSubmitDisabled(!isFormValid);
     }, [amount, potentialWin, maxEntryFee, maxNumberOfChallengers, odds, betType, comparator, points]);

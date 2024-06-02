@@ -142,7 +142,7 @@ const LeagueEvents = ({ league, sport }) => {
                     ) : (
                         currentEvents.map(event => (
                             <div key={event.GameId || event.GameID} className={`p-4 ${isPastEvent(event.DateTime) ? 'backdrop-blur-xl bg-black/10 dark:bg-black/20 shadow-xl shadow-sm shadow-black/10 rounded-lg ' : 'backdrop-blur-xl bg-white/10 shadow-xl shadow-sm shadow-black/10 rounded-lg transition-colors'} sm:w-[45%] md:w-[30%] lg:w-[30%]   rounded-lg flex flex-col items-center space-y-3`}>
-                                <div className="text-black dark:text-white flex gap-2 items-center justify-center rounded-lg bg-primary-500/50 dark:bg-secundary-500/50 w-[100%] font-semibold text-lg">
+                                <div className="text-black dark:text-white flex gap-2 items-center justify-center rounded-lg bg-secundary-500/50 dark:bg-secundary-500/50 w-[100%] font-medium text-lg">
                                     <p>{event.DateTime.split('T')[0].split('-').join('/')}</p>
                                     <p>{event.DateTime.split('T')[1].slice(0, 5)}hs</p>
                                 </div>
@@ -179,7 +179,12 @@ const LeagueEvents = ({ league, sport }) => {
                                     </div>
                                 ) : (
                                     <div className="flex justify-center">
-                                        <button className="px-4 py-2 bg-primary dark:bg-secundary-400 text-white font-medium hover:brightness-110 rounded-lg" onClick={() => handleCreateBet(event)}>Make a bet</button>
+                                        <button className="px-4 py-2 gap-1 bg-green-600 text-white font-medium hover:brightness-110 rounded-lg flex" onClick={() => handleCreateBet(event)}>
+                                            Make a
+                                            <p className='text-yellow-400 font-bold'>
+                                                 BET
+                                            </p>
+                                        </button>
                                     </div>
                                 )}
                             </div>
