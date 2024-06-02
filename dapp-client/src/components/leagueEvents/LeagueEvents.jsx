@@ -141,8 +141,11 @@ const LeagueEvents = ({ league, sport }) => {
                         ))
                     ) : (
                         currentEvents.map(event => (
-                            <div key={event.GameId || event.GameID} className={`p-4 ${isPastEvent(event.DateTime) ? 'backdrop-blur-xl bg-black/10 dark:bg-black/20 shadow-xl shadow-sm shadow-black/10 rounded-lg ' : 'backdrop-blur-xl bg-white/10 shadow-xl shadow-sm shadow-black/10 rounded-lg transition-colors'}sm:w-[45%] md:w-[30%] lg:w-[30%]   rounded-lg flex flex-col items-center space-y-3`}>
-                                <div className="text-black dark:text-white flex items-center justify-center rounded-lg bg-indigo-800/40 dark:bg-indigo-700/40 w-[100%] font-semibold text-lg">{new Date(event.DateTime).toLocaleString()}</div>
+                            <div key={event.GameId || event.GameID} className={`p-4 ${isPastEvent(event.DateTime) ? 'backdrop-blur-xl bg-black/10 dark:bg-black/20 shadow-xl shadow-sm shadow-black/10 rounded-lg ' : 'backdrop-blur-xl bg-white/10 shadow-xl shadow-sm shadow-black/10 rounded-lg transition-colors'} sm:w-[45%] md:w-[30%] lg:w-[30%]   rounded-lg flex flex-col items-center space-y-3`}>
+                                <div className="text-black dark:text-white flex gap-2 items-center justify-center rounded-lg bg-primary-500/50 dark:bg-secundary-500/50 w-[100%] font-semibold text-lg">
+                                    <p>{event.DateTime.split('T')[0].split('-').join('/')}</p>
+                                    <p>{event.DateTime.split('T')[1].slice(0, 5)}hs</p>
+                                </div>
                                 <div className="flex justify-around w-full items-center">
                                     <div className="flex flex-col items-center w-[25%] justify-between">
                                         <span className="text-lg font-semibold">{event.HomeTeamName || event.HomeTeam}</span>
@@ -176,7 +179,7 @@ const LeagueEvents = ({ league, sport }) => {
                                     </div>
                                 ) : (
                                     <div className="flex justify-center">
-                                        <button className="px-4 py-2 bg-indigo-500 text-white hover:bg-purple-500  rounded-lg" onClick={() => handleCreateBet(event)}>Make a bet</button>
+                                        <button className="px-4 py-2 bg-primary dark:bg-secundary-400 text-white font-medium hover:brightness-110 rounded-lg" onClick={() => handleCreateBet(event)}>Make a bet</button>
                                     </div>
                                 )}
                             </div>

@@ -41,19 +41,19 @@ export default function Footer({ darkMode }) {
                         className={"flex flex-wrap justify-center gap-6 md:gap-8 lg:mt-0 lg:gap-12"}
                     >
                         <li>
-                            <a className={darkMode ? "transition hover:text-purple-400/75 " : "transition hover:text-purple-500"} href="#"> About us </a>
+                            <a className={darkMode ? "transition hover:text-secundary" : "transition hover:text-primary"} href="#"> About us </a>
                         </li>
 
                         <li>
-                            <a className={darkMode ? "transition hover:text-purple-400/75 " : "transition hover:text-purple-500"} href="#"> Contact Us </a>
+                            <a className={darkMode ? "transition hover:text-secundary" : "transition hover:text-primary"} href="#"> Contact Us </a>
                         </li>
 
                         <li>
-                            <a className={darkMode ? "transition hover:text-purple-400/75 " : "transition hover:text-purple-500"} href="#"> Cookies </a>
+                            <a className={darkMode ? "transition hover:text-secundary" : "transition hover:text-primary"} href="#"> Cookies </a>
                         </li>
 
                         <li>
-                            <a className={darkMode ? "transition hover:text-purple-400/75 " : "transition hover:text-purple-500"} href="#"> Help </a>
+                            <a className={darkMode ? "transition hover:text-secundary" : "transition hover:text-primary"} href="#"> Help </a>
                         </li>
                     </ul>
                 </div>

@@ -9,6 +9,7 @@ import bets from '../../assets/images/bet.webp';
 import LeagueEvents from '../../components/leagueEvents/LeagueEvents';
 import { CardsMain } from '../../components/beetingcards/CardsMain';
 import Pagination from '../../components/pagination/Pagination';
+import Footer from '../../components/footer/footer';
 
 const sportImages = {
     futbol,
@@ -135,7 +136,7 @@ const FilterHome = ({ darkMode, setStartMatchTimestamp }) => {
                                 <button
                                     key={filter}
                                     onClick={() => { setActiveTab(filter) }}
-                                    className={`px-2 py-1 md:px-4 md:py-2 rounded-lg ${activeTab === filter ? 'border-b-4 border-indigo-500' : ''}`}
+                                    className={`px-2 py-1 md:px-4 md:py-2 rounded-lg ${activeTab === filter ? 'border-b-4 border-primary dark:border-secundary' : ''}`}
                                 >
                                     {filter}
                                 </button>
@@ -149,7 +150,7 @@ const FilterHome = ({ darkMode, setStartMatchTimestamp }) => {
                             <button
                                 key={filter}
                                 onClick={() => {setBetActiveTab(filter) }}
-                                className={`px-2 py-1 md:px-4 md:py-2 rounded-lg ${betactiveTab === filter ? 'border-b-4 border-indigo-500' : ''}`}
+                                className={`px-2 py-1 md:px-4 md:py-2 rounded-lg ${betactiveTab === filter ? 'border-b-4 border-primary' : ''}`}
                             >
                                 {filter}
                             </button>
@@ -176,7 +177,7 @@ const FilterHome = ({ darkMode, setStartMatchTimestamp }) => {
                                 <div className="flex flex-wrap justify-center gap-4 mt-5">
                                     {currentLeagues.map(league => (
                                         <div key={league.CompetitionId || league.TeamID}
-                                            className="flex w-full sm:w-[45%] md:w-[30%] lg:w-[23%] h-20 items-center justify-center p-3 backdrop-blur-xl bg-white/10 shadow-xl shadow-sm shadow-black/10 rounded-lg cursor-pointer transition-colors hover:bg-indigo-300 hover:dark:bg-purple-700"
+                                            className="flex w-full sm:w-[45%] md:w-[30%] lg:w-[23%] h-20 items-center justify-center p-3 backdrop-blur-xl bg-white/10 shadow-xl shadow-sm shadow-black/10 rounded-lg cursor-pointer transition-colors hover:bg-primary/60 hover:dark:bg-secundary/60"
                                             onClick={() => handleLeagueSelection(league)}>
                                             {league.WikipediaLogoUrl && (
                                                 <img src={league.WikipediaLogoUrl} alt={league.Name || league.FullName} className="w-12 h-12 mr-3" />
@@ -191,7 +192,7 @@ const FilterHome = ({ darkMode, setStartMatchTimestamp }) => {
                             <>
                                 <button
                                     onClick={() => setSelectedLeague(null)}
-                                    className="mb-5 text-blue-500 focus:outline-none"
+                                    className="mb-5 text-primary dark:text-secundary focus:outline-none"
                                 >
                                     Volver a ligas
                                 </button>
@@ -200,9 +201,11 @@ const FilterHome = ({ darkMode, setStartMatchTimestamp }) => {
                         )}
                     </>
                 )}
+                <Footer></Footer>
             </div>
         </div>
     );
 };
+
 
 export default FilterHome;
