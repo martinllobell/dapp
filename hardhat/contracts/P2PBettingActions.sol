@@ -2,24 +2,25 @@
 
 pragma solidity 0.8.20;
 
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {AggregatorV3Interface} from "../lib/chainlink-brownie-contracts/contracts/src/v0.5/interfaces/AggregatorV3Interface.sol";
-import "../lib/chainlink-brownie-contracts/contracts/src/v0.8/AutomationCompatible.sol";
-import {FunctionsClient} from "../lib/chainlink-brownie-contracts/contracts/src/v0.8/functions/dev/v1_0_0/FunctionsClient.sol";
-import {FunctionsRequest} from "../lib/chainlink-brownie-contracts/contracts/src/v0.8/functions/dev/v1_0_0/libraries/FunctionsRequest.sol";
-import "../lib/BokkyPooBahsDateTimeLibrary/contracts/BokkyPooBahsDateTimeLibrary.sol";
-import {P2PBettingFront} from "./P2PBettingFront.sol";
+import {ConfirmedOwner} from "@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwner.sol";
+
+import "@chainlink/contracts/src/v0.8/AutomationCompatible.sol";
+import {FunctionsClient} from "@chainlink/contracts/src/v0.8/functions/dev/v1_0_0/FunctionsClient.sol";
+import {FunctionsRequest} from "@chainlink/contracts/src/v0.8/functions/dev/v1_0_0/libraries/FunctionsRequest.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
+import {P2PBetting} from "../src/P2PBettingFront.sol";
 
 //Alomejor hay que importar esta:
 // import {ConfirmedOwner} from "@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwner.sol";
 
 contract P2PBettingActions is
-    Ownable,
+    ConfirmedOwner,
     AutomationCompatibleInterface,
     FunctionsClient
 {
     using FunctionsRequest for FunctionsRequest.Request;
-    P2PBettingFront p2pBetting;
+    using Strings for uint256;
+    P2PBetting p2pBetting;
 
     /////////////////////////////////////////////
     ////////// ERRORS ///////////////////////////
@@ -40,7 +41,7 @@ contract P2PBettingActions is
     bytes32 public s_lastRequestId;
     bytes public s_lastResponse;
     bytes public s_lastError;
-    uint32 gasLimit = 30000000;
+    uint32 gasLimit = 3000000;
 
     //Valores hardcodeados para Avalanche Fuji
 
@@ -52,23 +53,20 @@ contract P2PBettingActions is
     string sourceGetResults =
         "const gameId = args[0];"
         "const config = {"
-        "  url: `https://api.sportsdata.io/v3/nba/stats/json/BoxScore/${gameId}?key=06b9feb762534274946d286934ff0235`"
+        "url: `https://api.sportsdata.io/v3/nba/stats/json/BoxScore/${gameId}?key=06b9feb762534274946d286934ff0235`"
         "};"
         "const response = await Functions.makeHttpRequest(config);"
-        "const allMatches = response.data;"
-        "const match = allMatches.find(match => {"
-        "  if (match.GameEndDateTime != null && match.GameID === gameId) {"
-        "    return true;"
-        "  }"
-        "});"
-        "if (!match) {"
-        "  throw new Error('Did not end or nonexistent');"
+        "const match = response.data.Game;"
+        "if(match.IsClosed){"
+        "const gameIdUint = parseInt(gameId, 10);"
+        "const encodedGameId = Functions.encodeUint256(gameIdUint);"
+        "const encodedHomeTeamScore = Functions.encodeUint256(match.HomeTeamScore);"
+        "const encodedAwayTeamScore = Functions.encodeUint256(match.AwayTeamScore);"
+        "return Buffer.concat([encodedGameId, encodedHomeTeamScore, encodedAwayTeamScore]);"
         "}"
-        "let encodedData = [];"
-        "encodedData.push(encodeUint256(gameId));"
-        "encodedData.push(encodeUint256(match.HomeTeamScore));"
-        "encodedData.push(encodeUint256(match.AwayTeamScore));"
-        "return Functions.encodeString(JSON.stringify(encodedData))";
+        "else{"
+        "throw new Error('Match not found for given arguments')"
+        "}";
 
     /////////////////////////////////////////////
     ////////// VARIABLES ////////////////////////
@@ -79,9 +77,7 @@ contract P2PBettingActions is
 
     mapping(uint256 matchId => uint256[3]) s_Results;
 
-    constructor(address owner) Ownable() FunctionsClient(router) {
-        transferOwnership(owner);
-    }
+    constructor(address owner) ConfirmedOwner(owner) FunctionsClient(router) {}
 
     /**
      *
@@ -186,7 +182,7 @@ contract P2PBettingActions is
         }
         FunctionsRequest.Request memory req;
         string[] memory args = new string[](1);
-        args[0] = uintToString(matchId_);
+        args[0] = matchId_.toString();
         req.initializeRequestForInlineJavaScript(sourceGetResults);
         if (args.length > 0) {
             req.setArgs(args);
@@ -200,25 +196,6 @@ contract P2PBettingActions is
         return s_lastRequestId;
     }
 
-    function uintToString(uint256 _value) public pure returns (string memory) {
-        if (_value == 0) {
-            return "0";
-        }
-        uint256 temp = _value;
-        uint256 digits;
-        while (temp != 0) {
-            digits++;
-            temp /= 10;
-        }
-        bytes memory buffer = new bytes(digits);
-        while (_value != 0) {
-            digits -= 1;
-            buffer[digits] = bytes1(uint8(48 + uint256(_value % 10)));
-            _value /= 10;
-        }
-        return string(buffer);
-    }
-
     function fulfillRequest(
         bytes32 requestId,
         bytes memory response,
@@ -226,26 +203,16 @@ contract P2PBettingActions is
     ) internal override {
         s_lastResponse = response;
         s_lastError = err;
-        if (response.length > 64) {
-            uint256 offset = 0;
-            uint256 GameID;
-            assembly {
-                GameID := mload(add(response, add(offset, 0x20)))
-            }
-            offset += 32;
-            uint256 homePoints;
-            uint256 awayPoints;
-            assembly {
-                homePoints := mload(add(response, add(offset, 0x20)))
-            }
-            offset += 32;
-            assembly {
-                awayPoints := mload(add(response, add(offset, 0x20)))
-            }
-            s_Results[GameID][0] = homePoints;
-            s_Results[GameID][1] = awayPoints;
-            s_Results[GameID][2] = 1;
-        }
+        uint256 gameId;
+        uint256 homePoints;
+        uint256 awayPoints;
+        (gameId, homePoints, awayPoints) = abi.decode(
+            response,
+            (uint256, uint256, uint256)
+        );
+        s_Results[gameId][0] = homePoints;
+        s_Results[gameId][1] = awayPoints;
+        s_Results[gameId][2] = 1;
     }
 
     ///////////////////////////////////////////
@@ -283,7 +250,7 @@ contract P2PBettingActions is
     }
 
     function setBettingFrontAddress(address bettingFront) external onlyOwner {
-        p2pBetting = P2PBettingFront(bettingFront);
+        p2pBetting = P2PBetting(bettingFront);
     }
 
     /////////////////////
