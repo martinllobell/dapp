@@ -66,7 +66,6 @@ export default function Footer({ darkMode }) {
             ))}
           </ul>
         </div>
-
         <div className="mt-8 mb-5 flex justify-center items-center text-center text-sm text-gray-500">
           <p className="mr-2">© 2024 DBetting </p>|{" "}
           <p className="ml-2">All rights reserved.</p>

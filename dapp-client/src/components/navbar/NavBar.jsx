@@ -20,29 +20,29 @@ const NAV_ITEMS = (
   toggleDarkMode,
   navigate
 ) => [
-  {
-    type: "component",
-    component: <WalletConnet darkMode={darkMode} />,
-  },
-  {
-    type: "button",
-    action: toggleLanguage,
-    icon: language === "es" ? SpanishIcon : EnglishIcon,
-    alt: "Cambio de Idioma",
-  },
-  {
-    type: "button",
-    action: () => navigate("/notifications"),
-    icon: darkMode ? NotificationIconDark : NotificationIcon,
-    alt: "Notificaciones",
-  },
-  {
-    type: "button",
-    action: toggleDarkMode,
-    icon: darkMode ? moon : sun,
-    alt: "Toggle Dark Mode",
-  },
-];
+    {
+      type: "component",
+      component: <WalletConnet darkMode={darkMode} />,
+    },
+    {
+      type: "button",
+      action: toggleLanguage,
+      icon: language === "es" ? SpanishIcon : EnglishIcon,
+      alt: "Cambio de Idioma",
+    },
+    {
+      type: "button",
+      action: () => navigate("/notifications"),
+      icon: darkMode ? NotificationIconDark : NotificationIcon,
+      alt: "Notificaciones",
+    },
+    {
+      type: "button",
+      action: toggleDarkMode,
+      icon: darkMode ? moon : sun,
+      alt: "Toggle Dark Mode",
+    },
+  ];
 
 const Navbar = ({ toggleDarkMode, darkMode }) => {
   const [language, setLanguage] = useState("es");
@@ -76,18 +76,17 @@ const Navbar = ({ toggleDarkMode, darkMode }) => {
           {/* Botón de hamburguesa */}
           <div className="md:hidden">
             <button
-              className={`p-2 rounded-lg focus:outline-none ${
-                darkMode
+              className={`p-2 rounded-lg focus:outline-none ${darkMode
                   ? "backdrop-blur-xl bg-white/10 drop-shadow-xl text-white hover:bg-gray-700"
                   : "backdrop-blur-xl bg-black/10 drop-shadow-xl text-black hover:bg-gray-200"
-              }`}
+                }`}
               onClick={() => setNavbarOpen(!navbarOpen)}
               style={{
                 filter: darkMode ? "none" : "invert(1)",
                 fontSize: "1.5rem", // Reducir el tamaño del botón hamburguesa
               }}
             >
-              {navbarOpen ? <IoMdClose size={24} /> : <IoMdMenu size={24} />}
+              {navbarOpen ? null : <IoMdMenu size={24} />}
             </button>
           </div>
         </div>
@@ -106,11 +105,10 @@ const Navbar = ({ toggleDarkMode, darkMode }) => {
                 <Link
                   key={index}
                   to={item.to}
-                  className={`m-2 p-2 rounded-lg transition duration-200 ease-in-out ${
-                    darkMode
+                  className={`m-2 p-2 rounded-lg transition duration-200 ease-in-out ${darkMode
                       ? "backdrop-blur-xl bg-white/10 drop-shadow-xl text-white hover:bg-gray-700"
                       : "backdrop-blur-xl bg-black/10 drop-shadow-xl text-black hover:bg-gray-200"
-                  }`}
+                    }`}
                 >
                   <img src={item.icon} alt={item.alt} className="w-5" />
                 </Link>
@@ -120,11 +118,10 @@ const Navbar = ({ toggleDarkMode, darkMode }) => {
                 <button
                   key={index}
                   onClick={item.action}
-                  className={`m-2 p-2 rounded-lg transition duration-200 ease-in-out ${
-                    darkMode
+                  className={`m-2 p-2 rounded-lg transition duration-200 ease-in-out ${darkMode
                       ? "backdrop-blur-xl bg-white/10 drop-shadow-xl text-white hover:bg-gray-700"
                       : "backdrop-blur-xl bg-black/10 drop-shadow-xl text-black hover:bg-gray-200"
-                  }`}
+                    }`}
                 >
                   <img src={item.icon} alt={item.alt} />
                 </button>
@@ -139,11 +136,23 @@ const Navbar = ({ toggleDarkMode, darkMode }) => {
 
       {/* Menu desplegable */}
       <div
-        className={`${
-          navbarOpen ? "block" : "hidden"
-        } md:hidden backdrop-blur-lg bg-white/30 dark:bg-gray-900/30 p-4 fixed w-full z-40`}
+        className={`${navbarOpen ? "flex" : "hidden"
+          } md:hidden absolute right-0 top-4 backdrop-blur-lg bg-white/30 dark:bg-gray-900/30 p-4 fixed lg:w-full z-40 rounded-l-2xl`}
       >
         <div className="flex flex-col items-end space-y-4">
+          <button
+            className={`p-2 rounded-lg focus:outline-none ${darkMode
+                ? "backdrop-blur-xl bg-white/10 drop-shadow-xl text-white hover:bg-gray-700"
+                : "backdrop-blur-xl bg-black/10 drop-shadow-xl text-black hover:bg-gray-200"
+              }`}
+            onClick={() => setNavbarOpen(!navbarOpen)}
+            style={{
+              filter: darkMode ? "none" : "invert(1)",
+              fontSize: "1.5rem", // Reducir el tamaño del botón hamburguesa
+            }}
+          >
+            {navbarOpen ? <IoMdClose size={24} /> : <IoMdMenu size={24} />}
+          </button>
           {NAV_ITEMS(
             darkMode,
             language,
@@ -156,7 +165,7 @@ const Navbar = ({ toggleDarkMode, darkMode }) => {
                 <Link
                   key={index}
                   to={item.to}
-                  className="m-2 p-2 rounded-lg transition duration-200 ease-in-out text-black dark:text-white"
+                  className="p-2 rounded-lg transition duration-200 ease-in-out text-black dark:text-white"
                 >
                   <img src={item.icon} alt={item.alt} className="w-5" />
                 </Link>
@@ -166,9 +175,9 @@ const Navbar = ({ toggleDarkMode, darkMode }) => {
                 <button
                   key={index}
                   onClick={item.action}
-                  className="m-2 p-2 rounded-lg transition duration-200 ease-in-out text-black dark:text-white"
+                  className="p-2 rounded-lg transition duration-200 ease-in-out text-black dark:text-white m-1"
                 >
-                  <img src={item.icon} alt={item.alt} />
+                  <img src={item.icon} alt={item.alt} className="w-6" />
                 </button>
               );
             } else if (item.type === "component") {
@@ -181,11 +190,10 @@ const Navbar = ({ toggleDarkMode, darkMode }) => {
 
       {/* Botón de soporte al cliente */}
       <div
-        className={`flex items-center justify-center m-2 p-2 rounded-lg transition duration-200 ease-in-out ${
-          darkMode
+        className={`flex items-center justify-center m-2 p-2 rounded-lg transition duration-200 ease-in-out ${darkMode
             ? "backdrop-blur-xl bg-white/10 drop-shadow-xl text-white hover:bg-gray-700"
             : "backdrop-blur-xl bg-black/10 drop-shadow-xl text-black hover:bg-gray-200"
-        } cursor-pointer fixed bottom-4 right-4`}
+          } cursor-pointer fixed bottom-4 right-4`}
         style={{
           width: "3rem",
           height: "3rem",
