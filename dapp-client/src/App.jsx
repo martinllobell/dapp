@@ -9,6 +9,7 @@ import FilterHome from './pages/homeFilter/FilterHome.jsx';
 import LeagueEvents from './components/leagueEvents/LeagueEvents.jsx';
 import LeadPanel from './components/betpanel/leadPanel';
 import Profile from './pages/profile/Profile.jsx';
+import AboutUs from './pages/about us/AboutUs.jsx';
 import { useContracts } from "./hooks/useContracts";
 
 const App = () => {
@@ -65,6 +66,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home darkMode={darkMode} setStartMatchTimestamp={setStartMatchTimestamp} />} />
           <Route path="/profile" element={<Profile darkMode={darkMode} />} />
+          <Route path="/AboutUs" element={<AboutUs darkMode={darkMode} />} />
           <Route path="/sports" element={<FilterHome darkMode={darkMode} setStartMatchTimestamp={setStartMatchTimestamp} />} />
           <Route path="/sports/league/:leagueId" element={<LeagueEvents />} />
           <Route path="*" element={<NotFound darkMode={darkMode} />} />

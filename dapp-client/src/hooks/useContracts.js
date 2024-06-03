@@ -54,3 +54,4 @@ export const useContracts = () => {
 
   return { contracts, account, web3, setStartMatchTimestamp };
 };
+
