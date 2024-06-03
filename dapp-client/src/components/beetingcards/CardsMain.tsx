@@ -17,27 +17,27 @@ interface Team {
 }
 
 interface Bet {
-  id: string;
-  tipster: string;
-  image: string;
-  winCondition: string;
-  maxBet: string;
-  eventDate: string;
-  maxEntryFee: number;
-  points: string;
-  comparator: string;
-  limit: number;
-  maxNumberOfChallengers: number;
-  challengers: Array<string>;
-  dataBet: Array<number>;
-  team1: Team;
-  team2: Team;
-  odds: number;
-  isOngoing: boolean;
+    id: string;
+    tipster: string;
+    image: string;
+    winCondition: string;
+    maxBet: string;
+    eventDate: string;
+    maxEntryFee: number;
+    points: string;
+    comparator: string;
+    limit: number;
+    maxNumberOfChallengers: number;
+    challengers: Array<string>;
+    dataBet: Array<number>;
+    team1: Team;
+    team2: Team;
+    odds: number;
+    isOngoing: boolean;
+    eventId: string
 }
 
 const defaultLogoUrl = "https://via.placeholder.com/150";
-
 
 export const CardsMain: FC<CardsMainProps> = ({ darkMode, filter }) => {
     const { contracts, web3, setStartMatchTimestamp } = useContracts();
@@ -46,18 +46,14 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode, filter }) => {
     const [loading, setLoading] = useState(true); // Estado de carga
     const [filters, setFilters] = useState('Popular')
 
-    const fetchNBATeamLogos = async () => {
-        try {
-            const response = await axios.get('/api/sportsdata/v3/nba/scores/json/teams', {
-                headers: { 'Ocp-Apim-Subscription-Key': '06b9feb762534274946d286934ff0235' }
-            });
-            const logos = {};
-            response.data.forEach(team => {
-                logos[team.Key] = team.WikipediaLogoUrl || defaultLogoUrl;
-            });
-            setTeamLogos(logos);
-        } catch (error) {
-            console.error('Error fetching NBA team logos:', error);
+  const fetchNBATeamLogos = async () => {
+    try {
+      const response = await axios.get(
+        "/api/sportsdata/v3/nba/scores/json/teams",
+        {
+          headers: {
+            "Ocp-Apim-Subscription-Key": "06b9feb762534274946d286934ff0235",
+          },
         }
       );
       const logos = {};
@@ -102,24 +98,22 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode, filter }) => {
           .call();
         const bets: Bet[] = [];
 
-        for (let i = 0; i < numberOfBets; i++) {
-          const bet = await contracts.p2pBetting.methods.getBet(i).call();
-          if (bet) {
-            const event = await fetchEventData(parseInt(bet[1], 10));
-            console.log(bet, "CLAUDIAAAA");
-
-            const team1 = {
-              name: event.HomeTeam || "Unknown",
-              logo: teamLogos[event.HomeTeam] || defaultLogoUrl,
-              odd: Number(bet[10]) || 0,
-            };
-            const team2 = {
-              name: event.AwayTeam || "Unknown",
-              logo: teamLogos[event.AwayTeam] || defaultLogoUrl,
-              odd: Number(bet[11]) || 0,
-            };
-            const randomString = Math.random().toString();
-            const hash = MD5(randomString).toString();
+                for (let i = 0; i < numberOfBets; i++) {
+                    const bet = await contracts.p2pBetting.methods.getBet(i).call();
+                    if (bet) {
+                        const event = await fetchEventData(parseInt(bet[1], 10));
+                        const team1 = {
+                            name: event.HomeTeam || "Unknown",
+                            logo: teamLogos[event.HomeTeam] || defaultLogoUrl,
+                            odd: Number(bet[10]) || 0
+                        };
+                        const team2 = {
+                            name: event.AwayTeam || "Unknown",
+                            logo: teamLogos[event.AwayTeam] || defaultLogoUrl,
+                            odd: Number(bet[11]) || 0
+                        };
+                        const randomString = Math.random().toString();
+                        const hash = MD5(randomString).toString();
 
             const newBet: Bet = {
               id: bet[0] ? bet[0].toString() : "0",
@@ -151,6 +145,7 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode, filter }) => {
               dataBet: bet.betData.map((each) => Number(each)),
               odds: Number(bet.odds) / 1000 || 0,
               isOngoing: bet.startMatchTimestamp,
+              eventId: bet[1]
             };
             bets.push(newBet);
           } else {
@@ -165,6 +160,7 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode, filter }) => {
         setLoading(false); // Termina la carga en caso de error
       }
     };
+
     fetchBets();
   }, [contracts, web3, teamLogos]);
 
@@ -194,7 +190,6 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode, filter }) => {
                   matchData={match}
                   darkMode={darkMode}
                   setStartMatchTimestamp={setStartMatchTimestamp}
-                  filter={filter}
                 />
               ))}
         </div>

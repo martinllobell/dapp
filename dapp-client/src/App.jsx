@@ -9,6 +9,7 @@ import FilterHome from './pages/homeFilter/FilterHome.jsx';
 import LeagueEvents from './components/leagueEvents/LeagueEvents.jsx';
 import LeadPanel from './components/betpanel/leadPanel';
 import Profile from './pages/profile/Profile.jsx';
+import AboutUs from './pages/about us/AboutUs.jsx';
 import { useContracts } from "./hooks/useContracts";
 
 const App = () => {
@@ -18,6 +19,8 @@ const App = () => {
   });
 
   const { setStartMatchTimestamp } = useContracts();
+
+  const [showFooter, setShowFooter] = useState(true);
 
   useEffect(() => {
     localStorage.setItem('darkMode', darkMode);
@@ -42,6 +45,15 @@ const App = () => {
     return location.pathname !== '/sports' && <Footer darkMode={darkMode} />;
   };
 
+  useEffect(() => {
+    console.log(location.pathname)
+    if (location.pathname === '/sports') {
+      setShowFooter(false);
+    } else {
+      setShowFooter(true);
+    }
+  }, [location.pathname]);
+
 
   return (
     <>
@@ -54,11 +66,12 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home darkMode={darkMode} setStartMatchTimestamp={setStartMatchTimestamp} />} />
           <Route path="/profile" element={<Profile darkMode={darkMode} />} />
+          <Route path="/AboutUs" element={<AboutUs darkMode={darkMode} />} />
           <Route path="/sports" element={<FilterHome darkMode={darkMode} setStartMatchTimestamp={setStartMatchTimestamp} />} />
           <Route path="/sports/league/:leagueId" element={<LeagueEvents />} />
           <Route path="*" element={<NotFound darkMode={darkMode} />} />
         </Routes>
-        {renderFooter()}
+        {showFooter && <Footer darkMode={darkMode} />}
       </Router>
     </>
   );

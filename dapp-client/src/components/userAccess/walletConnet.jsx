@@ -8,6 +8,11 @@ import Loading from "../loading/Loading";
 import { useTrayStore } from "../../store/useTrayStore";
 import { Link } from "react-router-dom";
 
+// Importar SVGs
+import ethSVG from "../../assets/icons/cryptoicons/ethereum.svg";
+import polygonSVG from "../../assets/icons/cryptoicons/polygon.svg";
+import avalancheSVG from "../../assets/icons/cryptoicons/avalanche.svg";
+
 const WalletConnect = ({ darkMode }) => {
   const [web3, setWeb3] = useState(null);
   const [hashedIcon, setHashedIcon] = useState(null);
@@ -28,6 +33,8 @@ const WalletConnect = ({ darkMode }) => {
         return `https://sepolia.infura.io/v3/518105519fa0442bb5029844ac5c3c2e`;
       case "Polygon":
         return `https://polygon-mainnet.infura.io/v3/518105519fa0442bb5029844ac5c3c2e`;
+      case "Fuji":
+        return `https://api.avax-test.network/ext/bc/C/rpc`;
       default:
         return `https://mainnet.infura.io/v3/518105519fa0442bb5029844ac5c3c2e`;
     }
@@ -40,6 +47,8 @@ const WalletConnect = ({ darkMode }) => {
         return "ETH";
       case "Polygon":
         return "MATIC";
+      case "Fuji":
+        return "AVAX";
       default:
         return "ETH";
     }
@@ -58,8 +67,34 @@ const WalletConnect = ({ darkMode }) => {
       const sessionSignature = sessionStorage.getItem("walletSignature");
       connectWallet(address, sessionSignature);
     }
-  }, [address]);
+  }, [address, network]);
 
+  useEffect(() => {
+    const handleAccountsChanged = (accounts) => {
+      if (accounts.length === 0) {
+        disconnectWallet();
+      } else {
+        connectWallet(accounts[0]);
+      }
+    };
+
+    const handleChainChanged = (chainId) => {
+      // Aquí podríamos ajustar la lógica si necesitamos hacer algo al cambiar la red
+      connectWallet(address);
+    };
+
+    if (window.ethereum) {
+      window.ethereum.on("accountsChanged", handleAccountsChanged);
+      window.ethereum.on("chainChanged", handleChainChanged);
+    }
+
+    return () => {
+      if (window.ethereum) {
+        window.ethereum.removeListener("accountsChanged", handleAccountsChanged);
+        window.ethereum.removeListener("chainChanged", handleChainChanged);
+      }
+    };
+  }, [address]);
   const connectWallet = async (address, storedSignature) => {
     try {
       const provider = window.ethereum;
@@ -125,6 +160,9 @@ const WalletConnect = ({ darkMode }) => {
         case "Polygon":
           chainId = "0x89";
           break;
+        case "Fuji":
+          chainId = "0xa869";
+          break;
         default:
           chainId = "0x1";
       }
@@ -158,16 +196,15 @@ const WalletConnect = ({ darkMode }) => {
       {isConnected ? (
         <div className="flex items-center">
           <div
-            className={`${
-              darkMode
+            className={`${darkMode
                 ? "backdrop-blur-xl bg-white/10 drop-shadow-xl text-white hover:bg-white/20"
                 : "backdrop-blur-xl bg-black/10 drop-shadow-xl text-black hover:bg-black/20"
-            } mr-3 shadow-sm shadow-black/10 px-5 py-2 rounded-lg transition ease-in-out duration-150`}
+              } mr-3 shadow-sm shadow-black/10 px-5 py-2 rounded-lg transition ease-in-out duration-150`}
           >
             {signing ? (
               <Loading />
             ) : (
-              `${balance ? balance : "0.00"} ${getCryptoName(network)}`
+              `${balance ? balance : "0.0000"} ${getCryptoName(network)}`
             )}
           </div>
           <Menu as="div" className="relative">
@@ -239,9 +276,8 @@ const WalletConnect = ({ darkMode }) => {
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
-                        className={`${
-                          showNetworks ? "" : "rotate-[-90deg]"
-                        } transition transform duration-30 mt-[.1rem] w-4 h-4 inline-block ml-1`}
+                        className={`${showNetworks ? "" : "rotate-[-90deg]"
+                          } transition transform duration-30 mt-[.1rem] w-4 h-4 inline-block ml-1`}
                       >
                         <path
                           strokeLinecap="round"
@@ -253,7 +289,7 @@ const WalletConnect = ({ darkMode }) => {
                   </div>
                 </Menu.Item>
                 {showNetworks && (
-                  <>
+                  <div className="grid grid-cols-2 gap-2 p-2">
                     <Menu.Item>
                       {({ active }) => (
                         <a
@@ -262,10 +298,15 @@ const WalletConnect = ({ darkMode }) => {
                             active
                               ? "bg-gray-300 dark:bg-gray-700 text-black dark:text-white"
                               : "text-black dark:text-white",
-                            "rounded-md block px-4 py-2 text-sm"
+                            "rounded-md block px-4 py-2 text-[11px] flex items-center justify-center"
                           )}
                           onClick={() => changeNetwork("Ethereum")}
                         >
+                          <img
+                            className="inline-block h-4 w-4 mr-2"
+                            src={ethSVG}
+                            alt="Ethereum"
+                          />
                           Ethereum
                         </a>
                       )}
@@ -278,10 +319,15 @@ const WalletConnect = ({ darkMode }) => {
                             active
                               ? "bg-gray-300 dark:bg-gray-700 text-black dark:text-white"
                               : "text-black dark:text-white",
-                            "rounded-md block px-4 py-2 text-sm"
+                            "rounded-md block px-4 py-2 text-[11px] flex items-center justify-center"
                           )}
                           onClick={() => changeNetwork("Sepolia")}
                         >
+                          <img
+                            className="inline-block h-4 w-4 mr-2"
+                            src={ethSVG}
+                            alt="Sepolia"
+                          />
                           Sepolia
                         </a>
                       )}
@@ -294,15 +340,41 @@ const WalletConnect = ({ darkMode }) => {
                             active
                               ? "bg-gray-300 dark:bg-gray-700 text-black dark:text-white"
                               : "text-black dark:text-white",
-                            "rounded-md block px-4 py-2 text-sm"
+                            "rounded-md block px-4 py-2 text-[11px] flex items-center justify-center"
                           )}
                           onClick={() => changeNetwork("Polygon")}
                         >
+                          <img
+                            className="inline-block h-4 w-4 mr-2"
+                            src={polygonSVG}
+                            alt="Polygon"
+                          />
                           Polygon
                         </a>
                       )}
                     </Menu.Item>
-                  </>
+                    <Menu.Item>
+                      {({ active }) => (
+                        <a
+                          href="#"
+                          className={classNames(
+                            active
+                              ? "bg-gray-300 dark:bg-gray-700 text-black dark:text-white"
+                              : "text-black dark:text-white",
+                            "rounded-md block px-4 py-2 text-[11px] flex items-center justify-center"
+                          )}
+                          onClick={() => changeNetwork("Fuji")}
+                        >
+                          <img
+                            className="inline-block h-4 w-4 mr-2"
+                            src={avalancheSVG}
+                            alt="Fuji"
+                          />
+                          Fuji
+                        </a>
+                      )}
+                    </Menu.Item>
+                  </div>
                 )}
                 <Menu.Item>
                   {({ active }) => (

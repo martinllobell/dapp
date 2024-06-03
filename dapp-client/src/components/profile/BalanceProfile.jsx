@@ -1,15 +1,15 @@
 
 
-const BalanceProfile = () => {
+const BalanceProfile = ({balance}) => {
   return (
-    <div className= "shadow-xl rounded-xl backdrop-blur-xl text-3xl bg-white/10 drop-shadow-xl w-fu">
+    <div className= "shadow-xl rounded-xl backdrop-blur-xl text-3xl bg-white/10 drop-shadow-xl w-full">
       <div className="p-6">
         <div className="flex justify-evenly gap-10">
           <div className="flex flex-col items-center">
             <span className="text-base font-medium text-slate-400">
               My balance
             </span>
-            <span className="text-lg font-bold">$1000.00</span>
+            <span className="text-lg font-bold">{balance}</span>
           </div>
           <div className="flex flex-col items-center">
             <span className="text-base font-medium text-slate-400">
