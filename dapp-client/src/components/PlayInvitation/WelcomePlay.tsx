@@ -74,13 +74,12 @@ export default function WelcomePlay() {
   return (
     <div className="relative flex flex-col justify-center my-6 md:mx-10 gap-16">
       <div className="mx-6 flex flex-col gap-4">
-        <h1 className="text-3xl font-normal 2xl:text-5xl">
+        <h1 className="text-3xl font-semibold 2xl:text-5xl">
           Customize and <span className="font-bold text-yellow-500">WIN</span>!
         </h1>
         <span className="md:text-lg 2xl:text-2xl mx-auto leading-relaxed">
-          Choose what you want to play among the following products developed by
-          <span className="font-semibold text-primary"> DBetting</span>. Explore
-          and join Web3 sports betting and fast crypto games!{" "}
+          Choose a Sport or Esport, Beat the Odds and Claim Big Profits by Matering Your Betting Skills!
+          <span className="font-semibold text-primary"> What Are You Waiting For?</span>
         </span>
       </div>
       <div className="grid grid-cols-2 grid-rows-2 md:grid-rows-1 md:grid-cols-3 w-full px-8 md:gap-12 gap-6">
