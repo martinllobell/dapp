@@ -20,7 +20,6 @@ const App = () => {
 
   const { setStartMatchTimestamp } = useContracts();
 
-
   useEffect(() => {
     localStorage.setItem('darkMode', darkMode);
     if (darkMode) {
@@ -39,13 +38,12 @@ const App = () => {
     setDarkMode(prevMode => !prevMode);
   };
 
-
   return (
     <>
       <div className="transition duration-200 absolute top-0 bottom-0 z-[-2] min-h-screen w-full bg-blue-700 dark:bg-gray-950 bg-[radial-gradient(ellipse_80%_80%at_50%-20%,rgba(252,185,255,0.5),rgba(255,255,255,0.9))] dark:bg-[radial-gradient(ellipse_100%_100%at_50%-20%,rgba(26,26,39,0.5),rgba(54,20,61,0.9))]">
       </div>
 
-      <Router>
+      <Router basename="/dapp">
         <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
         <LeadPanel />
         <Routes>
