@@ -9,7 +9,7 @@ export default function CryptoCarousel({ data }: CryptoCarousel) {
   return (
     <div className='w-80'>
       <div className="opacity-50 w-screen animate-slide">
-        <div className="flex gap-3 flex">
+        <div className="flex gap-10 flex">
           {
             repeatedData.map(({ img, name }) =>
               <div className="flex flex-row gap-2 items-center">
