@@ -10,9 +10,15 @@ P2P Betting is a Peer-to-Peer with Crypto betting site.
 ## Libraries Used
 This project uses several libraries for its operation:
 
+- **React**: a JavaScript library for building user interfaces.
+- **Tailwind CSS**: a utility-first CSS framework for rapidly building custom designs.
+- **Web3.js**: a collection of libraries that allow you to interact with a local or remote Ethereum node using HTTP, IPC or WebSocket.
+- **Axios**: a promise-based HTTP client for the browser and Node.js.
 - **Wagmi**: for interacting with smart contracts on the blockchain.
 - **Ethers.js**: a compact and complete library for handling Ethereum operations.
 - **Hardhat**: a development environment for compiling, deploying, testing, and debugging your Ethereum contracts.
+- **@chainlink/contracts**: a collection of smart contracts for Chainlink.
+- **@openzeppelin/contracts**: a library for secure smart contract developmen
 
 ## Project Deployment
 To deploy the project, follow these steps:
