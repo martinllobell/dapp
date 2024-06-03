@@ -25,7 +25,7 @@ const FilterHome = ({ darkMode, setStartMatchTimestamp }) => {
     const [currentLeagues, setCurrentLeagues] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedSport, setSelectedSport] = useState('nba');
-    const [activeTab, setActiveTab] = useState('Torneos');
+    const [activeTab, setActiveTab] = useState('Teams');
     const [betactiveTab, setBetActiveTab] = useState('Popular');
     const [selectedLeague, setSelectedLeague] = useState(null);
     const [leagueEvents, setLeagueEvents] = useState([]);
@@ -112,7 +112,7 @@ const FilterHome = ({ darkMode, setStartMatchTimestamp }) => {
         bets: 'Bets',
     };
 
-    const filters = ['Torneos', 'En vivo', 'Calendario'];
+    const filters = ['Teams', 'Live', 'Calendary'];
     const betfilters = ['Popular', 'My Bets', 'Active'];
 
     const totalPages = Math.ceil(totalLeagues / leaguesPerPage);
@@ -149,7 +149,7 @@ const FilterHome = ({ darkMode, setStartMatchTimestamp }) => {
                         <div className="flex space-x-2 md:space-x-4 mt-3 mb-10 overflow-auto"> {betfilters.map(filter => (
                             <button
                                 key={filter}
-                                onClick={() => {setBetActiveTab(filter) }}
+                                onClick={() => { setBetActiveTab(filter) }}
                                 className={`px-2 py-1 md:px-4 md:py-2 rounded-lg ${betactiveTab === filter ? 'border-b-4 border-primary' : ''}`}
                             >
                                 {filter}
@@ -158,7 +158,7 @@ const FilterHome = ({ darkMode, setStartMatchTimestamp }) => {
                         </div>
                         <div className='flex w-full overflow-x-scroll'>
 
-                            <CardsMain darkMode={darkMode} setStartMatchTimestamp={setStartMatchTimestamp} filter={betactiveTab}/>
+                            <CardsMain darkMode={darkMode} setStartMatchTimestamp={setStartMatchTimestamp} filter={betactiveTab} />
                         </div>
                     </div>
 
@@ -167,7 +167,7 @@ const FilterHome = ({ darkMode, setStartMatchTimestamp }) => {
                         {!selectedLeague && (
                             <h2 className="text-2xl mb-5">{activeTab}</h2>
                         )}
-                        {activeTab === 'Torneos' && !selectedLeague && (
+                        {activeTab === 'Teams' && !selectedLeague && (
                             <div className='w-full flex flex-col'>
                                 <Pagination
                                     currentPage={currentPage}
@@ -188,6 +188,9 @@ const FilterHome = ({ darkMode, setStartMatchTimestamp }) => {
                                 </div>
                             </div>
                         )}
+                        {activeTab !== 'Teams' && !selectedLeague &&
+                            <LeagueEvents league={selectedLeague} sport={selectedSport} activeTab={activeTab} />
+                        }
                         {selectedLeague && (
                             <>
                                 <button
@@ -196,7 +199,7 @@ const FilterHome = ({ darkMode, setStartMatchTimestamp }) => {
                                 >
                                     Volver a ligas
                                 </button>
-                                <LeagueEvents league={selectedLeague} sport={selectedSport} />
+                                <LeagueEvents league={selectedLeague} sport={selectedSport}/>
                             </>
                         )}
                     </>
