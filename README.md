@@ -4,6 +4,7 @@
 ## BLOCK MAGIC: A CHAINLINK HACKATHON (THE “HACKATHON”)
 ![DBetting Landing](./dapp-client/src/assets/landing.png)
 ![BetsHome](https://github.com/martinllobell/dapp/assets/105290418/60e272da-4428-49e3-818d-6d157e83b467)
+![Sports](https://github.com/martinllobell/dapp/assets/105290418/643d1503-4894-4679-a8ed-b7c1bbb85bb2)
 ![Powered Footer](https://github.com/martinllobell/dapp/assets/105290418/5077c350-2398-4dd1-b977-f606f9c32572)
 
 
