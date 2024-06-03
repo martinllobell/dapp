@@ -6,8 +6,8 @@ import { useContracts } from "../../hooks/useContracts";
 import { MD5 } from "crypto-js";
 
 interface CardsMainProps {
-    darkMode: boolean;
-    filter: string,
+  darkMode: boolean;
+  filter: string;
 }
 
 interface Team {
@@ -17,34 +17,34 @@ interface Team {
 }
 
 interface Bet {
-    id: string;
-    tipster: string;
-    image: string;
-    winCondition: string;
-    maxBet: string;
-    eventDate: string;
-    maxEntryFee: number;
-    points: string;
-    comparator: string;
-    limit: number;
-    maxNumberOfChallengers: number;
-    challengers: Array<string>;
-    dataBet: Array<number>;
-    team1: Team;
-    team2: Team;
-    odds: number;
-    isOngoing: boolean;
-    eventId: string
+  id: string;
+  tipster: string;
+  image: string;
+  winCondition: string;
+  maxBet: string;
+  eventDate: string;
+  maxEntryFee: number;
+  points: string;
+  comparator: string;
+  limit: number;
+  maxNumberOfChallengers: number;
+  challengers: Array<string>;
+  dataBet: Array<number>;
+  team1: Team;
+  team2: Team;
+  odds: number;
+  isOngoing: boolean;
+  eventId: string;
 }
 
 const defaultLogoUrl = "https://via.placeholder.com/150";
 
 export const CardsMain: FC<CardsMainProps> = ({ darkMode, filter }) => {
-    const { contracts, web3, setStartMatchTimestamp } = useContracts();
-    const [matches, setMatches] = useState<Bet[]>([]);
-    const [teamLogos, setTeamLogos] = useState<{ [key: string]: string }>({});
-    const [loading, setLoading] = useState(true); // Estado de carga
-    const [filters, setFilters] = useState('Popular')
+  const { contracts, web3, setStartMatchTimestamp } = useContracts();
+  const [matches, setMatches] = useState<Bet[]>([]);
+  const [teamLogos, setTeamLogos] = useState<{ [key: string]: string }>({});
+  const [loading, setLoading] = useState(true); // Estado de carga
+  const [filters, setFilters] = useState("Popular");
 
   const fetchNBATeamLogos = async () => {
     try {
@@ -98,22 +98,22 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode, filter }) => {
           .call();
         const bets: Bet[] = [];
 
-                for (let i = 0; i < numberOfBets; i++) {
-                    const bet = await contracts.p2pBetting.methods.getBet(i).call();
-                    if (bet) {
-                        const event = await fetchEventData(parseInt(bet[1], 10));
-                        const team1 = {
-                            name: event.HomeTeam || "Unknown",
-                            logo: teamLogos[event.HomeTeam] || defaultLogoUrl,
-                            odd: Number(bet[10]) || 0
-                        };
-                        const team2 = {
-                            name: event.AwayTeam || "Unknown",
-                            logo: teamLogos[event.AwayTeam] || defaultLogoUrl,
-                            odd: Number(bet[11]) || 0
-                        };
-                        const randomString = Math.random().toString();
-                        const hash = MD5(randomString).toString();
+        for (let i = 0; i < numberOfBets; i++) {
+          const bet = await contracts.p2pBetting.methods.getBet(i).call();
+          if (bet) {
+            const event = await fetchEventData(parseInt(bet[1], 10));
+            const team1 = {
+              name: event.HomeTeam || "Unknown",
+              logo: teamLogos[event.HomeTeam] || defaultLogoUrl,
+              odd: Number(bet[10]) || 0,
+            };
+            const team2 = {
+              name: event.AwayTeam || "Unknown",
+              logo: teamLogos[event.AwayTeam] || defaultLogoUrl,
+              odd: Number(bet[11]) || 0,
+            };
+            const randomString = Math.random().toString();
+            const hash = MD5(randomString).toString();
 
             const newBet: Bet = {
               id: bet[0] ? bet[0].toString() : "0",
@@ -145,7 +145,7 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode, filter }) => {
               dataBet: bet.betData.map((each) => Number(each)),
               odds: Number(bet.odds) / 1000 || 0,
               isOngoing: bet.startMatchTimestamp,
-              eventId: bet[1]
+              eventId: bet[1],
             };
             bets.push(newBet);
           } else {
@@ -165,34 +165,20 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode, filter }) => {
   }, [contracts, web3, teamLogos]);
 
   return (
-    <div className="relative flex flex-col my-6 md:mx-10 mx-6 gap-4">
-      <h1 className="text-3xl 2xl:text-5xl font-semibold">
-        Top
-        <span className="text-red-600"> Trending </span>
-        Bets!
-      </h1>
-      <span className="md:text-lg 2xl:text-2xl mx-auto leading-relaxed">
-      <span className="text-yellow-500 font-semibold">
-        Get in the Action:{" "}
-      </span>
-      Don't Miss Out on the Most Exciting Bets of the Day!
-        See What's Trending Now Down Bellow 👇
-      </span>
-      <div className="w-full mb-5">
-        <div className="flex flex-wrap w-full gap-10 overflow-x-scroll scroll-invisible justify-center">
-          {loading
-            ? Array.from({ length: 8 }).map((_, index) => (
-                <CardSkeleton key={index} />
-              ))
-            : matches.map((match, index) => (
-                <CardMatch
-                  key={index}
-                  matchData={match}
-                  darkMode={darkMode}
-                  setStartMatchTimestamp={setStartMatchTimestamp}
-                />
-              ))}
-        </div>
+    <div className="w-full mb-5">
+      <div className="flex flex-wrap w-full gap-10 overflow-x-scroll scroll-invisible justify-center">
+        {loading
+          ? Array.from({ length: 8 }).map((_, index) => (
+              <CardSkeleton key={index} />
+            ))
+          : matches.map((match, index) => (
+              <CardMatch
+                key={index}
+                matchData={match}
+                darkMode={darkMode}
+                setStartMatchTimestamp={setStartMatchTimestamp}
+              />
+            ))}
       </div>
     </div>
   );
