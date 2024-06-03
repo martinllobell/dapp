@@ -9,7 +9,6 @@ import bets from '../../assets/images/bet.webp';
 import LeagueEvents from '../../components/leagueEvents/LeagueEvents';
 import { CardsMain } from '../../components/beetingcards/CardsMain';
 import Pagination from '../../components/pagination/Pagination';
-import Footer from '../../components/footer/footer';
 
 const sportImages = {
     futbol,
@@ -204,7 +203,6 @@ const FilterHome = ({ darkMode, setStartMatchTimestamp }) => {
                         )}
                     </>
                 )}
-                <Footer></Footer>
             </div>
         </div>
     );
