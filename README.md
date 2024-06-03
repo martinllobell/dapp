@@ -36,6 +36,6 @@ To deploy the project, follow these steps:
 And that's it! You should now have your project running locally.
 
 # Team behind the project
-![Team](https://github.com/martinllobell/dapp/assets/105290418/df85e803-85b4-4688-bcfe-640d68589c16)
+![Team](https://github.com/martinllobell/dapp/assets/105290418/a8cc15d3-38f9-4f10-b2b5-976eb0896a30)
 
 
