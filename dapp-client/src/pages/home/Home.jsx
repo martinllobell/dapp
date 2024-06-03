@@ -2,6 +2,7 @@ import React from "react";
 import { CardsMain } from "../../components/beetingcards/CardsMain";
 import FirstComponent from "../../components/firstComponent/FirstComponent";
 import WelcomePlay from "../../components/PlayInvitation/WelcomePlay";
+import PowerBy from "../../components/poweredby/PoweredBy";
 
 const Home = ({ darkMode, setStartMatchTimestamp }) => {
   return (
@@ -18,6 +19,7 @@ const Home = ({ darkMode, setStartMatchTimestamp }) => {
       </h1>
       <div className=" lg:w-[90%]  mb-8">
         <CardsMain setStartMatchTimestamp={setStartMatchTimestamp} darkMode={darkMode} />
+        <PowerBy/>
       </div>
     </div>
   );

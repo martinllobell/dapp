@@ -9,17 +9,17 @@ const TotalBetsCard = () => {
         {
           label: "Wins",
           size: 60,
-          color: "green-700",
+          color: "bg-green-700",
         },
         {
           label: "Loss",
           size: 30,
-          color: "red-500",
+          color: "bg-red-500",
         },
         {
           label: "In Game",
           size: 10,
-          color: "gray-400",
+          color: "bg-gray-400",
         },
       ]
     : [];
@@ -27,7 +27,7 @@ const TotalBetsCard = () => {
   return (
     <div className={`p-2 py-[3rem] flex-col justify-center items-center h-full transform hover:scale-105 transition duration-300 shadow-xl rounded-lg intro-y backdrop-blur-xl text-3xl bg-white/10 drop-shadow-xl ${hasBet ? "" : "opacity-50"}`}>
       {hasBet ? (
-        <div className="w-full  p-4 rounded-lg">
+        <div className="w-full p-4 rounded-lg">
           <div className="pb-1 lg:pb-1">
             <h3 className="text-xxl font-bold">My Bets</h3>
           </div>
@@ -42,7 +42,7 @@ const TotalBetsCard = () => {
               {sessions.map((session, index) => (
                 <div
                   key={index}
-                  className={`h-full bg-${session.color}`}
+                  className={`${session.color}`}
                   style={{ width: `${session.size}%` }}
                 ></div>
               ))}
@@ -56,7 +56,7 @@ const TotalBetsCard = () => {
               >
                 <div className="text-sm">
                   <span
-                    className={`inline-block w-2 h-2 rounded-full mr-1 align-middle bg-${session.color}`}
+                    className={`${session.color} inline-block w-2 h-2 rounded-full mr-1 align-middle`}
                   ></span>
                   <span className="align-middle">{session.label}</span>
                 </div>
