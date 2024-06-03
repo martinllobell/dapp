@@ -3,6 +3,11 @@ import Card from "./Card";
 import CryptoCarousel from "./CryptoCarousel";
 import lebron from "../../assets/images/lebron.png";
 import basketballBackground from "../../assets/images/basketballBackground.jpg";
+import Chainlink from "../../assets/icons/cryptoicons/chainlink.svg"
+import Bitcoin from "../../assets/icons/cryptoicons/bitcoin.svg"
+import Ethereum from "../../assets/icons/cryptoicons/ethereum.svg"
+import Polygon from "../../assets/icons/cryptoicons/polygon.svg"
+import Tether from "../../assets/icons/cryptoicons/tetherusdt.svg"
 
 export interface Card {
   title: string;
@@ -49,24 +54,24 @@ export interface Crypto {
 
 const cryptos: Crypto[] = [
   {
-    img: "src/assets/icons/atar.png",
-    name: "Tether",
+    img: Chainlink,
+    name: "Chainlink",
   },
   {
-    img: "src/assets/icons/bitcoin.png",
+    img: Bitcoin,
     name: "Bitcoin",
   },
   {
-    img: "src/assets/icons/ethereum.png",
+    img: Ethereum,
     name: "Ethereum",
   },
   {
-    img: "src/assets/icons/tron.png",
-    name: "Tron",
+    img: Polygon,
+    name: "Polygon",
   },
   {
-    img: "src/assets/icons/bnb.png",
-    name: "BNB",
+    img: Tether,
+    name: "Tether",
   },
 ];
 
@@ -106,7 +111,7 @@ export default function WelcomePlay() {
           <h1 className="min-w-8 2xl:text-3xl">Crypto wallets</h1>
         </div>
         <div className="col-span-7 relative md:gap-3 flex items-center w-full justify-end flex-row opacity-50 relative -right-5 md:right-0">
-          <div className="flex-row justify-end gap-3 lg:flex hidden">
+          <div className="flex-row justify-end gap-10 lg:flex hidden mr-6">
             {cryptos.map(({ img, name }) => (
               <div className="flex flex-row gap-2 items-center">
                 <img src={img} className="max-w-6 2xl:max-w-10"></img>
@@ -114,8 +119,7 @@ export default function WelcomePlay() {
               </div>
             ))}
           </div>
-          <div className="min-w-8 min-h-10 mx-4 md:-ml-5 transform rotate-90 ">
-            <hr className="border-b border-black dark:border-white"></hr>
+          <div className="h-full transform border-2 mx-2">
           </div>
           <h1 className="text-sm md:text-xl font-semibold cursor-pointer whitespace-nowrap">
             See all
