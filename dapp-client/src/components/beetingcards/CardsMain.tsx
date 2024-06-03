@@ -34,6 +34,7 @@ interface Bet {
     team2: Team;
     odds: number;
     isOngoing: boolean;
+    eventId: string
 }
 
 const defaultLogoUrl = "https://via.placeholder.com/150";
@@ -89,8 +90,6 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode, filter }) => {
                     const bet = await contracts.p2pBetting.methods.getBet(i).call();
                     if (bet) {
                         const event = await fetchEventData(parseInt(bet[1], 10));
-                        console.log(bet, "CLAUDIAAAA");
-
                         const team1 = {
                             name: event.HomeTeam || "Unknown",
                             logo: teamLogos[event.HomeTeam] || defaultLogoUrl,
@@ -121,8 +120,10 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode, filter }) => {
                             challengers: bet.challengers,
                             dataBet: bet.betData.map((each) => Number(each)),
                             odds: Number(bet.odds) / 1000 || 0,
-                            isOngoing: bet.startMatchTimestamp
+                            isOngoing: bet.startMatchTimestamp,
+                            eventId: bet[1]
                         };
+                        
                         bets.push(newBet);
                     } else {
                         console.error('Invalid bet data:', bet);
@@ -149,7 +150,7 @@ export const CardsMain: FC<CardsMainProps> = ({ darkMode, filter }) => {
                     ))
                 ) : (
                     matches.map((match, index) => (
-                        <CardMatch key={index} matchData={match} darkMode={darkMode} setStartMatchTimestamp={setStartMatchTimestamp} filter={filter}/>
+                        <CardMatch key={index} matchData={match} darkMode={darkMode} setStartMatchTimestamp={setStartMatchTimestamp} filter={filter} />
                     ))
                 )}
             </div>

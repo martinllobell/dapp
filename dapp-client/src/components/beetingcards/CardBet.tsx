@@ -1,6 +1,7 @@
 import React, { FC, useEffect, useState } from "react";
-import { useTrayStore } from "../../store/useTrayStore";
 import { useContracts } from "../../hooks/useContracts";
+import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
 
 interface MatchData {
     id: string;
@@ -26,7 +27,8 @@ interface MatchData {
         odd: number;
     };
     odds: number;
-    isOngoing: boolean
+    isOngoing: boolean;
+    eventId: string;
 }
 
 interface CardMatchProps {
@@ -43,6 +45,10 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode, setStartMat
     const [isOngoing, setIsOngoing] = useState<boolean>(matchData.isOngoing);
     const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+    const [showResults, setShowResults] = useState<boolean>(false);
+    const [eventResults, setEventResults] = useState<any>(null);
+    const [isWinner, setIsWinner] = useState<boolean | null>(null);
+    const [showRewardToast, setShowRewardToast] = useState<boolean>(false);
 
     useEffect(() => {
         const checkIfSubscribed = async () => {
@@ -66,22 +72,13 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode, setStartMat
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
 
-        // Convert the value to a number
         const numericValue = parseFloat(value);
-
-        // Convert maxEntryFee (BigInt) to a number
         const maxEntryFeeFloat = parseFloat(matchData.maxBet.toString());
 
-        // Regular expression to check if the value has up to 4 decimal places
-        const decimalRegex = /^\d+(\.\d{0,4})?$/;
-
-        // Check if the value matches the decimal pattern and is at least 0.0001
         if (numericValue >= 0) {
-            // Set the bet amount to the entered value if it's less than or equal to the max entry fee
             if (numericValue <= maxEntryFeeFloat) {
                 setBetAmount(value);
             } else {
-                // Otherwise, set the bet amount to the max entry fee
                 setBetAmount(maxEntryFeeFloat.toFixed(4));
             }
         } else {
@@ -99,7 +96,7 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode, setStartMat
                     value: valueInWei
                 });
                 console.log("Bet subscribed successfully!");
-                setIsSubscribed(true); // Cambiar estado a suscrito
+                setIsSubscribed(true);
                 setShowBetInput(false);
                 setBetAmount('');
             } catch (error) {
@@ -109,26 +106,103 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode, setStartMat
     };
 
     const simulateOngoingEvent = async () => {
-        const oneHourLater = Math.floor(Date.now() / 1000) + 3600; // Current time in seconds + 1 hour
+        const oneHourLater = Math.floor(Date.now() / 1000) + 3600;
         await setStartMatchTimestamp(matchData.id, oneHourLater);
         setIsOngoing(true);
     };
 
+    const handleEndEvent = async () => {
+        try {
+            const season = new Date().getFullYear();
+            const response = await axios.get(`/api/sportsdata/v3/nba/scores/json/Games/${season}`, {
+                headers: { 'Ocp-Apim-Subscription-Key': '01e1ae2db9b642229876fbd8527f4822' }
+            });
+
+            const events = response.data?.filter(event => event.GameID.toString() === matchData.eventId.toString());
+
+            setEventResults(events[0]);
+            setShowResults(true);
+
+            const homeTeamWon = events[0].HomeTeamScore > events[0].AwayTeamScore;
+            const userBetOnHomeTeam = matchData.dataBet[1] === 0;
+            const userBetOnAwayTeam = matchData.dataBet[1] === 1;
+
+            if ((homeTeamWon && userBetOnHomeTeam) || (!homeTeamWon && userBetOnAwayTeam)) {
+                setIsWinner(true);
+            } else {
+                setIsWinner(false);
+            }
+        } catch (error) {
+            console.error('Error fetching league events:', error);
+        }
+    };
+
+    const handleGetRewards = () => {
+        console.log("Getting rewards...");
+        setShowRewardToast(true);
+        toast.success("Reward received successfully!", {
+            style: {
+                background: darkMode ? "#333" : "#fff",
+                color: darkMode ? "#fff" : "#333"
+            }
+        });
+    };
+
     if (filter === 'Active') {
         if (!isOngoing) {
-            return;
+            return null;
         }
     } else if (filter === 'My Bets') {
         if (!isSubscribed) {
-            return;
+            return null;
         }
     }
 
-    return (
-        <div className="font-semibold mb-8 w-auto p-4 lg:h-[22rem] h-[25rem] backdrop-blur-xl bg-white/10 shadow-xl shadow-sm shadow-black/10 rounded-lg transition-colors">
-            <div
-                className="h-full flex flex-col justify-between">
+    const getResultColor = (teamName: string) => {
+        if (!eventResults) return "text-gray-500";
+        const homeTeam = eventResults.HomeTeamID === matchData.team1.id ? matchData.team1.name : matchData.team2.name;
+        const awayTeam = eventResults.AwayTeamID === matchData.team1.id ? matchData.team1.name : matchData.team2.name;
+        if (teamName === homeTeam && eventResults.HomeTeamScore > eventResults.AwayTeamScore) {
+            return "text-green-500";
+        } else if (teamName === awayTeam && eventResults.AwayTeamScore > eventResults.HomeTeamScore) {
+            return "text-green-500";
+        } else {
+            return "text-red-500";
+        }
+    };
 
+    return (
+        <div className="font-semibold mb-8 w-auto p-4 lg:h-[22rem] h-[25rem] backdrop-blur-xl bg-white/10 shadow-xl shadow-sm shadow-black/10 rounded-lg transition-colors relative">
+            {showRewardToast && <Toaster />}
+            {showResults && eventResults && (
+                <div className="z-50 absolute top-0 left-0 right-0 bottom-0 dark:bg-black/90 bg-gray-800/90 backdrop-blur-[9px] flex flex-col justify-around items-center rounded-lg">
+                    <p className="text-white mb-4">Event Results:</p>
+                    <div className="flex flex-row justify-between w-full px-8">
+                        <div className="flex flex-col items-center">
+                            <img src={matchData.team1.logo} alt={`${matchData.team1.name} logo`} className="w-16 h-16 rounded-full mb-2" />
+                            <p className={getResultColor(matchData.team1.name)}>{`${matchData.team1.name}: ${eventResults.HomeTeamScore}`}</p>
+                        </div>
+                        <div className="flex flex-col items-center">
+                            <img src={matchData.team2.logo} alt={`${matchData.team2.name} logo`} className="w-16 h-16 rounded-full mb-2" />
+                            <p className={getResultColor(matchData.team2.name)}>{`${matchData.team2.name}: ${eventResults.AwayTeamScore}`}</p>
+                        </div>
+                    </div>
+                    {isWinner !== null && (
+                        <p className={`text-2xl ${isWinner ? "text-green-500" : "text-red-500"}`}>
+                            {isWinner ? "Winner" : "Loser"}
+                        </p>
+                    )}
+                    {isWinner && (
+                        <button
+                            className="bg-green-600 dark:bg-green-700 text-sm text-white rounded-lg px-4 py-2 mt-4"
+                            onClick={handleGetRewards}
+                        >
+                            Get Rewards
+                        </button>
+                    )}
+                </div>
+            )}
+            <div className="h-full flex flex-col justify-between">
                 <div className='h-[20%] mb-3 flex flex-row items-center justify-between'>
                     <div className="flex flex-row px-2 gap-2 items-center">
                         <img src={matchData.image} alt={`${matchData.team1.name} logo`} className='w-8 rounded-full' />
@@ -186,7 +260,7 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode, setStartMat
                             <h2>{matchData.eventDate.split("T")[0].split('-').join('/')}</h2>
                             <h2>{matchData.eventDate.split("T")[1].slice(0, 5)}</h2>
                         </div>
-                        <h2 className="mt-5">VS</h2> {/* Shown on desktop */}
+                        <h2 className="mt-5">VS</h2>
                     </div>
                     <h2 className={'text-xs font-medium  text-center'}>{matchData.team2.name}</h2>
 
@@ -241,11 +315,18 @@ export const CardMatch: FC<CardMatchProps> = ({ matchData, darkMode, setStartMat
                                         <span className="ml-2 font-bold">X {matchData.odds.toFixed(2)}</span>
                                     </button>
                                 )}
-                        </div> : <p className="flex justify-center items-center h-full text-gray-500"> Already Subscribed </p>
+                        </div> :
+                            <div className="flex flex-col justify-center items-center h-full text-gray-500">
+                                <p> Already Subscribed </p>
+                                <button
+                                    className="bg-blue-700 text-sm text-white rounded-lg px-4 py-2 flex items-center justify-center mt-4"
+                                    onClick={handleEndEvent}
+                                >
+                                    <span>End Event</span>
+                                </button>
+                            </div>
                     }
                 </div>
-
-
             </div>
         </div>
     );
