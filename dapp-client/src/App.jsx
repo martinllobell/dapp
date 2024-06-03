@@ -20,7 +20,6 @@ const App = () => {
 
   const { setStartMatchTimestamp } = useContracts();
 
-  const [showFooter, setShowFooter] = useState(true);
 
   useEffect(() => {
     localStorage.setItem('darkMode', darkMode);
@@ -40,20 +39,6 @@ const App = () => {
     setDarkMode(prevMode => !prevMode);
   };
 
-  // Renderizar el Footer solo si la ruta no es /sports
-  const renderFooter = () => {
-    return location.pathname !== '/sports' && <Footer darkMode={darkMode} />;
-  };
-
-  useEffect(() => {
-    console.log(location.pathname)
-    if (location.pathname === '/sports') {
-      setShowFooter(false);
-    } else {
-      setShowFooter(true);
-    }
-  }, [location.pathname]);
-
 
   return (
     <>
@@ -71,7 +56,7 @@ const App = () => {
           <Route path="/sports/league/:leagueId" element={<LeagueEvents />} />
           <Route path="*" element={<NotFound darkMode={darkMode} />} />
         </Routes>
-        {showFooter && <Footer darkMode={darkMode} />}
+        <Footer darkMode={darkMode} />
       </Router>
     </>
   );
