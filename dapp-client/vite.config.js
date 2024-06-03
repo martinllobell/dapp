@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
+  base: '/dapp/',  // Asegúrate de que el nombre aquí coincida con el nombre de tu repositorio
   plugins: [react()],
   server: {
     proxy: {
